@@ -3,10 +3,10 @@
 class GlassOnion_Application_Resource_Paginator extends Zend_Application_Resource_ResourceAbstract
 {
     /**
-     * Set the default scrolling style for the Paginator
+     * Sets the default scrolling style for the Paginator
      *
      * @param  string $scrollingStyle
-     * @return Core_Application_Resource_Paginator
+     * @return GlassOnion_Application_Resource_Paginator
      */
     public function setDefaultScrollingStyle($scrollingStyle)
     {
@@ -15,10 +15,10 @@ class GlassOnion_Application_Resource_Paginator extends Zend_Application_Resourc
     }
 
     /**
-     * Set the default view partial for the Paginator
+     * Sets the default view partial for the Paginator
      *
      * @param  string|array $viewPartial
-     * @return Core_Application_Resource_Paginator
+     * @return GlassOnion_Application_Resource_Paginator
      */
     public function setDefaultViewPartial($viewPartial)
     {
