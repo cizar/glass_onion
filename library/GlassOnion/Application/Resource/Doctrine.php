@@ -32,6 +32,8 @@ class GlassOnion_Application_Resource_Doctrine extends  Zend_Application_Resourc
         foreach ($attributes as $key => $value)
                 $manager->setAttribute($key, $value);
 
+	Doctrine::loadModels($config['models_path']);
+
         $manager->openConnection($config['connection_string']);
 
         return $manager;
