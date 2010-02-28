@@ -7,17 +7,26 @@ class GlassOnion_View_Helper_FieldErrors extends Zend_View_Helper_FormElement
      *
      * @param string $field
      * @param Doctrine_Record $record
+	 * @param array $messages
      * @return Zend_View_Helper_FormLabel
      */
-    public function fieldErrors($field, Doctrine_Record $record)
+    public function fieldErrors($field, Doctrine_Record $record, $messages = array())
     {
-        $fieldErrors = $record->getErrorStack()->get((string) $field);
+		$errorStack = $record->getErrorStack();
+		
+		if (!$errorStack->contains($field))
+		{
+			return '';
+		}
+
+		$list = array();
+		
+		foreach ($errorStack->get($field) as $code)
+		{
+			$list[] = array_key_exists($code, $messages)
+				? $messages[$code] : $code;
+		}
         
-        if (is_null($fieldErrors))
-        {
-           return '';
-        }
-        
-        return $this->view->htmlList($fieldErrors);
+        return $this->view->htmlList($list);
     }
 }
