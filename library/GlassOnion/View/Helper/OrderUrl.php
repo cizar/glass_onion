@@ -1,5 +1,7 @@
 <?php
 
+require_once 'Zend/View/Helper/Abstract.php';
+
 class GlassOnion_View_Helper_OrderUrl extends Zend_View_Helper_Abstract
 {
     public function orderUrl($field, $order, $default_order_asc = 'asc')

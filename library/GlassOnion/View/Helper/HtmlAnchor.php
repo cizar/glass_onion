@@ -1,5 +1,7 @@
 <?php
 
+require_once 'Zend/View/Helper/HtmlElement.php';
+
 class GlassOnion_View_Helper_HtmlAnchor extends Zend_View_Helper_HtmlElement
 {
 	public function htmlAnchor($href, $label, $attribs = false)

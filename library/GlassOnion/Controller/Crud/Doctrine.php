@@ -145,6 +145,12 @@ abstract class GlassOnion_Controller_Crud_Doctrine extends GlassOnion_Controller
 		$this->_helper->redirector('index');
 	}
 
+	protected function create(Doctrine_Record $record)
+	{
+		$request = $this->getRequest();
+		$record->fromArray($request->getParam($this->getRecordName()));
+	}
+
 	/**
 	 * @return Doctrine_Record
 	 */
@@ -184,14 +190,19 @@ abstract class GlassOnion_Controller_Crud_Doctrine extends GlassOnion_Controller
     {
 		return Doctrine::getTable($this->getTableName());   
 	}
+	
+	protected function getRecordName()
+	{
+		$lcf = new GlassOnion_Filter_LowerCaseFirst();
+		return $lcf->filter($this->getTableName());
+	}
 
 	protected function assignRecord(Doctrine_Record $record)
 	{
-		$lcf = new GlassOnion_Filter_LowerCaseFirst();
-		$property = $lcf->filter($this->getTableName());
+		$record_name = $this->getRecordName();
 
-		$this->$property = $record;
-		$this->view->assign($property, $record);
+		$this->$record_name = $record;
+		$this->view->assign($record_name, $record);
 
 	}
 }

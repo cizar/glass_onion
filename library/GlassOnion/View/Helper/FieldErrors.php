@@ -1,5 +1,7 @@
 <?php
 
+require_once 'Zend/View/Helper/FormElement.php';
+
 class GlassOnion_View_Helper_FieldErrors extends Zend_View_Helper_FormElement
 {
     /**
