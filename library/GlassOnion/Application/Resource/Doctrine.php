@@ -1,6 +1,11 @@
 <?php
 
-class GlassOnion_Application_Resource_Doctrine extends  Zend_Application_Resource_ResourceAbstract
+/**
+ * @see Zend_Application_Resource_ResourceAbstract
+ */
+require_once 'Zend/Application/Resource/ResourceAbstract.php';
+
+class GlassOnion_Application_Resource_Doctrine extends Zend_Application_Resource_ResourceAbstract
 {
 	/**
 	 * Defined by Zend_Application_Resource_Resource
@@ -29,7 +34,9 @@ class GlassOnion_Application_Resource_Doctrine extends  Zend_Application_Resourc
 		$manager = Doctrine_Manager::getInstance();
 
 		foreach ($attributes as $key => $value)
+		{
 			$manager->setAttribute($key, $value);
+		}
 
 		Doctrine::loadModels($config['models_path']);
 
@@ -50,7 +57,6 @@ class GlassOnion_Application_Resource_Doctrine extends  Zend_Application_Resourc
 			{
 				$manager->registerExtension($extension, $path);
 			}
-				
 		}
 		
 		$manager->openConnection($config['dsn']);

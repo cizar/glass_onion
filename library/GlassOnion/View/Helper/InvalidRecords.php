@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @see Zend_View_Helper_FormElement
+ */
 require_once 'Zend/View/Helper/FormElement.php';
 
 class Zend_View_Helper_InvalidRecords extends Zend_View_Helper_FormElement
