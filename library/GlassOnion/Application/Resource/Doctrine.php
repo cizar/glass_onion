@@ -55,10 +55,10 @@ class GlassOnion_Application_Resource_Doctrine extends Zend_Application_Resource
 
 			foreach ($config['extension'] as $extension => $path)
 			{
-				$manager->registerExtension($extension, $path);
+				$manager->registerExtension($extension, empty($path) ? null : $path);
 			}
 		}
-		
+
 		$manager->openConnection($config['dsn']);
 
 		return $manager;
