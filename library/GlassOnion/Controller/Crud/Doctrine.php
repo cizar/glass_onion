@@ -10,8 +10,8 @@ abstract class GlassOnion_Controller_Crud_Doctrine extends GlassOnion_Controller
 	
 	protected $_itemCountPerPage = 20;
 	
-	abstract protected function getTableName();
-
+	protected $_table_name = null;
+	
 	public function indexAction()
 	{
 		$query = $this->getIndexQuery();
@@ -204,5 +204,20 @@ abstract class GlassOnion_Controller_Crud_Doctrine extends GlassOnion_Controller
 		$this->$record_name = $record;
 		$this->view->assign($record_name, $record);
 
+	}
+	
+	protected function useTable($table_name)
+	{
+		$this->_table_name = $table_name;
+	}
+	
+	protected function getTableName()
+	{
+		if (is_null($this->_table_name))
+		{
+			throw new Exception('getTableName(): You must override this method or call useTable() at the controller initialization');
+		}
+		
+		return $this->_table_name;
 	}
 }
