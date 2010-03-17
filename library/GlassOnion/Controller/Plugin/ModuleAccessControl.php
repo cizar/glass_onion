@@ -4,7 +4,7 @@ require_once ('Zend/Controller/Plugin/Abstract.php');
 
 class GlassOnion_Controller_Plugin_ModuleAccessControl extends Zend_Controller_Plugin_Abstract
 {
-	private static $_moduleName = 'admin';
+	private static $_moduleName = 'default';
 	
 	protected $_deniedAction = array('controller' => 'session', 'action' => 'login');
 	

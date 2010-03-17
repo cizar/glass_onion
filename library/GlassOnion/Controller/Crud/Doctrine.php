@@ -2,15 +2,12 @@
 
 require_once 'GlassOnion/Controller/Crud.php';
 require_once 'GlassOnion/Paginator/Adapter/DoctrineQuery.php';
-require_once 'GlassOnion/Filter/LowerCaseFirst.php';
 
 abstract class GlassOnion_Controller_Crud_Doctrine extends GlassOnion_Controller_Crud
 {
-	protected $_query = null;
-	
 	protected $_itemCountPerPage = 20;
 	
-	protected $_table_name = null;
+	protected $_record_class = null;
 	
 	public function indexAction()
 	{
@@ -46,17 +43,14 @@ abstract class GlassOnion_Controller_Crud_Doctrine extends GlassOnion_Controller
 	 */
 	protected function getIndexQuery()
 	{
-		if (is_null($this->_query))
-		{
-			$this->_query = Doctrine_Query::create()
-				->from($this->getTableName());
+		$query = Doctrine_Query::create()
+			->from($this->_record_class);
 
-			$this->filerIndexQuery($this->_query);
+		$this->filerIndexQuery($query);
 
-			$this->orderIndexQuery($this->_query);
-		}
+		$this->orderIndexQuery($query);
 
-		return $this->_query;
+		return $query;
 	} 
 
 	/**
@@ -65,7 +59,8 @@ abstract class GlassOnion_Controller_Crud_Doctrine extends GlassOnion_Controller
 	public function showAction()
 	{
 		$record = $this->getRecord($this->_getParam('id'));
-		$this->assignRecord($record);
+		$this->record = $record;
+		$this->view->record = $record;
 	}
 
 	/**
@@ -76,7 +71,7 @@ abstract class GlassOnion_Controller_Crud_Doctrine extends GlassOnion_Controller
 		if (!method_exists($this, 'create'))
 		{
 			$signature = get_class($this) . '::create(Doctrine_Record $record)';
-			throw new Exception("Must be implemented {$signature}");
+			throw new Exception("Method {$signature} not implemented");
 		}
 
 		$record = $this->getNewRecord();
@@ -95,7 +90,8 @@ abstract class GlassOnion_Controller_Crud_Doctrine extends GlassOnion_Controller
 			}
 		}
 
-		$this->assignRecord($record);
+		$this->record = $record;
+		$this->view->record = $record;
 	}
 
 	/**
@@ -103,18 +99,18 @@ abstract class GlassOnion_Controller_Crud_Doctrine extends GlassOnion_Controller
 	 */
 	public function editAction()
 	{
+		if (!method_exists($this, 'update'))
+		{
+			$signature = get_class($this) . '::update(Doctrine_Record $record)';
+			throw new Exception("Method {$signature} not implemented");
+		}
+
 		$record = $this->getRecord($this->_getParam('id'));
 
 		if ($this->_request->isPost())
 		{
 			try
 			{
-				if (!method_exists($this, 'update'))
-				{
-					$signature = get_class($this) . '::update(Doctrine_Record $record)';
-					throw new Exception("Must be implemented {$signature}");
-				}
-
 				$this->update($record);
 				$record->save();
 				$this->_helper->redirector();
@@ -125,7 +121,8 @@ abstract class GlassOnion_Controller_Crud_Doctrine extends GlassOnion_Controller
 			}
 		}
 
-		$this->assignRecord($record);
+		$this->record = $record;
+		$this->view->record = $record;
 	}
 
 	/**
@@ -135,20 +132,27 @@ abstract class GlassOnion_Controller_Crud_Doctrine extends GlassOnion_Controller
 	{
 		$record = $this->getRecord($this->_getParam('id'));
 
+		$record->delete();
+
 		if (method_exists($this, 'destroy'))
 		{
 			$this->destroy($record);
 		}
 
-		$record->delete();
-
 		$this->_helper->redirector('index');
 	}
 
-	protected function create(Doctrine_Record $record)
+	/**
+	 * @return void
+	 */
+	protected function useModel($class)
 	{
-		$request = $this->getRequest();
-		$record->fromArray($request->getParam($this->getRecordName()));
+		if (!class_exists($class))
+		{
+			throw new Exception('Unable to load class ' . $class);
+		}
+		
+		$this->_record_class = $class;
 	}
 
 	/**
@@ -156,14 +160,7 @@ abstract class GlassOnion_Controller_Crud_Doctrine extends GlassOnion_Controller
 	 */
 	protected function getNewRecord()
 	{
-		$className = $this->getTableName();
-
-		if (!class_exists($className))
-		{
-			throw new Exception('Unable to load class ' . $className);
-		}
-
-		$record = new $className;
+		$record = new $this->_record_class;
 
 		if (!is_subclass_of($record, 'Doctrine_Record'))
 		{
@@ -186,38 +183,11 @@ abstract class GlassOnion_Controller_Crud_Doctrine extends GlassOnion_Controller
 		return $this->getTable()->find($id);
     }
 
+	/**
+	 * @return Doctrine_Table
+	 */
 	protected function getTable()
     {
-		return Doctrine::getTable($this->getTableName());   
-	}
-	
-	protected function getRecordName()
-	{
-		$lcf = new GlassOnion_Filter_LowerCaseFirst();
-		return $lcf->filter($this->getTableName());
-	}
-
-	protected function assignRecord(Doctrine_Record $record)
-	{
-		$record_name = $this->getRecordName();
-
-		$this->$record_name = $record;
-		$this->view->assign($record_name, $record);
-
-	}
-	
-	protected function useTable($table_name)
-	{
-		$this->_table_name = $table_name;
-	}
-	
-	protected function getTableName()
-	{
-		if (is_null($this->_table_name))
-		{
-			throw new Exception('getTableName(): You must override this method or call useTable() at the controller initialization');
-		}
-		
-		return $this->_table_name;
+		return Doctrine_Core::getTable($this->_record_class);   
 	}
 }
