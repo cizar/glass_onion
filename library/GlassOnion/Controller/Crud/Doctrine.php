@@ -37,6 +37,11 @@ abstract class GlassOnion_Controller_Crud_Doctrine extends GlassOnion_Controller
 	{
 		// Hook to filter the index query
 	}
+	
+	protected function prepareIndexQuery(Doctrine_Query $query)
+	{
+		// Hook to prepare the index query
+	}
     
 	/**
 	 * @return Doctrine_Query
@@ -45,6 +50,8 @@ abstract class GlassOnion_Controller_Crud_Doctrine extends GlassOnion_Controller
 	{
 		$query = Doctrine_Query::create()
 			->from($this->_record_class);
+			
+		$this->prepareIndexQuery($query);
 
 		$this->filerIndexQuery($query);
 
