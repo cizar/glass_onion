@@ -15,25 +15,17 @@ class Zend_View_Helper_InvalidRecords extends Zend_View_Helper_FormElement
 		}
 
 		$html = '<ul>';
+		
 		foreach ($invalidRecords as $record)
 		{
-			$html .= '<li>' . get_class($record) . '<ul>';
+			$html .= '<li>' . get_class($record);
+			
+			$html .= $this->view->doctrineErrorStack($record->getErrorStack());
 
-			foreach ($record->getErrorStack() as $field => $errors)
-			{
-				$html .= '<li>' . $field . '<ul>';
-
-				foreach ($errors as $error)
-				{
-					$html .= '<li>' . $error . '</li>';
-				}
-
-				$html .= '</ul></li>';
-			}
-
-			$html .= '</ul></li>';
+			$html .= '</li>';
 
 		}
+		
 		$html .= '</ul>';
 
 		return $html;

@@ -16,19 +16,19 @@ class GlassOnion_Application_Resource_Doctrine extends Zend_Application_Resource
 	{
 		$config = $this->getOptions();
 
-		require_once 'Doctrine.php';
+		require_once 'Doctrine/Core.php';
 
 		Zend_Loader_Autoloader::getInstance()
-			->pushAutoloader(array('Doctrine', 'autoload'))
-			->pushAutoloader(array('Doctrine', 'modelsAutoload'));
+			->pushAutoloader(array('Doctrine_Core', 'autoload'))
+			->pushAutoloader(array('Doctrine_Core', 'modelsAutoload'));
 
 		$attributes = array(
-			Doctrine::ATTR_AUTO_ACCESSOR_OVERRIDE => TRUE,
-			Doctrine::ATTR_MODEL_LOADING          => Doctrine::MODEL_LOADING_CONSERVATIVE,
-			Doctrine::ATTR_AUTOLOAD_TABLE_CLASSES => TRUE,
-			Doctrine::ATTR_VALIDATE               => Doctrine::VALIDATE_ALL,
-			Doctrine::ATTR_USE_DQL_CALLBACKS      => TRUE,
-			Doctrine::ATTR_QUOTE_IDENTIFIER       => TRUE,
+			Doctrine_Core::ATTR_AUTO_ACCESSOR_OVERRIDE => TRUE,
+			Doctrine_Core::ATTR_MODEL_LOADING          => Doctrine_Core::MODEL_LOADING_CONSERVATIVE,
+			Doctrine_Core::ATTR_AUTOLOAD_TABLE_CLASSES => TRUE,
+			Doctrine_Core::ATTR_VALIDATE               => Doctrine_Core::VALIDATE_ALL,
+			Doctrine_Core::ATTR_USE_DQL_CALLBACKS      => TRUE,
+			Doctrine_Core::ATTR_QUOTE_IDENTIFIER       => TRUE,
 		);
 
 		$manager = Doctrine_Manager::getInstance();
@@ -38,7 +38,7 @@ class GlassOnion_Application_Resource_Doctrine extends Zend_Application_Resource
 			$manager->setAttribute($key, $value);
 		}
 
-		Doctrine::loadModels($config['models_path']);
+		Doctrine_Core::loadModels($config['models_path']);
 
 		if (array_key_exists('extension_path', $config))
 		{
@@ -51,7 +51,7 @@ class GlassOnion_Application_Resource_Doctrine extends Zend_Application_Resource
 		if (array_key_exists('extension', $config))
 		{
 			Zend_Loader_Autoloader::getInstance()
-				->pushAutoloader(array('Doctrine', 'extensionsAutoload'));
+				->pushAutoloader(array('Doctrine_Core', 'extensionsAutoload'));
 
 			foreach ($config['extension'] as $extension => $path)
 			{
