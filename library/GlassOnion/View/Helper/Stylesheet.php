@@ -21,10 +21,15 @@ class GlassOnion_View_Helper_Stylesheet extends Zend_View_Helper_Abstract
 		self::$_baseUrl = rtrim($baseUrl, '/\\');
 	}
 	
+	public static function getThemeBaseUrl()
+	{
+		return self::$_baseUrl . '/' . self::$_theme;
+	}
+	
 	public function stylesheet($href, $media = 'screen', $conditionalStylesheet = null, $extras = null)
 	{
 		$url = preg_match('/^(ht|f)tp(s)*:\/\/|^\//', $href)
-			? $href : $this->view->baseUrl(self::$_baseUrl . '/' . self::$_theme . '/' . $href);
+			? $href : $this->view->baseUrl(self::getThemeBaseUrl() . '/' . $href);
 
 		$this->view->headLink()->appendStylesheet($url, $media, $conditionalStylesheet, $extras);
 		
