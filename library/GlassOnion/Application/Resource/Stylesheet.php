@@ -8,35 +8,20 @@ require_once 'Zend/Application/Resource/ResourceAbstract.php';
 class GlassOnion_Application_Resource_Stylesheet extends Zend_Application_Resource_ResourceAbstract
 {
 	/**
-	 * Sets the theme
-	 *
-	 * @param  string $theme
-	 * @return GlassOnion_Application_Resource_Stylesheet
-	 */
-	public function setTheme($theme)
-	{
-		GlassOnion_View_Helper_Stylesheet::setTheme($theme);
-		return $this;
-	}
-
-	/**
-	 * Sets the base url
-	 *
-	 * @param  string $baseUrl
-	 * @return GlassOnion_Application_Resource_Stylesheet
-	 */
-	public function setBaseUrl($baseUrl)
-	{
-		GlassOnion_View_Helper_Stylesheet::setBaseUrl($baseUrl);
-		return $this;
-	}
-
-	/**
 	 * Defined by Zend_Application_Resource_Resource
 	 *
 	 * @return void
 	 */
 	public function init()
     {
+		$stylesheet = $this->getBootstrap()
+			->bootstrap('view')->getResource('view')->stylesheet();
+			
+		foreach ($this->getOptions() as $id => $params)
+		{
+			$id[0] = strtoupper($id[0]);
+			
+			call_user_func(array($stylesheet, 'set' . $id), $params);
+		}
     }
 }
