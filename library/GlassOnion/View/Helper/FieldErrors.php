@@ -17,12 +17,12 @@ class GlassOnion_View_Helper_FieldErrors extends Zend_View_Helper_FormElement
 	public function fieldErrors($field, Doctrine_Record $record)
 	{
 		$errors = $record->getErrorStack()->get($field);
-		
+
 		if (!$errors)
 		{
 			return '';
 		}
-		
+
 		return $this->view->doctrineErrors($errors);
 	}
 }

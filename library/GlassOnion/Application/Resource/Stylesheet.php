@@ -16,11 +16,11 @@ class GlassOnion_Application_Resource_Stylesheet extends Zend_Application_Resour
     {
 		$stylesheet = $this->getBootstrap()
 			->bootstrap('view')->getResource('view')->stylesheet();
-			
+
 		foreach ($this->getOptions() as $id => $params)
 		{
 			$id[0] = strtoupper($id[0]);
-			
+
 			call_user_func(array($stylesheet, 'set' . $id), $params);
 		}
     }

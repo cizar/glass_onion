@@ -8,14 +8,14 @@ require_once 'Zend/View/Helper/Abstract.php';
 class GlassOnion_View_Helper_Price extends Zend_View_Helper_Abstract
 {
 	private $_currency = '$ ';
-	
+
 	private $_value = null;
-	
-    public function price($value = null, $currency = null)
-    {
+
+	public function price($value = null, $currency = null)
+	{
 		$this->_value = $this->_format($value, $currency);
 		return $this;
-    }
+	}
 
 	public function setCurrency($currency)
 	{
@@ -44,12 +44,12 @@ class GlassOnion_View_Helper_Price extends Zend_View_Helper_Abstract
 	}
 	
 	/**
-     * Cast to string
-     *
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->_value;
-    }
+	 * Cast to string
+	 *
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return $this->_value;
+	}
 }
