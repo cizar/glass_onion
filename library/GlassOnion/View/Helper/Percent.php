@@ -11,21 +11,12 @@ class GlassOnion_View_Helper_Percent extends Zend_View_Helper_Abstract
 	
 	private $_symbol = '%';
 	
+	private $_value = null;
+	
     public function percent($data = null, $decimals = null)
     {
-		if (null === $data)
-		{
-			return $this;
-		}
-		
-		$percent = $this->_getPercent($data);
-		
-		if (null === $decimals)
-		{
-			$decimals = $this->_decimals;
-		}
-
-		return $this->view->number($percent, $decimals) . $this->_symbol;
+		$this->_value = $this->_format($data, $decimals);
+		return $this;
     }
 
 	public function setDecimals($decimals)
@@ -39,6 +30,28 @@ class GlassOnion_View_Helper_Percent extends Zend_View_Helper_Abstract
 		$this->_symbol = $symbol;
 		return $this;
 	}
+
+	/**
+	 * Returns the formated string.
+	 *
+	 * @return string
+	 */
+    private function _format($data = null, $decimals = null)
+    {
+		if (null === $data)
+		{
+			return null;
+		}
+		
+		$percent = $this->_getPercent($data);
+		
+		if (null === $decimals)
+		{
+			$decimals = $this->_decimals;
+		}
+
+		return $this->view->number($percent, $decimals) . $this->_symbol;
+    }
 
     private function _getPercent($data)
     {
@@ -59,5 +72,15 @@ class GlassOnion_View_Helper_Percent extends Zend_View_Helper_Abstract
 		}
 	
 		return (float) $data * 100;
+    }
+
+	/**
+     * Cast to string
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->_value;
     }
 }
