@@ -13,7 +13,7 @@ class GlassOnion_View_Helper_Price extends Zend_View_Helper_Abstract
 	
     public function price($value = null, $currency = null)
     {
-		$this->value = $this->_format($value, $currency);
+		$this->_value = $this->_format($value, $currency);
 		return $this;
     }
 
