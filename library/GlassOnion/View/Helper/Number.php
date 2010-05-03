@@ -48,7 +48,7 @@ class GlassOnion_View_Helper_Number extends Zend_View_Helper_Abstract
 	{
 		if (null === $value)
 		{
-			return null;
+			return '';
 		}
 		
 		if (!is_numeric($value))

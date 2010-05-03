@@ -32,7 +32,7 @@ class GlassOnion_View_Helper_Price extends Zend_View_Helper_Abstract
 	{
 		if (null === $value)
 		{
-			return null;
+			return '';
 		}
 		
 		if (null == $currency)

@@ -40,7 +40,7 @@ class GlassOnion_View_Helper_Percent extends Zend_View_Helper_Abstract
     {
 		if (null === $data)
 		{
-			return null;
+			return '';
 		}
 		
 		$percent = $this->_getPercent($data);
