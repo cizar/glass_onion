@@ -40,7 +40,7 @@ class GlassOnion_Application_Resource_Doctype extends Zend_Application_Resource_
 	 * @return void
 	 */
 	public function init()
-    {
+	{
 		if ($this->_doctype)
 		{
 			$view = $this->getBootstrap()
@@ -48,5 +48,5 @@ class GlassOnion_Application_Resource_Doctype extends Zend_Application_Resource_
 
 			$view->doctype($this->_doctype);
 		}
-    }
+	}
 }

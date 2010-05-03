@@ -22,5 +22,5 @@ class GlassOnion_Application_Resource_HeadMeta extends Zend_Application_Resource
 			$view->headMeta()
 				->appendHttpEquiv($key, $value);
 		}
-    }
+	}
 }

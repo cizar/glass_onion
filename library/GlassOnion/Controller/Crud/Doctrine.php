@@ -6,9 +6,9 @@ require_once 'GlassOnion/Paginator/Adapter/DoctrineQuery.php';
 abstract class GlassOnion_Controller_Crud_Doctrine extends GlassOnion_Controller_Crud
 {
 	protected $_itemCountPerPage = 20;
-	
+
 	protected $_record_class = null;
-	
+
 	public function indexAction()
 	{
 		$query = $this->getIndexQuery();
@@ -37,12 +37,12 @@ abstract class GlassOnion_Controller_Crud_Doctrine extends GlassOnion_Controller
 	{
 		// Hook to filter the index query
 	}
-	
+
 	protected function prepareIndexQuery(Doctrine_Query $query)
 	{
 		// Hook to prepare the index query
 	}
-    
+
 	/**
 	 * @return Doctrine_Query
 	 */
@@ -175,8 +175,8 @@ abstract class GlassOnion_Controller_Crud_Doctrine extends GlassOnion_Controller
 		}
 
 		return $record;
-    }
-    
+	}
+
 	/**
 	 * @return Doctrine_Record
 	 */
@@ -188,13 +188,13 @@ abstract class GlassOnion_Controller_Crud_Doctrine extends GlassOnion_Controller
 		}
 
 		return $this->getTable()->find($id);
-    }
+	}
 
 	/**
 	 * @return Doctrine_Table
 	 */
 	protected function getTable()
-    {
+	{
 		return Doctrine_Core::getTable($this->_record_class);   
 	}
 }

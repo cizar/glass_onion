@@ -13,15 +13,17 @@ class GlassOnion_Application_Resource_Stylesheet extends Zend_Application_Resour
 	 * @return void
 	 */
 	public function init()
-    {
+	{
 		$stylesheet = $this->getBootstrap()
 			->bootstrap('view')->getResource('view')->stylesheet();
 
-		foreach ($this->getOptions() as $id => $params)
+		foreach ($this->getOptions() as $key => $params)
 		{
-			$id[0] = strtoupper($id[0]);
+			$filter = new GlassOnion_Filter_UppercaseFirst();
 
-			call_user_func(array($stylesheet, 'set' . $id), $params);
+			$method = 'set' . $filter->filter($key);
+
+			call_user_func(array($stylesheet, $method), $params);
 		}
-    }
+	}
 }
