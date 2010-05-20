@@ -112,6 +112,6 @@ class GlassOnion_Sms_Message
 	 */
 	public function send()
 	{
-		return $this->sender->send($this);
+		$this->sender->send($this);
 	}
 }

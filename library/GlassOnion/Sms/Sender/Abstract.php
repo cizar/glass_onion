@@ -1,6 +1,6 @@
 <?php
 
-require_once('GlassOnion/Sms/Message.php');
+require_once 'GlassOnion/Sms/Message.php';
 
 abstract class GlassOnion_Sms_Sender_Abstract
 {

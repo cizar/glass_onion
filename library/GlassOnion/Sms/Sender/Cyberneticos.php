@@ -1,6 +1,6 @@
 <?php
 
-require_once('GlassOnion/Sms/Sender/Abstract.php');
+require_once 'GlassOnion/Sms/Sender/Abstract.php';
 
 class GlassOnion_Sms_Sender_Cyberneticos extends GlassOnion_Sms_Sender_Abstract
 {
@@ -15,7 +15,13 @@ class GlassOnion_Sms_Sender_Cyberneticos extends GlassOnion_Sms_Sender_Abstract
 	
 	public function send(GlassOnion_Sms_Message $sms)
 	{
-		return $this->_postToService($this->_smsToXml($sms), $this->config['username'], $this->config['password']);
+		$result = $this->_postToService($this->_smsToXml($sms), $this->config['username'], $this->config['password']);
+		
+		if ($result->code != 0)
+		{
+			require_once('GlassOnion/Sms/Sender/Exception.php');
+			throw new GlassOnion_Sms_Sender_Exception($result->message, (int) $result->code);
+		}
 	}
 	
 	private function _postToService($xml, $username = null, $password = null)
@@ -47,7 +53,7 @@ class GlassOnion_Sms_Sender_Cyberneticos extends GlassOnion_Sms_Sender_Abstract
 		curl_close($ch); 
 
 		// Return the result
-		return $result;
+		return simplexml_load_string($result);
 	}
 	
 	private function _smsToXml($sms)
