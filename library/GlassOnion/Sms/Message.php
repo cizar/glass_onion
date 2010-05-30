@@ -3,35 +3,35 @@
 class GlassOnion_Sms_Message
 {
 	/**
-     * the number or numbers to receive this sms
+     * The number or numbers to receive this SMS
      *
      * @var string
      */
     protected $numbers = array();
 
     /**
-     * the message of this sms
+     * The message of this SMS
      *
      * @var string
      */
     protected $message = null;
 
     /**
-     * name of the sender
+     * The name of the originator
      *
      * @var string
      */
     protected $originator = null;
 
     /**
-     * the sms sender
+     * The SMS concrete sender
      *
      * @var GlassOnion_Sms_Sender_Abstract
      */
     protected $sender = null;
 
 	/**
-	 *
+	 * Set one SMS receiver
 	 */
 	public function setNumber($number)
 	{
@@ -40,7 +40,7 @@ class GlassOnion_Sms_Message
 	}
 
 	/**
-	 *
+	 * Sets multiple SMS receivers
 	 */
 	public function setNumbers($number)
 	{
@@ -49,7 +49,7 @@ class GlassOnion_Sms_Message
 	}
 	
 	/**
-	 *
+	 * Append one SMS receiver
 	 */
 	public function addNumber($number)
 	{
@@ -58,7 +58,9 @@ class GlassOnion_Sms_Message
 	}
 	
 	/**
+	 * Gets all sms receivers
 	 *
+	 * @return array
 	 */
 	public function getNumbers()
 	{
@@ -66,7 +68,7 @@ class GlassOnion_Sms_Message
 	}
 	
 	/**
-	 *
+	 * Set the SMS message
 	 */
 	public function setMessage($message)
 	{
@@ -75,7 +77,9 @@ class GlassOnion_Sms_Message
 	}
 	
 	/**
+	 * Gets the SMS message
 	 *
+	 * @return string
 	 */
 	public function getMessage()
 	{
@@ -83,7 +87,7 @@ class GlassOnion_Sms_Message
 	}
 	
 	/**
-	 *
+	 * Sets the SMS originator
 	 */
 	public function setOriginator($originator)
 	{
@@ -92,7 +96,9 @@ class GlassOnion_Sms_Message
 	}
 	
 	/**
+	 * Gets the SMS originator
 	 *
+	 * @return mixed
 	 */
 	public function getOriginator()
 	{
@@ -100,7 +106,7 @@ class GlassOnion_Sms_Message
 	}
 	
 	/**
-	 *
+	 * Sets the SMS concrete sender
 	 */
 	public function setSender(GlassOnion_Sms_Sender_Abstract $sender)
 	{
@@ -108,7 +114,7 @@ class GlassOnion_Sms_Message
 	}
 	
 	/**
-	 *
+	 * Send the SMS throw the concrete sender
 	 */
 	public function send()
 	{

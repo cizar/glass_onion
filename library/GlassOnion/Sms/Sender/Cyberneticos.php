@@ -4,9 +4,9 @@ require_once 'GlassOnion/Sms/Sender/Abstract.php';
 
 class GlassOnion_Sms_Sender_Cyberneticos extends GlassOnion_Sms_Sender_Abstract
 {
-	protected $config;
+	private $_config;
 	
-	protected $_serviceUrl = 'http://websmsapi.cyberneticos.com/clients/cyber001/';
+	private $_serviceUrl = 'http://websmsapi.cyberneticos.com/clients/cyber001/';
 	
 	public function __construct($config)
 	{
@@ -15,12 +15,18 @@ class GlassOnion_Sms_Sender_Cyberneticos extends GlassOnion_Sms_Sender_Abstract
 	
 	public function send(GlassOnion_Sms_Message $sms)
 	{
-		$result = $this->_postToService($this->_smsToXml($sms), $this->config['username'], $this->config['password']);
+		$result = $this->_postToService(
+			$this->_smsToXml($sms),
+			$this->_config['username'],
+			$this->_config['password']
+		);
 		
-		if ($result->code != 0)
+		$errno = (int) $result->code;
+		
+		if ($errno)
 		{
 			require_once('GlassOnion/Sms/Sender/Exception.php');
-			throw new GlassOnion_Sms_Sender_Exception($result->message, (int) $result->code);
+			throw new GlassOnion_Sms_Sender_Exception($result->message, $errno);
 		}
 	}
 	
@@ -49,7 +55,25 @@ class GlassOnion_Sms_Sender_Cyberneticos extends GlassOnion_Sms_Sender_Abstract
 		}
 
 		// Execute the request and close
-		$result = curl_exec($ch); 
+		$result = curl_exec($ch);
+		
+		// Check for cURL errors
+		if ($errno = curl_errno($ch))
+		{
+			require_once('GlassOnion/Sms/Sender/Exception.php');
+			throw new GlassOnion_Sms_Sender_Exception('cURL: ' . curl_error($ch), $errno);
+		}
+
+		// Check for HTTP status code
+		$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		
+		if ($http_code != 200)
+		{
+			require_once('GlassOnion/Sms/Sender/Exception.php');
+			throw new GlassOnion_Sms_Sender_Exception('HTTP/' . $http_code, $http_code);
+		}
+
+		// Close the cURL instance
 		curl_close($ch); 
 
 		// Return the result
@@ -58,7 +82,7 @@ class GlassOnion_Sms_Sender_Cyberneticos extends GlassOnion_Sms_Sender_Abstract
 	
 	private function _smsToXml($sms)
 	{
-		$xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+		$xml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
 			. "<sms>\n"
 			. "  <recipient>\n";
 		
@@ -74,5 +98,4 @@ class GlassOnion_Sms_Sender_Cyberneticos extends GlassOnion_Sms_Sender_Abstract
 
 		return $xml;
 	}
-	
 }
