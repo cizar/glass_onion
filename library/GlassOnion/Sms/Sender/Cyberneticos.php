@@ -10,7 +10,7 @@ class GlassOnion_Sms_Sender_Cyberneticos extends GlassOnion_Sms_Sender_Abstract
 	
 	public function __construct($config)
 	{
-		$this->config = $config;
+		$this->_config = $config;
 	}
 	
 	public function send(GlassOnion_Sms_Message $sms)
