@@ -59,7 +59,7 @@ DATABASES=
 FORCED=0
 
 # Se obtienen las opciones del usuario
-while getopts "hfd:p:u:p:" OPTION; do
+while getopts "hft:d:u:p:" OPTION; do
   case $OPTION in
     h) printf "Usage: %s [-hf] [-t days] [-d destination] [-u username] [-p password] databases\n" $(basename $0); exit 0;;
     f) FORCED=1;;
