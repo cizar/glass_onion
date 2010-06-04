@@ -71,7 +71,7 @@ while getopts "hft:d:u:p:" OPTION; do
   esac
 done
 
-# Se obtienen las bases a resguardar de los argumentos restantes
+# Se obtienen los argumentos restantes
 shift $(($OPTIND - 1))
 
 # Se buscan las bases a resguardar
@@ -91,6 +91,9 @@ if [[ ! $BACKUP_DAYS =~ ^[0-9]+$ ]] || [ $BACKUP_DAYS -lt 1 ]; then
   exit 3
 fi
 
+# Remove all trailing slashes
+BACKUP_DEST=$(echo $BACKUP_DEST | sed 's/\/*$//')
+
 # Se verifica que existe el directorio y se puede escribir
 if [ -d "$BACKUP_DEST" ]; then
   if [ ! -w "$BACKUP_DEST" ]; then
@@ -100,7 +103,7 @@ if [ -d "$BACKUP_DEST" ]; then
 else
   mkdir -p "$BACKUP_DEST" > /dev/null 2>&1
   if [ $? -ne 0 ]; then
-    echo "Can not create the '$BACKUP_DEST' directory"
+    echo "Can not create the '$BACKUP_DEST' directory" >&2
     exit 5
   fi
 fi
