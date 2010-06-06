@@ -109,10 +109,10 @@ else
 fi
 
 # Solo permite ejecutar el script una vez al día
-find $BACKUP_DEST/.semaphore -mtime 0 > /dev/null 2>&1
+SEMAPHORE=$BACKUP_DEST/.semaphore
 
 # Si el semáforo es del dia termina el script
-if [ $? -eq 0 ] && [ $FORCED -eq 0 ]; then
+if [ -f $SEMAPHORE ] && test $(find $SEMAPHORE -mtime 0) && [ $FORCED -eq 0 ]; then
   echo "The backup process has already run today" >&2
   exit 6
 fi
@@ -127,4 +127,4 @@ for DB_NAME in $DATABASES; do
 done
 
 # Se deja registrado la última ejecución
-touch $BACKUP_DEST/.semaphore
+touch $SEMAPHORE
