@@ -34,11 +34,11 @@
 #
 # Puede correr como tarea de cron.
 #   $ crontab -e
-#   0 3 * * * mysql_backup -d /path/to/databases %
+#   0 3 * * * mysql_backup -d /path/to/backups %
 #
 
 # Directorio destino de los archivos
-BACKUP_DEST=/tmp
+BACKUP_DEST=.
 
 # Cantidad de días que se guardan los archivos
 BACKUP_DAYS=7
