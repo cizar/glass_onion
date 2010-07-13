@@ -23,6 +23,7 @@ class GlassOnion_Controller_Plugin_ModuleAccessControl extends Zend_Controller_P
 	public function setModuleName($moduleName)
 	{
 		$this->_moduleName = $moduleName;
+		return $this;
 	}
 
 	/**
@@ -49,6 +50,7 @@ class GlassOnion_Controller_Plugin_ModuleAccessControl extends Zend_Controller_P
 			'module' => $module,
 			'controller' => $controller,
 			'action' => $action);
+		return $this;
 	}
 
 	/**
