@@ -22,6 +22,11 @@ final class GlassOnion_Controller_Plugin_Acl extends Zend_Controller_Plugin_Abst
 	protected $_acl;
 
 	/**
+	 * @var string
+	 */
+	protected $_roleName;
+
+	/**
 	 * @var array
 	 */
 	protected $_deniedAction;
@@ -32,21 +37,11 @@ final class GlassOnion_Controller_Plugin_Acl extends Zend_Controller_Plugin_Abst
 	 * @param mixed $acl
 	 * @return void
 	 */
-	public function __construct(Zend_Acl $acl)
+	public function __construct(Zend_Acl $acl, $roleName = 'guest')
 	{
 		$this->setDeniedAction('login', 'session', 'default');
-
 		$this->setAcl($acl);
-	}
-
-	/**
-	 * Returns the ACL object
-	 *
-	 * @return Zend_Acl
-	 */
-	public function getAcl()
-	{
-		return $this->_acl;
+		$this->setRoleName($roleName);
 	}
 
 	/**
@@ -58,6 +53,16 @@ final class GlassOnion_Controller_Plugin_Acl extends Zend_Controller_Plugin_Abst
 	public function setAcl(Zend_Acl $acl)
 	{
 		$this->_acl = $acl;
+	}
+
+	/**
+	 * Returns the ACL object
+	 *
+	 * @return Zend_Acl
+	 */
+	public function getAcl()
+	{
+		return $this->_acl;
 	}
 
 	/**
@@ -87,15 +92,36 @@ final class GlassOnion_Controller_Plugin_Acl extends Zend_Controller_Plugin_Abst
 	}
 
 	/**
+	 * Sets the current role name
+	 *
+	 * @param string $roleName
+	 */
+	public function setRoleName($roleName)
+	{
+		$this->_roleName = $roleName;
+	}
+
+	/**
+	 * Returns the current role name
+	 *
+	 * @return string
+	 */
+	public function getRoleName()
+	{
+		return $this->_roleName;
+	}
+
+	/**
 	 * Returns the resource action
 	 *
 	 * @return array
 	 */
 	public function getResourceName()
 	{
-		$controllerName = $this->_request->getControllerName();
+		$request = $this->_request;
 
-		$moduleName = $this->_request->getModuleName();
+		$moduleName = $request->getModuleName();
+		$controllerName = $request->getControllerName();
 
 		if ($moduleName == Zend_Controller_Front::getInstance()->getDefaultModule())
 		{
@@ -113,7 +139,6 @@ final class GlassOnion_Controller_Plugin_Acl extends Zend_Controller_Plugin_Abst
 	 * @param Zend_Controller_Request_Abstract $request
 	 * @return void
 	 */
-
 	public function preDispatch(Zend_Controller_Request_Abstract $request)
 	{
 		$resourceName = $this->getResourceName();
@@ -125,7 +150,7 @@ final class GlassOnion_Controller_Plugin_Acl extends Zend_Controller_Plugin_Abst
 			throw new Exception('Unknown resource ' . $resourceName);
 		}
 
-		if (!$acl->isAllowed($this->_getRoleName(), $resourceName, $request->getActionName()))
+		if (!$acl->isAllowed($this->getRoleName(), $resourceName, $request->getActionName()))
 		{
 			Zend_Controller_Action_HelperBroker::getStaticHelper('FlashMessenger')
 				->setNameSpace('GlassOnion_Return_Url')
@@ -149,17 +174,5 @@ final class GlassOnion_Controller_Plugin_Acl extends Zend_Controller_Plugin_Abst
 			->setModuleName($deniedAction['module'])
 			->setControllerName($deniedAction['controller'])
 			->setActionName($deniedAction['action']);
-	}
-	
-	private function _getRoleName()
-	{
-		$auth = Zend_Auth::getInstance();
-
-		if (!$auth->hasIdentity())
-		{
-			return 'guest';
-		}
-
-		return $auth->getIdentity();
 	}
 }
