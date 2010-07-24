@@ -71,7 +71,7 @@ class GlassOnion_Controller_Plugin_ModuleAccessControl extends Zend_Controller_P
 	 * @param Zend_Controller_Request_Abstract $request
 	 * @return void
 	 */
-	public function preDispatch(Zend_Controller_Request_Abstract $request)
+	public function dispatchLoopStartup(Zend_Controller_Request_Abstract $request)
 	{
 		$module = $request->getModuleName();
 
