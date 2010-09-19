@@ -34,7 +34,7 @@
 #
 # Puede correr como tarea de cron.
 #   $ crontab -e
-#   0 3 * * * mysql_backup -d /path/to/backups %
+#   0 3 * * * mysql_backup -d /path/to/backups \%
 #
 
 # Directorio destino de los archivos

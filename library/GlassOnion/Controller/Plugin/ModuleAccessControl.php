@@ -1,6 +1,9 @@
 <?php
 
-require_once ('Zend/Controller/Plugin/Abstract.php');
+/**
+ * @see Zend_Controller_Plugin_Abstract
+ */
+require_once 'Zend/Controller/Plugin/Abstract.php';
 
 class GlassOnion_Controller_Plugin_ModuleAccessControl extends Zend_Controller_Plugin_Abstract
 {

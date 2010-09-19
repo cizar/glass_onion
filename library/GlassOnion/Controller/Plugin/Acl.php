@@ -162,7 +162,7 @@ final class GlassOnion_Controller_Plugin_Acl extends Zend_Controller_Plugin_Abst
 
 	/**
 	 * Deny Access Function
-	 * Redirects to deniedAction
+	 * Redirects to the deniedAction's action
 	 *
 	 * @return void
 	 */
