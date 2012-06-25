@@ -23,14 +23,14 @@
 # Usage:
 #   $ mysql_backup [-hf] [-t days] [-d destination] [-u username] [-p password] databases
 #
-# Para hacer copia de todas las bases de datos.
-#   $ mysql_backup -d /path/to/backups %
-#
-# El script solo hace una copia por día, usar -f para ignorar esto.
-#   $ mysql_backup -f -d /path/to/backups %
+# Hacer copia de resguardo de todas las bases de datos.
+#   $ mysql_backup %
 #
 # Es posible seleccionar las bases a resguardar.
 #   $ mysql_backup -d /path/to/backups db_1 db_2 db_N
+#
+# El script solo hace una copia por día, usar -f para ignorar esto.
+#   $ mysql_backup -f some_database
 #
 # Puede correr como tarea de cron.
 #   $ crontab -e
@@ -86,7 +86,7 @@ if [ -z "$DATABASES" ]; then
 fi
 
 # Se verifica que la cantidad de días sea numérico y mayor a 0
-if [[ ! $BACKUP_DAYS =~ ^[0-9]+$ ]]; then
+if [[ ! $BACKUP_DAYS =~ ^[0-9]+$ ]] || [ ! $BACKUP_DAYS -gt 0 ]; then
   echo "Backup days must be a numeric positive and greater than zero" >&2
   exit 3
 fi
@@ -95,14 +95,14 @@ fi
 BACKUP_DEST=$(BACKUP_DEST%/)
 
 # Se verifica que existe el directorio y se puede escribir
-if [ -d "${BACKUP_DEST}" ]; then
-  if [ ! -w "${BACKUP_DEST}" ]; then
-    echo "Can not write in '${BACKUP_DEST}' directory" >&2
+if [ -d "$BACKUP_DEST" ]; then
+  if [ ! -w "$BACKUP_DEST" ]; then
+    echo "Can not write in '$BACKUP_DEST' directory" >&2
     exit 4
   fi
 else
-  if ! mkdir -p "${BACKUP_DEST}" &> /dev/null; then
-    echo "Can not create the '${BACKUP_DEST}' directory" >&2
+  if ! mkdir -p "$BACKUP_DEST" &> /dev/null; then
+    echo "Can not create the '$BACKUP_DEST' directory" >&2
     exit 5
   fi
 fi
@@ -110,7 +110,7 @@ fi
 # Solo permite ejecutar el script una vez al día
 SEMAPHORE=$BACKUP_DEST/.semaphore
 
-# Si el semáforo es del dia termina el script (23hs = 1380min)
+# Si el semáforo es del dia termina el script
 if ! $FORCED && [ -f $SEMAPHORE ] && test $(find "$SEMAPHORE" -mtime -.99); then
   echo "The backup process has already run today" >&2
   exit 6
