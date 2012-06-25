@@ -1,0 +1,68 @@
+﻿#!/bin/bash
+#
+# rotate_backup: Copia los archivos de resguardo del día a un subdirectorio.
+#
+
+# Cantidad de días que se almacenan los archivos
+DAYS=-1
+
+# Directorio origen de archivos a almacenar
+SRC=$(pwd)
+
+# Nombre del subdirectorio
+NAME=historic
+
+# Se obtienen las opciones de la línea de comandos
+while getopts "ht:n:" OPTION; do
+  case $OPTION in
+    h) printf "Usage: %s [-h] [-t days] [-n name] [directory]\n" $(basename $0); exit 0;;
+    t) DAYS="$OPTARG";;
+    n) NAME="$OPTARG";;
+    ?) printf "Try \`%s -h\` for more information.\n" $(basename $0) >&2; exit 1;;
+  esac
+done
+
+# Se obtienen los argumentos restantes
+shift $(($OPTIND - 1))
+
+# Solo se acepta un argumento
+if [ $# -gt 1 ]; then
+  printf "Try \`%s -h\` for more information.\n" $(basename $0) >&2;
+  exit 1
+fi
+
+# Se obtiene el directorio origen de los argumentos
+if [ $# -eq 1 ]; then
+  # Remove the trailing slash
+  SRC=${1%/}
+fi
+
+# Se verifica que exista el directorio origen
+if [ ! -d "$SRC" ]; then
+    echo "The directory '$SRC' does not exists" >&2
+    exit 2
+fi
+
+# Directorio donde se almacenarán los archivos
+DST=${SRC}/${NAME}
+
+# Se verifica que existe el directorio y se puede escribir
+if [ -d "$DST" ]; then
+  if [ ! -w "$DST" ]; then
+    echo "Can not write in '$DST' directory" >&2
+    exit 3
+  fi
+else
+  if ! mkdir -p "$DST" &> /dev/null; then
+    echo "Can not create the '$DST' directory" >&2
+    exit 4
+  fi
+fi
+
+# Se libera espacio borrando archivos viejos
+if [ $DAYS -gt 0 ]; then
+  find "$DST" -maxdepth 1 -type f -mtime $DAYS -delete
+fi
+
+# Se copian archivos del día
+find "$SRC" -maxdepth 1 -type f -mtime 0 -exec cp {} "$DST" \;

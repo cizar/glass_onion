@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 #
 # mysql_backup: Crea una copia de resgurdo diaria de las bases de datos.
 #
