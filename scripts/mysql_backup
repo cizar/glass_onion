@@ -92,7 +92,7 @@ if [[ ! $BACKUP_DAYS =~ ^[0-9]+$ ]] || [ ! $BACKUP_DAYS -gt 0 ]; then
 fi
 
 # Remove all trailing slashes
-BACKUP_DEST=$(BACKUP_DEST%/)
+BACKUP_DEST=${BACKUP_DEST%/}
 
 # Se verifica que existe el directorio y se puede escribir
 if [ -d "$BACKUP_DEST" ]; then
