@@ -1,6 +1,6 @@
 ﻿#!/bin/bash
 #
-# rotate_backup: Copia los archivos de resguardo del día a un subdirectorio.
+# backup_rotate: Copia los archivos de resguardo del día a un subdirectorio.
 #
 
 # Cantidad de días que se almacenan los archivos
