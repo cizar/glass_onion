@@ -15,12 +15,12 @@
 #   but WITHOUT ANY WARRANTY; without even the implied warranty of
 #   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #   GNU General Public License for more details.
-# 
-# Instalación:
+#
+# Instalation:
 #   $ chmod +x /path/to/mysql_backup
 #   $ sudo ln -s /path/to/mysql_backup /usr/bin/mysql_backup
 #
-# Uso:
+# Usage:
 #   $ mysql_backup [-hf] [-t days] [-d destination] [-u username] [-p password] databases
 #
 # Para hacer copia de todas las bases de datos.
@@ -38,13 +38,13 @@
 #
 
 # Directorio destino de los archivos
-BACKUP_DEST=.
+BACKUP_DEST=$(pwd)
 
 # Cantidad de días que se guardan los archivos
 BACKUP_DAYS=7
 
 # Extensión de los archivos
-BACKUP_EXT=sql.gz
+BACKUP_EXT=.sql.gz
 
 # Usuario de la base de datos
 DB_USER=root
@@ -56,13 +56,13 @@ DB_PASS=
 DATABASES=
 
 # Ignora el semáforo si está presente
-FORCED=0
+FORCED=false
 
 # Se obtienen las opciones del usuario
 while getopts "hft:d:u:p:" OPTION; do
   case $OPTION in
     h) printf "Usage: %s [-hf] [-t days] [-d destination] [-u username] [-p password] databases\n" $(basename $0); exit 0;;
-    f) FORCED=1;;
+    f) FORCED=true;;
     t) BACKUP_DAYS="$OPTARG";;
     d) BACKUP_DEST="$OPTARG";;
     u) DB_USER="$OPTARG";;
@@ -86,24 +86,23 @@ if [ -z "$DATABASES" ]; then
 fi
 
 # Se verifica que la cantidad de días sea numérico y mayor a 0
-if [[ ! $BACKUP_DAYS =~ ^[0-9]+$ ]] || [ $BACKUP_DAYS -lt 1 ]; then
+if [[ ! $BACKUP_DAYS =~ ^[0-9]+$ ]]; then
   echo "Backup days must be a numeric positive and greater than zero" >&2
   exit 3
 fi
 
 # Remove all trailing slashes
-BACKUP_DEST=$(echo $BACKUP_DEST | sed 's/\/*$//')
+BACKUP_DEST=$(BACKUP_DEST%/)
 
 # Se verifica que existe el directorio y se puede escribir
-if [ -d "$BACKUP_DEST" ]; then
-  if [ ! -w "$BACKUP_DEST" ]; then
-    echo "Can not write to '$BACKUP_DEST' directory" >&2
+if [ -d "${BACKUP_DEST}" ]; then
+  if [ ! -w "${BACKUP_DEST}" ]; then
+    echo "Can not write in '${BACKUP_DEST}' directory" >&2
     exit 4
   fi
 else
-  mkdir -p "$BACKUP_DEST" > /dev/null 2>&1
-  if [ $? -ne 0 ]; then
-    echo "Can not create the '$BACKUP_DEST' directory" >&2
+  if ! mkdir -p "${BACKUP_DEST}" &> /dev/null; then
+    echo "Can not create the '${BACKUP_DEST}' directory" >&2
     exit 5
   fi
 fi
@@ -111,20 +110,20 @@ fi
 # Solo permite ejecutar el script una vez al día
 SEMAPHORE=$BACKUP_DEST/.semaphore
 
-# Si el semáforo es del dia termina el script
-if [ -f $SEMAPHORE ] && test $(find $SEMAPHORE -mtime 0) && [ $FORCED -eq 0 ]; then
+# Si el semáforo es del dia termina el script (23hs = 1380min)
+if ! $FORCED && [ -f $SEMAPHORE ] && test $(find "$SEMAPHORE" -mtime -.99); then
   echo "The backup process has already run today" >&2
   exit 6
 fi
 
+# Se deja registrado la última ejecución
+touch $SEMAPHORE
+
 # Se libera espacio borrando backups viejos
-find "$BACKUP_DEST" -maxdepth 1 -path "*.$BACKUP_EXT" -type f -mtime $BACKUP_DAYS -delete
+find "$BACKUP_DEST" -maxdepth 1 -type f -mtime +$BACKUP_DAYS -name "*$BACKUP_EXT" -delete
 
 # Se crea un backup comprimido por cada base
 for DB_NAME in $DATABASES; do
-  FILENAME=$DB_NAME-$(date +%Y-%m-%d).$BACKUP_EXT
+  FILENAME=$DB_NAME-$(date +%Y-%m-%d)$BACKUP_EXT
   mysqldump --user=$DB_USER --password=$DB_PASS $DB_NAME | gzip > "$BACKUP_DEST/$FILENAME"
 done
-
-# Se deja registrado la última ejecución
-touch $SEMAPHORE
