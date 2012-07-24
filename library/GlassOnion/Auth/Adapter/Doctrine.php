@@ -6,12 +6,13 @@
 require_once 'Zend/Auth/Adapter/Interface.php';
 
 /**
- *
+ * @category   GlassOnion
+ * @package    GlassOnion_Auth
  */
 class GlassOnion_Auth_Adapter_Doctrine implements Zend_Auth_Adapter_Interface
 {
     /**
-     * Doctrine Connection
+     * Doctrine connection
      *
      * @var Doctrine_Connection
 	 * @access private
@@ -238,17 +239,19 @@ class GlassOnion_Auth_Adapter_Doctrine implements Zend_Auth_Adapter_Interface
         if (count($identities) < 1)
         {
             return new Zend_Auth_Result(Zend_Auth_Result::FAILURE_IDENTITY_NOT_FOUND,
-               $this->_identity, array('A record with the supplied identity could not be found.'));
+               null, array('A record with the supplied identity could not be found.'));
         }
-        else if (count($identities) > 1)
+        
+        if (count($identities) > 1)
         {
             return new Zend_Auth_Result(Zend_Auth_Result::FAILURE_IDENTITY_AMBIGUOUS,
-                $this->_identity, array('More than one record matches the supplied identity.'));
+                null, array('More than one record matches the supplied identity.'));
         }
-        else if ($identities[0]['zend_auth_credential_match'] == 0)
+        
+        if ($identities[0]['zend_auth_credential_match'] == 0)
         {
             return new Zend_Auth_Result(Zend_Auth_Result::FAILURE_CREDENTIAL_INVALID,
-                $this->_identity, array('Supplied credential is invalid.'));
+                null, array('Supplied credential is invalid.'));
         }
 
         $this->_resultRow = $identities[0];
