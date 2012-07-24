@@ -172,6 +172,23 @@ class GlassOnion_Auth_Adapter_Doctrine implements Zend_Auth_Adapter_Interface
         return $this;
     }
 
+    /**
+     * setCredentialTreatment() - allows the developer to pass a parameterized string that is
+     * used to transform or treat the input credential data.
+     *
+     * In many cases, passwords and other sensitive data are encrypted, hashed, encoded,
+     * obscured, or otherwise treated through some function or algorithm. By specifying a
+     * parameterized treatment string with this method, a developer may apply arbitrary SQL
+     * upon input credential data.
+     *
+     * Examples:
+     *
+     *  'PASSWORD(?)'
+     *  'MD5(?)'
+     *
+     * @param string $credentialTreatment
+     * @return GlassOnion_Auth_Adapter_Doctrine Provides a fluent interface
+     */
     public function setCredentialTreatment($credentialTreatment)
     {
         $this->_credentialTreatment = $credentialTreatment;
