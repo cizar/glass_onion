@@ -15,7 +15,7 @@ class GlassOnion_Auth_Adapter_Doctrine implements Zend_Auth_Adapter_Interface
      * Doctrine connection
      *
      * @var Doctrine_Connection
-	 * @access private
+     * @access private
      */
     private $_connection = null;
 
@@ -23,7 +23,7 @@ class GlassOnion_Auth_Adapter_Doctrine implements Zend_Auth_Adapter_Interface
      * The table name to check
      *
      * @var string
-	 * @access private
+     * @access private
      */
     private $_tableName = null;
     
@@ -31,7 +31,7 @@ class GlassOnion_Auth_Adapter_Doctrine implements Zend_Auth_Adapter_Interface
      * The name of the column to be used as the identity
      *
      * @var string
-	 * @access private
+     * @access private
      */
     private $_identityColumnName = null;
 
@@ -39,7 +39,7 @@ class GlassOnion_Auth_Adapter_Doctrine implements Zend_Auth_Adapter_Interface
      * The name of the column to be used as the credential
      *
      * @var string
-	 * @access private
+     * @access private
      */
     private $_credentialColumnName = null;
 
@@ -47,7 +47,7 @@ class GlassOnion_Auth_Adapter_Doctrine implements Zend_Auth_Adapter_Interface
      * Treatment applied to the credential, such as MD5() or PASSWORD()
      *
      * @var string
-	 * @access private
+     * @access private
      */
     private $_credentialTreatment = null;
 
@@ -55,7 +55,7 @@ class GlassOnion_Auth_Adapter_Doctrine implements Zend_Auth_Adapter_Interface
      * Identity value
      *
      * @var string
-	 * @access private
+     * @access private
      */
     private $_identity = null;
 
@@ -63,7 +63,7 @@ class GlassOnion_Auth_Adapter_Doctrine implements Zend_Auth_Adapter_Interface
      * Credential value
      *
      * @var string
-	 * @access private
+     * @access private
      */
     private $_credential = null;
 
@@ -71,7 +71,7 @@ class GlassOnion_Auth_Adapter_Doctrine implements Zend_Auth_Adapter_Interface
      * Results of database authentication query
      *
      * @var string
-	 * @access private
+     * @access private
      */
     private $_resultRow = null;
 
@@ -79,11 +79,11 @@ class GlassOnion_Auth_Adapter_Doctrine implements Zend_Auth_Adapter_Interface
      * __construct() - Sets configuration options
      *
      * @param Doctrine_Connection $connection
-	 * @param string $tableName
-	 * @param string $identityColumnName
-	 * @param string $credentialColumnName
-	 * @param string $credentialTreatment
-	 * @return void
+     * @param string $tableName
+     * @param string $identityColumnName
+     * @param string $credentialColumnName
+     * @param string $credentialTreatment
+     * @return void
      */
     public function __construct(Doctrine_Connection $connection = null, $tableName = null,
                                 $identityColumnName = null, $credentialColumnName = null,
