@@ -130,7 +130,7 @@ class GlassOnion_Auth_Adapter_Doctrine implements Zend_Auth_Adapter_Interface
     {
         if (null === $this->_connection && null !== $this->_tableName)
         {
-            $this->_connection = Doctrine::getConnectionByTableName($this->_tableName);
+            $this->_connection = Doctrine_Core::getConnectionByTableName($this->_tableName);
         }
         
         return $this->_connection;
