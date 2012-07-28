@@ -5,8 +5,16 @@
  */
 require_once 'Zend/View/Helper/HtmlFlash.php';
 
+/**
+ * @category   GlassOnion
+ * @package    GlassOnion_View
+ * @subpackage Helper
+ */
 class GlassOnion_View_Helper_SonetticVideo extends Zend_View_HtmlFlash
 {
+    /**
+     * @return string
+     */
 	public function sonetticVideo($movie, array $attribs = array(), array $params = array(), $content = null)
 	{
 		/*

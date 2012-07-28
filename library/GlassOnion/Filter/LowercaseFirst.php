@@ -5,6 +5,10 @@
  */
 require_once 'Zend/Filter/Interface.php';
 
+/**
+ * @category   GlassOnion
+ * @package    GlassOnion_Filter
+ */
 class GlassOnion_Filter_LowercaseFirst implements Zend_Filter_Interface
 {
 	/**
@@ -17,7 +21,6 @@ class GlassOnion_Filter_LowercaseFirst implements Zend_Filter_Interface
 	 */
 	public function filter($value)
 	{
-		$value[0] = strtolower((string) $value[0]);
-		return $value;
+		return lcfirst($value);
 	}
 }

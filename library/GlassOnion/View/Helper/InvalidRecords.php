@@ -5,6 +5,11 @@
  */
 require_once 'Zend/View/Helper/FormElement.php';
 
+/**
+ * @category   GlassOnion
+ * @package    GlassOnion_View
+ * @subpackage Helper
+ */
 class Zend_View_Helper_InvalidRecords extends Zend_View_Helper_FormElement
 {
 	public function invalidRecords($invalidRecords)

@@ -1,7 +1,14 @@
 <?php
 
+/**
+ * @see Zend_Auth_Adapter_Interface
+ */
 require_once 'Zend/Auth/Adapter/Interface.php';
 
+/**
+ * @category   GlassOnion
+ * @package    GlassOnion_Auth
+ */
 class GlassOnion_Auth_Adapter_SingleUser implements Zend_Auth_Adapter_Interface
 {
 	/**

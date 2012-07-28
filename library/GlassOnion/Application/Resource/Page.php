@@ -5,7 +5,12 @@
  */
 require_once 'Zend/Application/Resource/ResourceAbstract.php';
 
-class GlassOnion_Application_Resource_Page extends Zend_Application_Resource_ResourceAbstract
+/**
+ * @category   GlassOnion
+ * @package    GlassOnion_Application
+ */
+class GlassOnion_Application_Resource_Page
+    extends Zend_Application_Resource_ResourceAbstract
 {
 	/**
 	 * @var string
@@ -20,12 +25,12 @@ class GlassOnion_Application_Resource_Page extends Zend_Application_Resource_Res
 	/**
 	 * @var string
 	 */
-	protected $_title_separator = ' :: ';
+	protected $_titleSeparator = ' :: ';
 
 	/**
 	 * @var string
 	 */
-	protected $_content_type = null;
+	protected $_contentType = null;
 
 	/**
 	 * Returns the page doctype
@@ -78,18 +83,18 @@ class GlassOnion_Application_Resource_Page extends Zend_Application_Resource_Res
 	 */
 	public function getTitleSeparator()
 	{
-		return $this->_title_separator;
+		return $this->_titleSeparator;
 	}
 
 	/**
 	 * Sets the title separator
 	 *
-	 * @param  string $title_separator
+	 * @param  string $titleSeparator
 	 * @return GlassOnion_Application_Resource_Page
 	 */
-	public function setTitleSeparator($title_separator)
+	public function setTitleSeparator($titleSeparator)
 	{
-		$this->_title_separator = $title_separator;
+		$this->_titleSeparator = $titleSeparator;
 		return $this;
 	}
 
@@ -100,18 +105,18 @@ class GlassOnion_Application_Resource_Page extends Zend_Application_Resource_Res
 	 */
 	public function getContentType()
 	{
-		return $this->_content_type;
+		return $this->_contentType;
 	}
 
 	/**
 	 * Sets the page content type
 	 *
-	 * @param  string $content_type
+	 * @param  string $contentType
 	 * @return GlassOnion_Application_Resource_Page
 	 */
-	public function setContentType($content_type)
+	public function setContentType($contentType)
 	{
-		$this->_content_type = $content_type;
+		$this->_contentType = $contentType;
 		return $this;
 	}
 
@@ -123,7 +128,8 @@ class GlassOnion_Application_Resource_Page extends Zend_Application_Resource_Res
 	public function init()
 	{
 		$view = $this->getBootstrap()
-			->bootstrap('view')->getResource('view');
+			->bootstrap('view')
+            ->getResource('view');
 
 		if ($this->_doctype)
 		{
@@ -133,14 +139,14 @@ class GlassOnion_Application_Resource_Page extends Zend_Application_Resource_Res
 		if ($this->_title)
 		{
 			$view->headTitle()
-				->setSeparator($this->_title_separator)
+				->setSeparator($this->_titleSeparator)
 				->append($this->_title);
 		}
 
-		if ($this->_content_type)
+		if ($this->_contentType)
 		{
 			$view->headMeta()
-				->appendHttpEquiv('Content-Type', $this->_content_type);
+				->appendHttpEquiv('Content-Type', $this->_contentType);
 		}
 	}
 }

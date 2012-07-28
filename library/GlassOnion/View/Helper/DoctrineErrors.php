@@ -5,14 +5,31 @@
  */
 require_once 'Zend/View/Helper/Abstract.php';
 
+/**
+ * @category   GlassOnion
+ * @package    GlassOnion_View
+ * @subpackage Helper
+ */
 class GlassOnion_View_Helper_DoctrineErrors extends Zend_View_Helper_Abstract
 {
+    /**
+     * @var Zend_Translate
+     */
 	private $_translator = null;
 
-	private $_html = null;
+    /**
+     * @var string
+     */
+	private $_errorPrefix = 'doctrine-error-';
 
-	private $_error_prefix = 'doctrine-error-';
-
+    /**
+     * Generate a 'list' of Doctrine errors
+     *
+     * @param array $errors
+     * @param array $attribs
+     * @param boolean $escape
+     * @return string The list XHTML
+     */
 	public function doctrineErrors(array $errors, array $attribs = null, $escape = true)
 	{
 		if (empty($attribs['class']))
@@ -23,9 +40,15 @@ class GlassOnion_View_Helper_DoctrineErrors extends Zend_View_Helper_Abstract
 		return $this->view->htmlList($this->_translateErrors($errors), false, $attribs, $escape);
 	}
 	
+	/**
+	 * Sets the error prefix
+	 *
+	 * @param string $prefix
+	 * @return Zend_View_Helper_Translate Provides a fluent interface
+	 */
 	public function setPrefix($prefix)
 	{
-		$this->_error_prefix = $prefix;
+		$this->_errorPrefix = $prefix;
 
 		return $this;
 	}
@@ -33,9 +56,9 @@ class GlassOnion_View_Helper_DoctrineErrors extends Zend_View_Helper_Abstract
 	/**
 	 * Sets a translation Adapter for translation
 	 *
-	 * @param  Zend_Translate|Zend_Translate_Adapter $translate Instance of Zend_Translate
+	 * @param Zend_Translate|Zend_Translate_Adapter $translate Instance of Zend_Translate
 	 * @throws Zend_View_Exception When no or a false instance was set
-	 * @return Zend_View_Helper_Translate
+	 * @return Zend_View_Helper_Translate Provides a fluent interface
 	 */
 	public function setTranslator($translate)
 	{
@@ -54,7 +77,7 @@ class GlassOnion_View_Helper_DoctrineErrors extends Zend_View_Helper_Abstract
 	}
 
 	/**
-	 * Retrieve translation object
+	 * Retrieve the translation object
 	 *
 	 * @return Zend_Translate_Adapter|null
 	 */
@@ -70,6 +93,11 @@ class GlassOnion_View_Helper_DoctrineErrors extends Zend_View_Helper_Abstract
 		return $this->_translator;
 	}
 
+	/**
+	 * Translate a collection of errors
+	 *
+	 * @return array
+	 */
 	private function _translateErrors($errors)
 	{
 		$translator = $this->getTranslator();
@@ -78,9 +106,9 @@ class GlassOnion_View_Helper_DoctrineErrors extends Zend_View_Helper_Abstract
 
 		foreach ($errors as $error)
 		{
-			$error_code = $this->_error_prefix . $error;
+			$errorCode = $this->_errorPrefix . $error;
 			
-			$translated[] = $translator ? $translator->translate($error_code) : $error_code;
+			$translated[] = $translator ? $translator->translate($errorCode) : $errorCode;
 		}
 
 		return $translated;

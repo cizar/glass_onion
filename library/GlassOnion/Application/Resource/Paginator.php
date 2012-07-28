@@ -5,7 +5,12 @@
  */
 require_once 'Zend/Application/Resource/ResourceAbstract.php';
 
-class GlassOnion_Application_Resource_Paginator extends Zend_Application_Resource_ResourceAbstract
+/**
+ * @category   GlassOnion
+ * @package    GlassOnion_Application
+ */
+class GlassOnion_Application_Resource_Paginator
+    extends Zend_Application_Resource_ResourceAbstract
 {
 	/**
 	 * Sets the default scrolling style for the Paginator

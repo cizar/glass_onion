@@ -5,7 +5,13 @@
  */
 require_once 'Zend/Controller/Plugin/Abstract.php';
 
-class GlassOnion_Controller_Plugin_ModularLayout extends Zend_Controller_Plugin_Abstract
+/**
+ * @category   GlassOnion
+ * @package    GlassOnion_Controller
+ * @subpackage Plugin
+ */
+class GlassOnion_Controller_Plugin_ModularLayout
+    extends Zend_Controller_Plugin_Abstract
 {
 	public function routeShutdown(Zend_Controller_Request_Abstract $request)
 	{

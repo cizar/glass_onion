@@ -12,9 +12,11 @@ require_once 'Zend/Controller/Plugin/Abstract.php';
 
 /**
  * @category   GlassOnion
- * @package    GlassOnion_Controller_Plugin_Acl
+ * @package    GlassOnion_Controller
+ * @subpackage Plugin
  */
-final class GlassOnion_Controller_Plugin_Acl extends Zend_Controller_Plugin_Abstract
+final class GlassOnion_Controller_Plugin_Acl
+    extends Zend_Controller_Plugin_Abstract
 {
 	/**
 	 * @var Zend_Acl

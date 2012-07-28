@@ -5,7 +5,13 @@
  */
 require_once 'Zend/Controller/Plugin/Abstract.php';
 
-class GlassOnion_Controller_Plugin_ModuleAccessControl extends Zend_Controller_Plugin_Abstract
+/**
+ * @category   GlassOnion
+ * @package    GlassOnion_Controller
+ * @subpackage Plugin
+ */
+class GlassOnion_Controller_Plugin_ModuleAccessControl
+    extends Zend_Controller_Plugin_Abstract
 {
 	/**
 	 * @var Zend_Acl

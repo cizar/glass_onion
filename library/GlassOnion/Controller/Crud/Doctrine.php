@@ -1,14 +1,34 @@
 <?php
 
+/**
+ * @see GlassOnion_Controller_Crud
+ */
 require_once 'GlassOnion/Controller/Crud.php';
+
+/**
+ * @see GlassOnion_Paginator_Adapter_DoctrineQuery
+ */
 require_once 'GlassOnion/Paginator/Adapter/DoctrineQuery.php';
 
+/**
+ * @category   GlassOnion
+ * @package    GlassOnion_Controller
+ */
 abstract class GlassOnion_Controller_Crud_Doctrine extends GlassOnion_Controller_Crud
 {
+    /**
+     * @var integer
+     */
 	protected $_itemCountPerPage = 20;
 
+    /**
+     * @var string
+     */
 	protected $_record_class = null;
 
+	/**
+	 * @return void
+	 */
 	public function indexAction()
 	{
 		$query = $this->getIndexQuery();
@@ -22,6 +42,9 @@ abstract class GlassOnion_Controller_Crud_Doctrine extends GlassOnion_Controller
 		$this->view->records = $paginator;
 	}
 
+	/**
+	 * @return void
+	 */
 	protected function orderIndexQuery(Doctrine_Query $query)
 	{
 		$order = $this->_request->getParam('order', null);
@@ -33,11 +56,17 @@ abstract class GlassOnion_Controller_Crud_Doctrine extends GlassOnion_Controller
 		$this->view->order = array('field' => $order, 'asc' => $order_asc);
 	}
 
+	/**
+	 * @return void
+	 */
 	protected function filerIndexQuery(Doctrine_Query $query)
 	{
 		// Hook to filter the index query
 	}
 
+	/**
+	 * @return void
+	 */
 	protected function prepareIndexQuery(Doctrine_Query $query)
 	{
 		// Hook to prepare the index query

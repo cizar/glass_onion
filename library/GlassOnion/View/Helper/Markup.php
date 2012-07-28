@@ -5,21 +5,26 @@
  */
 require_once 'Zend/View/Helper/Abstract.php';
 
+/**
+ * @category   GlassOnion
+ * @package    GlassOnion_View
+ * @subpackage Helper
+ */
 class GlassOnion_View_Helper_Markup extends Zend_View_Helper_Abstract
 {
-	private $_parser = 'Bbcode';
-
+	/**
+	 * @var string
+	 */
 	private $_value = null;
 
+    /**
+     * Renders a text usign Zend_Markup
+     *
+     * @return GlassOnion_View_Helper_Markup Provides a fluent interface
+     */
 	public function markup($text, $parser = 'Bbcode')
 	{
 		$this->_value = $this->_format($text, $parser);
-		return $this;
-	}
-
-	public function setParser($parser)
-	{
-		$this->_parser = $parser;
 		return $this;
 	}
 

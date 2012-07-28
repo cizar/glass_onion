@@ -5,14 +5,31 @@
  */
 require_once 'Zend/View/Helper/Abstract.php';
 
+/**
+ * @category   GlassOnion
+ * @package    GlassOnion_View
+ * @subpackage Helper
+ */
 class GlassOnion_View_Helper_Number extends Zend_View_Helper_Abstract
 {
+	/**
+	 * @var integer
+	 */
 	private $_decimals = 2;
 
+	/**
+	 * @var string
+	 */
 	private $_decPoint = '.';
 
+	/**
+	 * @var string
+	 */
 	private $_thousandsSep = ',';
 
+	/**
+	 * @var numeric
+	 */
 	private $_value = null;
 
 	public function number($value = null, $decimals = null, $decPoint = null, $thousandsSep = null)

@@ -5,8 +5,18 @@
  */
 require_once 'Zend/Controller/Action/Helper/Abstract.php';
 
-class GlassOnion_Controller_Action_Helper_AuthIdentity extends Zend_Controller_Action_Helper_Abstract
+/**
+ * @category   GlassOnion
+ * @package    GlassOnion_Controller
+ */
+class GlassOnion_Controller_Action_Helper_AuthIdentity
+    extends Zend_Controller_Action_Helper_Abstract
 {
+    /**
+     * Returns the identity of the current user
+     *
+     * @return mixed
+     */
 	public function direct($field = null)
 	{
 		$identity = Zend_Auth::getInstance()

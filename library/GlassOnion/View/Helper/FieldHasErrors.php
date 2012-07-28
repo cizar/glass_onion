@@ -3,6 +3,13 @@
 /**
  * @see Zend_View_Helper_FormElement
  */
+require_once 'Zend/View/Helper/FormElement.php';
+
+/**
+ * @category   GlassOnion
+ * @package    GlassOnion_View
+ * @subpackage Helper
+ */
 class GlassOnion_View_Helper_FieldHasErrors extends Zend_View_Helper_FormElement
 {
 	/**

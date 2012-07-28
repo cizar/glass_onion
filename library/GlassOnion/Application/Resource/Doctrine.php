@@ -5,7 +5,12 @@
  */
 require_once 'Zend/Application/Resource/ResourceAbstract.php';
 
-class GlassOnion_Application_Resource_Doctrine extends Zend_Application_Resource_ResourceAbstract
+/**
+ * @category   GlassOnion
+ * @package    GlassOnion_Application
+ */
+class GlassOnion_Application_Resource_Doctrine
+    extends Zend_Application_Resource_ResourceAbstract
 {
 	/**
 	 * Defined by Zend_Application_Resource_Resource

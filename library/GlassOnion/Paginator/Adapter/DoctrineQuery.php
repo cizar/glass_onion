@@ -7,7 +7,7 @@ require_once 'Zend/Paginator/Adapter/Interface.php';
 
 /**
  * @category   GlassOnion
- * @package    GlassOnion_Paginator_Adapter_DoctrineQuery
+ * @package    GlassOnion_Paginator
  */
 class GlassOnion_Paginator_Adapter_DoctrineQuery implements Zend_Paginator_Adapter_Interface
 {
