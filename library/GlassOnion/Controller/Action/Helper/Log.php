@@ -30,7 +30,17 @@ class GlassOnion_Controller_Action_Helper_Log
         $logger = $this->getLogger();
         if (null !== $message)
         {
-            $logger->log($message, $priority);
+            $request = $this->getRequest();
+            $trace = debug_backtrace();
+            $method = isset($trace[4]) ? $trace[4]['function'] : 'unknown';
+
+            $logger->log(sprintf('/%s/%s/%s::%s() - %s',
+                $request->getModuleName(),
+                $request->getControllerName(),
+                $request->getActionName(),
+                $method,
+                $message
+            ), $priority);
         }
         return $logger;
 	}
