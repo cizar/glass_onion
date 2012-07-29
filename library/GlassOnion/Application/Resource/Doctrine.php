@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @see Doctrine_Core
+ */
+require_once 'Doctrine/Core.php';
+
+/**
  * @see Zend_Application_Resource_ResourceAbstract
  */
 require_once 'Zend/Application/Resource/ResourceAbstract.php';
@@ -21,11 +26,11 @@ class GlassOnion_Application_Resource_Doctrine
 	{
 		$config = $this->getOptions();
 
-		require_once 'Doctrine/Core.php';
-
 		Zend_Loader_Autoloader::getInstance()
 			->pushAutoloader(array('Doctrine_Core', 'autoload'))
 			->pushAutoloader(array('Doctrine_Core', 'modelsAutoload'));
+
+		$manager = Doctrine_Manager::getInstance();
 
 		$attributes = array(
 			Doctrine_Core::ATTR_AUTO_ACCESSOR_OVERRIDE => TRUE,
@@ -35,8 +40,6 @@ class GlassOnion_Application_Resource_Doctrine
 			Doctrine_Core::ATTR_USE_DQL_CALLBACKS      => TRUE,
 			Doctrine_Core::ATTR_QUOTE_IDENTIFIER       => TRUE,
 		);
-
-		$manager = Doctrine_Manager::getInstance();
 
 		foreach ($attributes as $key => $value)
 		{
@@ -60,7 +63,8 @@ class GlassOnion_Application_Resource_Doctrine
 
 			foreach ($config['extension'] as $extension => $path)
 			{
-				$manager->registerExtension($extension, empty($path) ? null : $path);
+				$manager->registerExtension($extension,
+                    empty($path) ? null : $path);
 			}
 		}
 
