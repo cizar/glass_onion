@@ -9,12 +9,13 @@ require_once 'Zend/Paginator/Adapter/Interface.php';
  * @category   GlassOnion
  * @package    GlassOnion_Paginator
  */
-class GlassOnion_Paginator_Adapter_DoctrineQuery implements Zend_Paginator_Adapter_Interface
+class GlassOnion_Paginator_Adapter_DoctrineQuery
+    implements Zend_Paginator_Adapter_Interface
 {
 	/**
 	 * @var Doctrine_Query_Abstract
 	 */
-	protected $_query;
+	protected $query;
 
 	/**
 	 * Constructor
@@ -24,7 +25,7 @@ class GlassOnion_Paginator_Adapter_DoctrineQuery implements Zend_Paginator_Adapt
 	 */
 	public function __construct(Doctrine_Query_Abstract $query)
 	{
-		$this->_query = $query;
+		$this->query = $query;
 	}
 
 	/**
@@ -34,7 +35,7 @@ class GlassOnion_Paginator_Adapter_DoctrineQuery implements Zend_Paginator_Adapt
 	 */
 	public function count()
 	{
-		$query = clone($this->_query);
+		$query = clone($this->query);
 		return $query->count();
 	}
 
@@ -47,7 +48,7 @@ class GlassOnion_Paginator_Adapter_DoctrineQuery implements Zend_Paginator_Adapt
 	 */
 	public function getItems($offset, $itemCountPerPage)
 	{
-		return $this->_query
+		return $this->query
 			->limit($itemCountPerPage)
 			->offset($offset)
 			->execute();
