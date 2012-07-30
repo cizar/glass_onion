@@ -1,11 +1,6 @@
 <?php
 
 /**
- * @see GlassOnion_Fop_Exception
- */
-require_once 'GlassOnion/Fop/Exception.php';
-
-/**
  * @category   GlassOnion
  * @package    GlassOnion_Fop
  */
@@ -14,12 +9,12 @@ class GlassOnion_Fop
     /**
      * @var string
      */
-    private $_bin  = '/usr/bin/fop';
+    private $bin = '/usr/bin/fop';
 
     /**
      * @var string
      */
-    private $_tempDir = '/tmp';
+    private $tempDir = '/tmp';
 
     /**
      * Factory
@@ -40,8 +35,7 @@ class GlassOnion_Fop
      */
     private function __construct($options = null)
     {
-        if (null !== $options)
-        {
+        if (null !== $options) {
             $this->setOptions($options);
         }
     }
@@ -54,16 +48,13 @@ class GlassOnion_Fop
      */
     public function setOptions($options)
     {
-        if ($options instanceof Zend_Config)
-        {
+        if ($options instanceof Zend_Config) {
             $options = $options->toArray();
         }
 
-        foreach ($options as $key => $value)
-        {
+        foreach ($options as $key => $value) {
             $method = 'set' . ucfirst($key);
-            if (method_exists($this, $method))
-            {
+            if (method_exists($this, $method)) {
                 $this->$method($value);
             }
         }
@@ -77,7 +68,7 @@ class GlassOnion_Fop
      */
     public function getBin()
     {
-        return $this->_bin;
+        return $this->bin;
     }
 
     /**
@@ -88,15 +79,15 @@ class GlassOnion_Fop
      */
     public function setBin($bin)
     {
-        if (!file_exists($bin))
-        {
+        if (!file_exists($bin)) {
+            require_once 'GlassOnion/Fop/Exception.php';
             throw new GlassOnion_Fop_Exception('The FOP bin does not exists');
         }
-        if (!is_executable($bin))
-        {
+        if (!is_executable($bin)) {
+            require_once 'GlassOnion/Fop/Exception.php';
             throw new GlassOnion_Fop_Exception('The FOP bin is not executable');
         }
-        $this->_bin = $bin;
+        $this->bin = $bin;
         return $this;
     }
 
@@ -107,7 +98,7 @@ class GlassOnion_Fop
      */
     public function getTempDir()
     {
-        return $this->_tempDir;
+        return $this->tempDir;
     }
 
     /**
@@ -118,15 +109,15 @@ class GlassOnion_Fop
      */
     public function setTempDir($dir)
     {
-        if (!is_dir($dir))
-        {
+        if (!is_dir($dir)) {
+            require_once 'GlassOnion/Fop/Exception.php';
             throw new GlassOnion_Fop_Exception('The directory for temporary files is invalid');
         }
-        if (!is_writable($dir))
-        {
+        if (!is_writable($dir)) {
+            require_once 'GlassOnion/Fop/Exception.php';
             throw new GlassOnion_Fop_Exception('The directory for temporary files is not writable');
         }
-        $this->_tempDir = $dir;
+        $this->tempDir = $dir;
         return $this;
     }
 }

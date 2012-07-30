@@ -1,11 +1,6 @@
 <?php
 
 /**
- * @see GlassOnion_Fop_Exception
- */
-require_once 'GlassOnion/Fop/Exception.php';
-
-/**
  * @category   GlassOnion
  * @package    GlassOnion_Fop
  */
@@ -14,27 +9,27 @@ class GlassOnion_Fop_Command
     /**
      * @var GlassOnion_Fop
      */
-    private $_fop = null;
+    private $fop = null;
 
     /**
      * @var string
      */
-    private $_xmlFilename = null;
+    private $xmlFilename = null;
 
     /**
      * @var string
      */
-    private $_xslFilename = null;
+    private $xslFilename = null;
 
     /**
      * @var string
      */
-    private $_pdfFilename = null;
+    private $pdfFilename = null;
 
     /**
      * @var array
      */
-    private $_temporaryFiles = array();
+    private $temporaryFiles = array();
 
     /**
      * Constructor
@@ -44,7 +39,7 @@ class GlassOnion_Fop_Command
      */
     public function __construct(GlassOnion_Fop $fop)
     {
-        $this->_fop = $fop;
+        $this->fop = $fop;
     }
 
     /**
@@ -52,7 +47,7 @@ class GlassOnion_Fop_Command
      */
     public function __destruct()
     {
-        $this->_cleanupTemporaryFiles();
+        $this->cleanupTemporaryFiles();
     }
 
     /**
@@ -72,7 +67,7 @@ class GlassOnion_Fop_Command
      */
     public function getXmlFilename()
     {
-        return $this->_xmlFilename;
+        return $this->xmlFilename;
     }
 
     /**
@@ -83,7 +78,7 @@ class GlassOnion_Fop_Command
      */
     public function setXml($xml)
     {
-        return $this->setXmlFilename($this->_store($xml));
+        return $this->setXmlFilename($this->store($xml));
     }
 
     /**
@@ -94,7 +89,7 @@ class GlassOnion_Fop_Command
      */
     public function setXmlFilename($filename)
     {
-        $this->_xmlFilename = $filename;
+        $this->xmlFilename = $filename;
         return $this;
     }
 
@@ -115,7 +110,7 @@ class GlassOnion_Fop_Command
      */
     public function getXslFilename()
     {
-        return $this->_xslFilename;
+        return $this->xslFilename;
     }
 
     /**
@@ -126,7 +121,7 @@ class GlassOnion_Fop_Command
      */
     public function setXsl($xsl)
     {
-        return $this->setXslFilename($this->_store($xsl));
+        return $this->setXslFilename($this->store($xsl));
     }
 
     /**
@@ -137,7 +132,7 @@ class GlassOnion_Fop_Command
      */
     public function setXslFilename($filename)
     {
-        $this->_xslFilename = $filename;
+        $this->xslFilename = $filename;
         return $this;
     }
 
@@ -148,7 +143,7 @@ class GlassOnion_Fop_Command
      */
     public function getPdf()
     {
-        return file_get_contents($this->_pdfFilename);
+        return file_get_contents($this->pdfFilename);
     }
 
     /**
@@ -159,7 +154,7 @@ class GlassOnion_Fop_Command
      */
     public function savePdfTo($filename)
     {
-        copy($this->_pdfFilename, $filename);
+        copy($this->pdfFilename, $filename);
         return $this;
     }
 
@@ -170,20 +165,20 @@ class GlassOnion_Fop_Command
      */
     public function execute()
     {
-        $this->_pdfFilename = $this->_getTempFilename();
+        $this->pdfFilename = $this->getTempFilename();
 
         $cmd = sprintf('%s -xml "%s" -xsl "%s" -pdf "%s" 2>&1',
-            $this->_fop->getBin(),
+            $this->fop->getBin(),
             $this->getXmlFilename(),
             $this->getXslFilename(),
-            $this->_pdfFilename
+            $this->pdfFilename
         );
 
         exec($cmd, $out, $ret);
 
-        if (0 != $ret)
-        {
-            throw new GlassOnion_Fop_Exception('Oops!, ret: ' . $ret . ' ' . implode(' ', $out) . ' ' . $cmd);
+        if (0 != $ret) {
+            require_once 'GlassOnion/Fop/Exception.php';
+            throw new GlassOnion_Fop_Exception('Unable to create PDF file');
         }
 
         return $this;
@@ -196,52 +191,51 @@ class GlassOnion_Fop_Command
      */
     public function reset()
     {
-        $this->_xmlFilename = null;
-        $this->_xslFilename = null;
-        $this->_pdfFilename = null;
-        $this->_cleanupTemporaryFiles();
+        $this->xmlFilename = null;
+        $this->xslFilename = null;
+        $this->pdfFilename = null;
+        $this->cleanupTemporaryFiles();
     }
 
     /**
-     * _cleanupTemporaryFiles() - Removes the temporary files
+     * cleanupTemporaryFiles() - Removes the temporary files
      *
      * @return GlassOnion_Fop_Command Provides a fluent interface
      */
-    private function _cleanupTemporaryFiles()
+    private function cleanupTemporaryFiles()
     {
-        foreach ($this->_temporaryFiles as $filename)
-        {
+        foreach ($this->temporaryFiles as $filename) {
             @unlink($filename);
         }
-        $this->_temporaryFiles = array();
+        $this->temporaryFiles = array();
         return $this;
     }
 
     /**
-     * _store() - Helper method that puts a content into a temporary
+     * store() - Helper method that puts a content into a temporary
      * file and returns the filename
      *
      * @param string $content
      * @param string $id
      * @return string
      */
-    private function _store($content, $id = 'fop')
+    private function store($content, $id = 'fop')
     {
-        $filename = $this->_getTempFilename($id);
+        $filename = $this->getTempFilename($id);
         file_put_contents($filename, $content);
         return $filename;
     }
 
     /**
-     * _getTempFilename() - Returns a valid temporary filename
+     * getTempFilename() - Returns a valid temporary filename
      *
      * @param string $id
      * @return string
      */
-    private function _getTempFilename($id = 'fop')
+    private function getTempFilename($id = 'fop')
     {
         $filename = tempnam('/tmp', $id);
-        $this->_temporaryFiles[] = $filename;
+        $this->temporaryFiles[] = $filename;
         return $filename;
     }
 }
