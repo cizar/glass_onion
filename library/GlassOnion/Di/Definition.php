@@ -31,7 +31,7 @@ class GlassOnion_Di_Definition
      *
      * @return void
      */
-    public function __construct($class, array $arguments = array(), $shared = TRUE, $invokes = array())
+    public function __construct($class, array $arguments = array(), $shared = true, $invokes = array())
     {
         if (!isset($class)) {
             throw new InvalidArgumentException('The resource class name is required');
