@@ -234,7 +234,7 @@ class GlassOnion_Auth_Adapter_Doctrine implements Zend_Auth_Adapter_Interface
 
         foreach ($this->_resultRow as $resultColumn => $resultValue)
         {
-          $returnObject->{$resultColumn} = $resultValue;
+            $returnObject->{$resultColumn} = $resultValue;
         }
 
         return $returnObject;
@@ -274,7 +274,7 @@ class GlassOnion_Auth_Adapter_Doctrine implements Zend_Auth_Adapter_Interface
         $this->_resultRow = $identities[0];
 
         return new Zend_Auth_Result(Zend_Auth_Result::SUCCESS,
-    	    $this->_identity, array('Authentication sucessful.'));
+            $this->_identity, array('Authentication sucessful.'));
     }
 
     /**

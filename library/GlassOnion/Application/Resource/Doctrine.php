@@ -17,59 +17,59 @@ require_once 'Zend/Application/Resource/ResourceAbstract.php';
 class GlassOnion_Application_Resource_Doctrine
     extends Zend_Application_Resource_ResourceAbstract
 {
-	/**
-	 * Defined by Zend_Application_Resource_Resource
-	 *
-	 * @return void
-	 */
-	public function init()
-	{
-		$config = $this->getOptions();
+    /**
+     * Defined by Zend_Application_Resource_Resource
+     *
+     * @return void
+     */
+    public function init()
+    {
+        $config = $this->getOptions();
 
-		Zend_Loader_Autoloader::getInstance()
-			->pushAutoloader(array('Doctrine_Core', 'autoload'))
-			->pushAutoloader(array('Doctrine_Core', 'modelsAutoload'));
+        Zend_Loader_Autoloader::getInstance()
+            ->pushAutoloader(array('Doctrine_Core', 'autoload'))
+            ->pushAutoloader(array('Doctrine_Core', 'modelsAutoload'));
 
-		$manager = Doctrine_Manager::getInstance();
+        $manager = Doctrine_Manager::getInstance();
 
-		$attributes = array(
-			Doctrine_Core::ATTR_AUTO_ACCESSOR_OVERRIDE => TRUE,
-			Doctrine_Core::ATTR_MODEL_LOADING          => Doctrine_Core::MODEL_LOADING_CONSERVATIVE,
-			Doctrine_Core::ATTR_AUTOLOAD_TABLE_CLASSES => TRUE,
-			Doctrine_Core::ATTR_VALIDATE               => Doctrine_Core::VALIDATE_ALL,
-			Doctrine_Core::ATTR_USE_DQL_CALLBACKS      => TRUE,
-			Doctrine_Core::ATTR_QUOTE_IDENTIFIER       => TRUE,
-		);
+        $attributes = array(
+            Doctrine_Core::ATTR_AUTO_ACCESSOR_OVERRIDE => TRUE,
+            Doctrine_Core::ATTR_MODEL_LOADING          => Doctrine_Core::MODEL_LOADING_CONSERVATIVE,
+            Doctrine_Core::ATTR_AUTOLOAD_TABLE_CLASSES => TRUE,
+            Doctrine_Core::ATTR_VALIDATE               => Doctrine_Core::VALIDATE_ALL,
+            Doctrine_Core::ATTR_USE_DQL_CALLBACKS      => TRUE,
+            Doctrine_Core::ATTR_QUOTE_IDENTIFIER       => TRUE,
+        );
 
-		foreach ($attributes as $key => $value)
-		{
-			$manager->setAttribute($key, $value);
-		}
+        foreach ($attributes as $key => $value)
+        {
+            $manager->setAttribute($key, $value);
+        }
 
-		Doctrine_Core::loadModels($config['models_path']);
+        Doctrine_Core::loadModels($config['models_path']);
 
-		if (array_key_exists('extension_path', $config))
-		{
-			if (!is_dir($config['extension_path']))
-				throw new Exception('Doctrine extension_path not a directory');
+        if (array_key_exists('extension_path', $config))
+        {
+            if (!is_dir($config['extension_path']))
+                throw new Exception('Doctrine extension_path not a directory');
 
-			Doctrine_Core::setExtensionsPath($config['extension_path']);
-		}
+            Doctrine_Core::setExtensionsPath($config['extension_path']);
+        }
 
-		if (array_key_exists('extension', $config))
-		{
-			Zend_Loader_Autoloader::getInstance()
-				->pushAutoloader(array('Doctrine_Core', 'extensionsAutoload'));
+        if (array_key_exists('extension', $config))
+        {
+            Zend_Loader_Autoloader::getInstance()
+                ->pushAutoloader(array('Doctrine_Core', 'extensionsAutoload'));
 
-			foreach ($config['extension'] as $extension => $path)
-			{
-				$manager->registerExtension($extension,
+            foreach ($config['extension'] as $extension => $path)
+            {
+                $manager->registerExtension($extension,
                     empty($path) ? null : $path);
-			}
-		}
+            }
+        }
 
-		$manager->openConnection($config['dsn']);
+        $manager->openConnection($config['dsn']);
 
-		return $manager;
-	}
+        return $manager;
+    }
 }

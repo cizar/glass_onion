@@ -18,18 +18,17 @@ class GlassOnion_Controller_Action_Helper_Log
      */
     private $_logger = null;
     
-	/**
+    /**
      * Returns the logger and logs a message if it's defined
      *
      * @param string $message
      * @param int $priority
-	 * @return Zend_Log
-	 */
-	public function direct($message = null, $priority = Zend_Log::INFO)
-	{
+     * @return Zend_Log
+     */
+    public function direct($message = null, $priority = Zend_Log::INFO)
+    {
         $logger = $this->getLogger();
-        if (null !== $message)
-        {
+        if (null !== $message) {
             $request = $this->getRequest();
             $trace = debug_backtrace();
             $method = isset($trace[4]) ? $trace[4]['function'] : 'unknown';
@@ -43,7 +42,7 @@ class GlassOnion_Controller_Action_Helper_Log
             ), $priority);
         }
         return $logger;
-	}
+    }
 
     /**
      * Returns the logger
@@ -52,16 +51,14 @@ class GlassOnion_Controller_Action_Helper_Log
      */
     public function getLogger()
     {
-        if (null !== $this->_logger)
-        {
+        if (null !== $this->_logger) {
             return $this->_logger;
         }
         
         $bootstrap = $this->getActionController()
             ->getInvokeArg('bootstrap');
 
-        if ($bootstrap->hasResource('log'))
-        {
+        if ($bootstrap->hasResource('log')) {
             return $bootstrap->getResource('log');
         }
 

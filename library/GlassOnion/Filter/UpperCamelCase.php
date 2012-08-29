@@ -11,16 +11,16 @@ require_once 'Zend/Filter/Interface.php';
  */
 class GlassOnion_Filter_UpperCamelCase implements Zend_Filter_Interface
 {
-	/**
-	 * Defined by Zend_Filter_Interface
-	 *
-	 * Converts a underscored string into UpperCamelCase
-	 *
-	 * @param string $value
-	 * @return string
-	 */
-	public function filter($value)
-	{
-		return preg_replace('/(?:^|_)(.?)/e', 'strtoupper("$1")', $value); 
-	}
+    /**
+     * Defined by Zend_Filter_Interface
+     *
+     * Converts a underscored string into UpperCamelCase
+     *
+     * @param string $value
+     * @return string
+     */
+    public function filter($value)
+    {
+        return preg_replace('/(?:^|_)(.?)/e', 'strtoupper("$1")', $value); 
+    }
 }

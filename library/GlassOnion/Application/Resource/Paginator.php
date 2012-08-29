@@ -12,36 +12,36 @@ require_once 'Zend/Application/Resource/ResourceAbstract.php';
 class GlassOnion_Application_Resource_Paginator
     extends Zend_Application_Resource_ResourceAbstract
 {
-	/**
-	 * Sets the default scrolling style for the Paginator
-	 *
-	 * @param  string $scrollingStyle
-	 * @return GlassOnion_Application_Resource_Paginator
-	 */
-	public function setDefaultScrollingStyle($scrollingStyle)
-	{
-		Zend_Paginator::setDefaultScrollingStyle($scrollingStyle);
-		return $this;
-	}
+    /**
+     * Sets the default scrolling style for the Paginator
+     *
+     * @param  string $scrollingStyle
+     * @return GlassOnion_Application_Resource_Paginator
+     */
+    public function setDefaultScrollingStyle($scrollingStyle)
+    {
+        Zend_Paginator::setDefaultScrollingStyle($scrollingStyle);
+        return $this;
+    }
 
-	/**
-	 * Sets the default view partial for the Paginator
-	 *
-	 * @param  string|array $viewPartial
-	 * @return GlassOnion_Application_Resource_Paginator
-	 */
-	public function setDefaultViewPartial($viewPartial)
-	{
-		Zend_View_Helper_PaginationControl::setDefaultViewPartial($viewPartial);
-		return $this;
-	}
+    /**
+     * Sets the default view partial for the Paginator
+     *
+     * @param  string|array $viewPartial
+     * @return GlassOnion_Application_Resource_Paginator
+     */
+    public function setDefaultViewPartial($viewPartial)
+    {
+        Zend_View_Helper_PaginationControl::setDefaultViewPartial($viewPartial);
+        return $this;
+    }
 
-	/**
-	 * Defined by Zend_Application_Resource_Resource
-	 *
-	 * @return void
-	 */
-	public function init()
-	{
-	}
+    /**
+     * Defined by Zend_Application_Resource_Resource
+     *
+     * @return void
+     */
+    public function init()
+    {
+    }
 }

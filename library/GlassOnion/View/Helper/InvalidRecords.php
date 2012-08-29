@@ -12,27 +12,27 @@ require_once 'Zend/View/Helper/FormElement.php';
  */
 class Zend_View_Helper_InvalidRecords extends Zend_View_Helper_FormElement
 {
-	public function invalidRecords($invalidRecords)
-	{
-		if (!$invalidRecords)
-		{
-			return '';
-		}
+    public function invalidRecords($invalidRecords)
+    {
+        if (!$invalidRecords)
+        {
+            return '';
+        }
 
-		$html = '<ul>';
+        $html = '<ul>';
 
-		foreach ($invalidRecords as $record)
-		{
-			$html .= '<li>' . get_class($record);
+        foreach ($invalidRecords as $record)
+        {
+            $html .= '<li>' . get_class($record);
 
-			$html .= $this->view->doctrineErrorStack($record->getErrorStack());
+            $html .= $this->view->doctrineErrorStack($record->getErrorStack());
 
-			$html .= '</li>';
+            $html .= '</li>';
 
-		}
+        }
 
-		$html .= '</ul>';
+        $html .= '</ul>';
 
-		return $html;
-	}
+        return $html;
+    }
 }

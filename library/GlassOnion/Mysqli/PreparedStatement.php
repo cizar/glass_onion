@@ -131,24 +131,23 @@ class GlassOnion_Mysqli_PreparedStatement
 
         $this->stmt->execute();
 
-        if ($this->stmt->errno)
-        {
-            throw new GlassOnion_Mysqli_Exception($this->stmt->error, $this->stmt->errno);
+        if ($this->stmt->errno) {
+            throw new GlassOnion_Mysqli_Exception(
+                $this->stmt->error, $this->stmt->errno);
         }
 
         /**
-         * IMPORTANT: La idea es detectar si fué SELECT o INSERT/UPDATE.
+         * IMPORTANT: Detectar si la sentencia es de consulta o escritura.
          * 
          * Cuando se hace un SELECT en un prepared statement sin hacer
          * mysqli_stmt::store_result(), el affected_rows retorna en -1. Dado
-         * que esta función solo es llamada por un método del resultado en
+         * que esta funcion solo es llamada por un metodo del resultado en
          * GlassOnion_Mysqli_ResultSet_PreparedStatement y que los errores fueron
-         * detectados anteriormente, puedo asumir a este nivel que ese
+         * detectados anteriormente, puedo asumir en este nivel que ese
          * valor corresponde a un SELECT.
          * 
          */
-        if ($this->stmt->affected_rows == -1)
-        {
+        if ($this->stmt->affected_rows == -1) {
             return new GlassOnion_Mysqli_ResultSet_PreparedStatement($this->stmt);
         }
 
@@ -169,7 +168,7 @@ class GlassOnion_Mysqli_PreparedStatement
      */
     private static function refValues($arr)
     { 
-        //Reference is required for PHP 5.3+ 
+        // Reference is required for PHP 5.3+ 
         if (strnatcmp(phpversion(),'5.3') >= 0) { 
             $refs = array(); 
             foreach($arr as $key => $value) {
