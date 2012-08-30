@@ -20,7 +20,7 @@ class GlassOnion_Application_Resource_Fop
     /**
      * Defined by Zend_Application_Resource_Resource
      *
-     * @return Zend_Navigation
+     * @return GlassOnion_Fop
      */
     public function init()
     {
@@ -34,8 +34,7 @@ class GlassOnion_Application_Resource_Fop
      */
     public function getFop()
     {
-        if (null === $this->_fop)
-        {
+        if (null === $this->_fop) {
             $this->_fop = GlassOnion_Fop::factory($this->getOptions());
         }
 
