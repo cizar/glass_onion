@@ -21,7 +21,7 @@ class GlassOnion_Application_Resource_Headmeta
     {
         $bootstrap = $this->getBootstrap();
 
-        if ($bootstrap->hasResource('view')) {
+        if (!$bootstrap->hasResource('view')) {
             require_once 'Zend/Application/Resource/Exception.php';
             throw new Zend_Application_Resource_Exception('No view defined');
         }
