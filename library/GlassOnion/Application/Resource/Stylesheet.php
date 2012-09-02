@@ -8,6 +8,7 @@ require_once 'Zend/Application/Resource/ResourceAbstract.php';
 /**
  * @category   GlassOnion
  * @package    GlassOnion_Application
+ * @deprecated
  */
 class GlassOnion_Application_Resource_Stylesheet
     extends Zend_Application_Resource_ResourceAbstract
@@ -27,8 +28,16 @@ class GlassOnion_Application_Resource_Stylesheet
             $filter = new GlassOnion_Filter_UppercaseFirst();
 
             $method = 'set' . $filter->filter($key);
-
+            
+            if (!method_exists($stylesheet, $method)) {
+                /*
+                require_once 'Zend/Application/Resource/Exception.php';
+                throw new Zend_Application_Resource_Exception('Oops');
+                */
+                return;
+            }
             call_user_func(array($stylesheet, $method), $params);
+            
         }
     }
 }

@@ -43,8 +43,7 @@ class GlassOnion_View_Helper_Percent extends Zend_View_Helper_Abstract
      */
     private function _format($data = null, $decimals = null)
     {
-        if (null === $data)
-        {
+        if (null === $data) {
             return '';
         }
 
@@ -60,19 +59,16 @@ class GlassOnion_View_Helper_Percent extends Zend_View_Helper_Abstract
 
     private function _getPercent($data)
     {
-        if (is_array($data))
-        {
+        if (is_array($data)) {
             list($value, $max) = $data;
 
-            if ($max == 0)
-            {
+            if ($max == 0) {
                 return 0;
             }
 
             return $value / $max * 100;
         }
-        else if (!is_numeric($data))
-        {
+        else if (!is_numeric($data)) {
             throw new Zend_View_Exception('Data must be a numeric or array of [value, max].');
         }
 

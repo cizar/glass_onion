@@ -9,9 +9,8 @@ require_once 'Zend/View/Helper/Abstract.php';
  * @category   GlassOnion
  * @package    GlassOnion_View
  * @subpackage Helper
- * @deprecated
  */
-class GlassOnion_View_Helper_AuthIdentity extends Zend_View_Helper_Abstract
+class GlassOnion_View_Helper_Identity extends Zend_View_Helper_Abstract
 {
     /**
      * Returns the identity of the current session
@@ -19,8 +18,11 @@ class GlassOnion_View_Helper_AuthIdentity extends Zend_View_Helper_Abstract
      * @param string $field
      * @return mixed
      */
-    public function authIdentity($field = null)
+    public function identity($field = null)
     {
-        return $this->identity($field);
+        $identity = Zend_Auth::getInstance()
+            ->getIdentity();
+
+        return is_null($field) ? $identity : $identity->$field;
     }
 }

@@ -86,8 +86,7 @@ class GlassOnion_Controller_Plugin_ModuleAccessControl
 
         $hasIdentity = Zend_Auth::getInstance()->hasIdentity();
 
-        if (!$hasIdentity and $module == $this->getModuleName())
-        {
+        if (!$hasIdentity and $module == $this->getModuleName()) {
             Zend_Controller_Action_HelperBroker::getStaticHelper('FlashMessenger')
                 ->setNameSpace('GlassOnion_Return_Url')
                 ->addMessage($request->getRequestUri());
@@ -106,18 +105,15 @@ class GlassOnion_Controller_Plugin_ModuleAccessControl
     {
         $deniedAction = $this->getDeniedAction();
 
-        if ($deniedAction['module'])
-        {
+        if ($deniedAction['module']) {
             $this->_request->setModuleName($deniedAction['module']);
         }
 
-        if ($deniedAction['controller'])
-        {
+        if ($deniedAction['controller']) {
             $this->_request->setControllerName($deniedAction['controller']);
         }
 
-        if ($deniedAction['action'])
-        {
+        if ($deniedAction['action']) {
             $this->_request->setActionName($deniedAction['action']);
         }
     }

@@ -10,17 +10,33 @@ require_once 'Zend/View/Helper/Abstract.php';
  * @package    GlassOnion_View
  * @subpackage Helper
  */
-class GlassOnion_View_Helper_ThemeBaseUrl extends Zend_View_Helper_Abstract
+class GlassOnion_View_Helper_ThemeBaseUrl
+    extends Zend_View_Helper_Abstract
 {
     /**
-     * @var string
+     * @const string
      */
-    protected $_theme;
+    const DEFAULT_THEME = 'default';
+
+    /**
+     * @const string
+     */
+    const DEFAULT_BASE_URL = 'styles';
 
     /**
      * @var string
      */
     protected $_file;
+
+    /**
+     * @var string
+     */
+    protected $_theme;
+    
+    /**
+     * @var string
+     */
+    protected $_baseUrl;
 
     /**
      * Defined by Zend_Application_Resource_Resource
@@ -54,9 +70,34 @@ class GlassOnion_View_Helper_ThemeBaseUrl extends Zend_View_Helper_Abstract
     public function getTheme()
     {
         if (null === $this->_theme) {
-            $this->_theme = 'default';
+            $this->_theme = self::DEFAULT_THEME;
         }
         return $this->_theme;
+    }
+
+    /**
+     * Set the theme base URL
+     *
+     * @param string $baseUrl
+     * @return GlassOnion_View_Helper_ThemeBaseUrl
+     */
+    public function setBaseUrl($baseUrl)
+    {
+        $this->_baseUrl = $baseUrl;
+        return $this;
+    }
+
+    /**
+     * Returns the theme base URL
+     *
+     * @return string
+     */
+    public function getBaseUrl()
+    {
+        if (null === $this->_baseUrl) {
+            $this->_baseUrl = self::DEFAULT_BASE_URL;
+        }
+        return $this->_baseUrl;
     }
 
     /**
@@ -66,6 +107,10 @@ class GlassOnion_View_Helper_ThemeBaseUrl extends Zend_View_Helper_Abstract
      */
     public function __toString()
     {
-        return $this->view->baseUrl('/themes/' . $this->getTheme() . '/' . $this->_file);
+        $url = sprintf('%s/%s/%s',
+            $this->getBaseUrl(),
+            $this->getTheme(),
+            $this->_file);
+        return $this->view->baseUrl($url);
     }
 }

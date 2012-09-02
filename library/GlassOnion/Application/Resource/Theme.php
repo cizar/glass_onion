@@ -26,6 +26,7 @@ class GlassOnion_Application_Resource_Theme
     {
         $theme = $this->getTheme();
 
+        // Optionally seed the ThemeBaseUrl view helper 
         $bootstrap = $this->getBootstrap();
         if ($bootstrap->hasResource('view')) {
             $bootstrap->bootstrap('view')->getResource('view')

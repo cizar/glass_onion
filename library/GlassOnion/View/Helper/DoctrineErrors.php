@@ -105,7 +105,6 @@ class GlassOnion_View_Helper_DoctrineErrors extends Zend_View_Helper_Abstract
 
         foreach ($errors as $error) {
             $errorCode = $this->_errorPrefix . $error;
-            
             $translated[] = $translator ? $translator->translate($errorCode) : $errorCode;
         }
 

@@ -9,7 +9,7 @@ require_once 'Zend/Application/Resource/ResourceAbstract.php';
  * @category   GlassOnion
  * @package    GlassOnion_Application
  */
-class GlassOnion_Application_Resource_HeadMeta
+class GlassOnion_Application_Resource_Headmeta
     extends Zend_Application_Resource_ResourceAbstract
 {
     /**
@@ -19,11 +19,16 @@ class GlassOnion_Application_Resource_HeadMeta
      */
     public function init()
     {
-        $view = $this->getBootstrap()
-            ->bootstrap('view')->getResource('view');
+        $bootstrap = $this->getBootstrap();
 
-        foreach ($this->getOptions() as $key => $value)
-        {
+        if ($bootstrap->hasResource('view')) {
+            require_once 'Zend/Application/Resource/Exception.php';
+            throw new Zend_Application_Resource_Exception('No view defined');
+        }
+        
+        $view = $bootstrap->getResource('view');
+
+        foreach ($this->getOptions() as $key => $value) {
             $view->headMeta()
                 ->appendHttpEquiv($key, $value);
         }

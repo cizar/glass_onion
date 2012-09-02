@@ -13,7 +13,7 @@ class GlassOnion_Application_Resource_Paginator
     extends Zend_Application_Resource_ResourceAbstract
 {
     /**
-     * Sets the default scrolling style for the Paginator
+     * Sets the default scrolling style for the paginator
      *
      * @param  string $scrollingStyle
      * @return GlassOnion_Application_Resource_Paginator
@@ -25,7 +25,7 @@ class GlassOnion_Application_Resource_Paginator
     }
 
     /**
-     * Sets the default view partial for the Paginator
+     * Sets the default view partial for the paginator
      *
      * @param  string|array $viewPartial
      * @return GlassOnion_Application_Resource_Paginator

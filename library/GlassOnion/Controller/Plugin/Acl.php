@@ -125,8 +125,7 @@ final class GlassOnion_Controller_Plugin_Acl
         $moduleName = $request->getModuleName();
         $controllerName = $request->getControllerName();
 
-        if ($moduleName == Zend_Controller_Front::getInstance()->getDefaultModule())
-        {
+        if ($moduleName == Zend_Controller_Front::getInstance()->getDefaultModule()) {
             return $controllerName;
         }
 
@@ -147,13 +146,11 @@ final class GlassOnion_Controller_Plugin_Acl
 
         $acl = $this->getAcl();
 
-        if (!$acl->has($resourceName))
-        {
+        if (!$acl->has($resourceName)) {
             throw new Exception('Unknown resource ' . $resourceName);
         }
 
-        if (!$acl->isAllowed($this->getRoleName(), $resourceName, $request->getActionName()))
-        {
+        if (!$acl->isAllowed($this->getRoleName(), $resourceName, $request->getActionName())) {
             Zend_Controller_Action_HelperBroker::getStaticHelper('FlashMessenger')
                 ->setNameSpace('GlassOnion_Return_Url')
                 ->addMessage($request->getRequestUri());

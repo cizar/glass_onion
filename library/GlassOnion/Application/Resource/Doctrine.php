@@ -41,28 +41,26 @@ class GlassOnion_Application_Resource_Doctrine
             Doctrine_Core::ATTR_QUOTE_IDENTIFIER       => TRUE,
         );
 
-        foreach ($attributes as $key => $value)
-        {
+        foreach ($attributes as $key => $value) {
             $manager->setAttribute($key, $value);
         }
 
         Doctrine_Core::loadModels($config['models_path']);
 
-        if (array_key_exists('extension_path', $config))
-        {
-            if (!is_dir($config['extension_path']))
-                throw new Exception('Doctrine extension_path not a directory');
+        if (array_key_exists('extension_path', $config)) {
+            if (!is_dir($config['extension_path'])) {
+                require_once 'Zend/Application/Resource/Exception.php';
+                throw new Zend_Application_Resource_Exception('Doctrine extension_path not a directory');
+            }
 
             Doctrine_Core::setExtensionsPath($config['extension_path']);
         }
 
-        if (array_key_exists('extension', $config))
-        {
+        if (array_key_exists('extension', $config)) {
             Zend_Loader_Autoloader::getInstance()
                 ->pushAutoloader(array('Doctrine_Core', 'extensionsAutoload'));
 
-            foreach ($config['extension'] as $extension => $path)
-            {
+            foreach ($config['extension'] as $extension => $path) {
                 $manager->registerExtension($extension,
                     empty($path) ? null : $path);
             }

@@ -35,13 +35,11 @@ class GlassOnion_View_Helper_Price extends Zend_View_Helper_Abstract
      */
     private function _format($value, $currency)
     {
-        if (null === $value)
-        {
+        if (null === $value) {
             return '';
         }
         
-        if (null == $currency)
-        {
+        if (null == $currency) {
             $currency = $this->_currency;
         }
         

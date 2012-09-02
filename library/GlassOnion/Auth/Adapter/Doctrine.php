@@ -9,7 +9,8 @@ require_once 'Zend/Auth/Adapter/Interface.php';
  * @category   GlassOnion
  * @package    GlassOnion_Auth
  */
-class GlassOnion_Auth_Adapter_Doctrine implements Zend_Auth_Adapter_Interface
+class GlassOnion_Auth_Adapter_Doctrine
+    implements Zend_Auth_Adapter_Interface
 {
     /**
      * Doctrine connection
@@ -128,8 +129,7 @@ class GlassOnion_Auth_Adapter_Doctrine implements Zend_Auth_Adapter_Interface
      */
     public function getConnection()
     {
-        if (null === $this->_connection && null !== $this->_tableName)
-        {
+        if (null === $this->_connection && null !== $this->_tableName) {
             $this->_connection = Doctrine_Core::getConnectionByTableName($this->_tableName);
         }
         
@@ -232,8 +232,7 @@ class GlassOnion_Auth_Adapter_Doctrine implements Zend_Auth_Adapter_Interface
 
         $returnObject = new stdClass();
 
-        foreach ($this->_resultRow as $resultColumn => $resultValue)
-        {
+        foreach ($this->_resultRow as $resultColumn => $resultValue) {
             $returnObject->{$resultColumn} = $resultValue;
         }
 
@@ -253,20 +252,17 @@ class GlassOnion_Auth_Adapter_Doctrine implements Zend_Auth_Adapter_Interface
     {
         $identities = $this->_executeAuthenticationQuery();
 
-        if (count($identities) < 1)
-        {
+        if (count($identities) < 1) {
             return new Zend_Auth_Result(Zend_Auth_Result::FAILURE_IDENTITY_NOT_FOUND,
                null, array('A record with the supplied identity could not be found.'));
         }
         
-        if (count($identities) > 1)
-        {
+        if (count($identities) > 1) {
             return new Zend_Auth_Result(Zend_Auth_Result::FAILURE_IDENTITY_AMBIGUOUS,
                 null, array('More than one record matches the supplied identity.'));
         }
         
-        if ($identities[0]['zend_auth_credential_match'] == 0)
-        {
+        if ($identities[0]['zend_auth_credential_match'] == 0) {
             return new Zend_Auth_Result(Zend_Auth_Result::FAILURE_CREDENTIAL_INVALID,
                 null, array('Supplied credential is invalid.'));
         }

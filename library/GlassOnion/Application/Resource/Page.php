@@ -20,7 +20,7 @@ class GlassOnion_Application_Resource_Page
     /**
      * @var string
      */
-    protected $_titleSeparator = ' :: ';
+    protected $_titleSeparator = ' - ';
 
     /**
      * Returns the page title
@@ -77,14 +77,14 @@ class GlassOnion_Application_Resource_Page
 
         if (!$bootstrap->hasResource('view')) {
             require_once 'Zend/Application/Resource/Exception.php';
-            throw new Zend_Application_Resource_Exception('No view');
+            throw new Zend_Application_Resource_Exception('No view defined');
         }
 
         $view = $bootstrap->bootstrap('view')->getResource('view');
 
         if (null === $this->_title) {
             require_once 'Zend/Application/Resource/Exception.php';
-            throw new Zend_Application_Resource_Exception('No title');
+            throw new Zend_Application_Resource_Exception('The page title has not been defined');
         }
 
         $view->headTitle()
