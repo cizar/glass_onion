@@ -26,11 +26,6 @@ class GlassOnion_View_Helper_ThemeBaseUrl
     /**
      * @var string
      */
-    protected $_file;
-
-    /**
-     * @var string
-     */
     protected $_theme;
     
     /**
@@ -46,8 +41,10 @@ class GlassOnion_View_Helper_ThemeBaseUrl
      */
     public function themeBaseUrl($file = null)
     {
-        $this->_file = $file;
-        return $this;
+        return $this->view->baseUrl(sprintf('%s/%s/%s',
+            $this->getBaseUrl(),
+            $this->getTheme(),
+            $file));
     }
 
     /**
@@ -83,7 +80,7 @@ class GlassOnion_View_Helper_ThemeBaseUrl
      */
     public function setBaseUrl($baseUrl)
     {
-        $this->_baseUrl = $baseUrl;
+        $this->_baseUrl = rtrim($baseUrl, '/\\');
         return $this;
     }
 
@@ -98,19 +95,5 @@ class GlassOnion_View_Helper_ThemeBaseUrl
             $this->_baseUrl = self::DEFAULT_BASE_URL;
         }
         return $this->_baseUrl;
-    }
-
-    /**
-     * Returns the theme's base URL, or file with base url prepended
-     *
-     * @return string
-     */
-    public function __toString()
-    {
-        $url = sprintf('%s/%s/%s',
-            $this->getBaseUrl(),
-            $this->getTheme(),
-            $this->_file);
-        return $this->view->baseUrl($url);
     }
 }

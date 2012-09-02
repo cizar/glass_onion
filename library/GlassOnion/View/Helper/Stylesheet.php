@@ -23,6 +23,6 @@ class GlassOnion_View_Helper_Stylesheet
     {
         $this->view->headLink()->appendStylesheet(
             $this->view->themeBaseUrl($filename));
-        return $this;
+        return $this->view;
     }
 }
