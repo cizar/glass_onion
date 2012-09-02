@@ -21,6 +21,6 @@ class GlassOnion_View_Helper_AuthIdentity extends Zend_View_Helper_Abstract
      */
     public function authIdentity($field = null)
     {
-        return $this->identity($field);
+        return $this->view->identity($field);
     }
 }
