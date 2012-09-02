@@ -18,6 +18,11 @@ class GlassOnion_Application_Resource_Theme
     protected $_theme;
 
     /**
+     * @var string
+     */
+    protected $_baseUrl;
+
+    /**
      * Defined by Zend_Application_Resource_Resource
      *
      * @return string
@@ -29,8 +34,11 @@ class GlassOnion_Application_Resource_Theme
         // Optionally seed the ThemeBaseUrl view helper 
         $bootstrap = $this->getBootstrap();
         if ($bootstrap->hasResource('view')) {
-            $bootstrap->bootstrap('view')->getResource('view')
-                ->getHelper('themeBaseUrl')->setTheme($theme);
+            $bootstrap->bootstrap('view')
+                ->getResource('view')
+                ->getHelper('themeBaseUrl')
+                ->setTheme($theme)
+                ->setBaseUrl($this->getBaseUrl());
         }
 
         return $theme;
@@ -48,5 +56,19 @@ class GlassOnion_Application_Resource_Theme
             $this->_theme = isset($options['name']) ? $options['name'] : 'default';
         }
         return $this->_theme;
+    }
+    
+    /**
+     * Returns the defined theme base url
+     *
+     * @return string
+     */
+    public function getBaseUrl()
+    {
+        if (null === $this->_baseUrl) {
+            $options = $this->getOptions();
+            $this->_baseUrl = isset($options['base_url']) ? $options['base_url'] : '/themes';
+        }
+        return $this->_baseUrl;
     }
 }

@@ -21,7 +21,7 @@ class GlassOnion_View_Helper_ThemeBaseUrl
     /**
      * @const string
      */
-    const DEFAULT_BASE_URL = 'styles';
+    const DEFAULT_BASE_URL = '/themes';
 
     /**
      * @var string
