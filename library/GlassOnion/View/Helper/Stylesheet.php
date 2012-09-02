@@ -16,13 +16,13 @@ class GlassOnion_View_Helper_Stylesheet
     /**
      * Defined by Zend_Application_Resource_Resource
      *
-     * @param string $filename
-     * @return GlassOnion_View_Helper_Stylesheet
+     * @param string $href
+     * @return Zend_View
      */
-    public function stylesheet($filename = null)
+    public function stylesheet($href, $media = 'screen', $conditionalStylesheet = null, $extras = null)
     {
-        $this->view->headLink()->appendStylesheet(
-            $this->view->themeBaseUrl($filename));
+        $url = preg_match('/^(ht|f)tp(s)*:\/\/|^\//', $href) ? $href : $this->view->themeBaseUrl($href);
+        $this->view->headLink()->appendStylesheet($url, $media, $conditionalStylesheet, $extras);
         return $this->view;
     }
 }
