@@ -10,12 +10,13 @@ require_once 'Zend/Controller/Action/Helper/Abstract.php';
  * @package    GlassOnion_Controller
  * @subpackage Helper
  */
-class GlassOnion_Controller_Action_Helper_AuthIdentity
+class GlassOnion_Controller_Action_Helper_Identity
     extends Zend_Controller_Action_Helper_Abstract
 {
     /**
-     * Returns the identity of the current user
+     * Returns the identity of the authenticated user
      *
+     * @param string $field
      * @return mixed
      */
     public function direct($field = null)
