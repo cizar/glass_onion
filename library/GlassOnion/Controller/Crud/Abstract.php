@@ -9,7 +9,8 @@ require_once 'Zend/Controller/Action.php';
  * @category   GlassOnion
  * @package    GlassOnion_Controller
  */
-abstract class GlassOnion_Controller_Crud extends Zend_Controller_Action
+abstract class GlassOnion_Controller_Crud_Abstract
+    extends Zend_Controller_Action
 {
     abstract public function indexAction();
     abstract public function showAction();
