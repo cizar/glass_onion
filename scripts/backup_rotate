@@ -1,4 +1,4 @@
-﻿#!/bin/bash
+#!/bin/bash
 #
 # backup_rotate: Copia los archivos de resguardo del día a un subdirectorio.
 #

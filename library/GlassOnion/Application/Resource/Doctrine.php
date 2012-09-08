@@ -20,7 +20,7 @@ class GlassOnion_Application_Resource_Doctrine
     /**
      * Defined by Zend_Application_Resource_Resource
      *
-     * @return void
+     * @return Doctrine_Manager
      */
     public function init()
     {

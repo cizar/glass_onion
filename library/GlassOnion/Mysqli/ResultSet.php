@@ -170,7 +170,7 @@ class GlassOnion_Mysqli_ResultSet extends GlassOnion_Mysqli_ResultSet_Abstract
      * Sets the result type
      *
      * @param string $type
-     * @return GlassOnion_Mysqli_ResultSet
+     * @return GlassOnion_Mysqli_ResultSet Provides a fluent interface
      */
     public function setType($type)
     {

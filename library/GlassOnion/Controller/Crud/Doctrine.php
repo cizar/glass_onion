@@ -1,31 +1,37 @@
 <?php
 
 /**
- * @see GlassOnion_Controller_Crud
+ * @see GlassOnion_Controller_Crud_Interface
  */
-require_once 'GlassOnion/Controller/Crud.php';
-
-/**
- * @see GlassOnion_Paginator_Adapter_DoctrineQuery
- */
-require_once 'GlassOnion/Paginator/Adapter/DoctrineQuery.php';
+require_once 'GlassOnion/Controller/Crud/Abstract.php';
 
 /**
  * @category   GlassOnion
  * @package    GlassOnion_Controller
  */
 abstract class GlassOnion_Controller_Crud_Doctrine
-    extends GlassOnion_Controller_Crud
+    extends GlassOnion_Controller_Crud_Abstract
 {
     /**
-     * @var integer
-     */
-    protected $_itemCountPerPage = 20;
-
-    /**
+     * The class name of the model
+     *
      * @var string
      */
-    protected $_record_class = null;
+    private $_modelClass = null;
+
+    /**
+     * The number of items per page
+     *
+     * @var integer
+     */
+    private $_itemCountPerPage = 10;
+    
+    /**
+     * Auto-Redirect when listing only returns one match
+     *
+     * @var boolean
+     */
+    private $_oneMatchRedirect = true;
 
     /**
      * @return void
@@ -34,11 +40,20 @@ abstract class GlassOnion_Controller_Crud_Doctrine
     {
         $query = $this->getIndexQuery();
 
+        /**
+         * @see GlassOnion_Paginator_Adapter_DoctrineQuery
+         */
+        require_once 'GlassOnion/Paginator/Adapter/DoctrineQuery.php';
         $paginator = new Zend_Paginator(
             new GlassOnion_Paginator_Adapter_DoctrineQuery($query));
 
         $paginator->setItemCountPerPage($this->_itemCountPerPage)
-            ->setCurrentPageNumber($this->_request->getParam('page', 1));
+            ->setCurrentPageNumber($this->_getParam('page', 1));
+            
+        if ($this->_oneMatchRedirect && 1 == $paginator->getTotalItemCount()) {
+            $this->_helper->redirector('show', null, null,
+                array('id' => $id = $paginator->getItem(1)->id));
+        }
 
         $this->view->records = $paginator;
     }
@@ -46,15 +61,9 @@ abstract class GlassOnion_Controller_Crud_Doctrine
     /**
      * @return void
      */
-    protected function orderIndexQuery(Doctrine_Query $query)
+    protected function prepareIndexQuery(Doctrine_Query $query)
     {
-        $order = $this->_request->getParam('order', null);
-        $order_asc = $this->_request->getParam('order_asc', 'asc');
-
-        is_null($order)
-            or $query->orderBy($order . ' ' . $order_asc);
-
-        $this->view->order = array('field' => $order, 'asc' => $order_asc);
+        // Hook for prepare the index query
     }
 
     /**
@@ -62,15 +71,21 @@ abstract class GlassOnion_Controller_Crud_Doctrine
      */
     protected function filerIndexQuery(Doctrine_Query $query)
     {
-        // Hook to filter the index query
+        // Hook for filter the index query
     }
 
     /**
      * @return void
      */
-    protected function prepareIndexQuery(Doctrine_Query $query)
+    protected function sortIndexQuery(Doctrine_Query $query)
     {
-        // Hook to prepare the index query
+        $pattern = '/(asc|desc)ending_by_([a-z_]+)/';
+        if (preg_match($pattern, $this->_getParam('sort'), $matches)) {
+            $query->orderBy($matches[2] . ' ' . $matches[1]);
+            $this->view->sort = array(
+                'order' => $matches[1],
+                'field' => $matches[2]);
+        }
     }
 
     /**
@@ -78,14 +93,16 @@ abstract class GlassOnion_Controller_Crud_Doctrine
      */
     protected function getIndexQuery()
     {
+        $this->_assertModelIsDefined();
+        
         $query = Doctrine_Query::create()
-            ->from($this->_record_class);
+            ->from($this->_modelClass);
             
         $this->prepareIndexQuery($query);
 
         $this->filerIndexQuery($query);
 
-        $this->orderIndexQuery($query);
+        $this->sortIndexQuery($query);
 
         return $query;
     } 
@@ -105,10 +122,7 @@ abstract class GlassOnion_Controller_Crud_Doctrine
      */
     public function newAction()
     {
-        if (!method_exists($this, 'create')) {
-            $signature = get_class($this) . '::create(Doctrine_Record $record)';
-            throw new Exception("Method {$signature} not implemented");
-        }
+        $this->_assertMethodExists('create', 'Doctrine_Record $record');
 
         $record = $this->getNewRecord();
 
@@ -128,16 +142,13 @@ abstract class GlassOnion_Controller_Crud_Doctrine
         $this->record = $record;
         $this->view->record = $record;
     }
-
+    
     /**
      * @return void
      */
     public function editAction()
     {
-        if (!method_exists($this, 'update')) {
-            $signature = get_class($this) . '::update(Doctrine_Record $record)';
-            throw new Exception("Method {$signature} not implemented");
-        }
+        $this->_assertMethodExists('update', 'Doctrine_Record $record');
 
         $record = $this->getRecord($this->_getParam('id'));
 
@@ -175,32 +186,70 @@ abstract class GlassOnion_Controller_Crud_Doctrine
     }
 
     /**
-     * @return void
+     * Defines the current model
+     *
+     * @return GlassOnion_Controller_Crud_Doctrine Provides a fluent interface
      */
     protected function useModel($class)
     {
         if (!class_exists($class)) {
-            throw new Exception('Unable to load class ' . $class);
+            /**
+             * @see GlassOnion_Controller_Crud_Exception
+             */
+            require_once 'GlassOnion/Controller/Crud/Exception.php';
+            throw new GlassOnion_Controller_Crud_Exception(
+                'The model ' . $class . ' does not exists');
         }
         
-        $this->_record_class = $class;
+        $this->_modelClass = $class;
+        
+        return $this;
     }
-
+    
     /**
-     * @return Doctrine_Record
+     * Sets the item count per pate
+     *
+     * @return GlassOnion_Controller_Crud_Doctrine Provides a fluent interface
      */
-    protected function getNewRecord()
+    protected function setItemCountPerPage($count)
     {
-        $record = new $this->_record_class;
-
-        if (!is_subclass_of($record, 'Doctrine_Record')) {
-            throw new Exception('The object is not a Doctrine_Record');
+        if (!is_integer($count) || $count < 1) {
+            /**
+             * @see GlassOnion_Controller_Crud_Exception
+             */
+            require_once 'GlassOnion/Controller/Crud/Exception.php';
+            throw new GlassOnion_Controller_Crud_Exception(
+                'The item count per page must be integer and positive');
         }
-
-        return $record;
+        $this->_itemCountPerPage = $count;
+        return $this;
+    }
+    
+    /**
+     * Enables the one match redirect
+     *
+     * @return GlassOnion_Controller_Crud_Doctrine Provides a fluent interface
+     */
+    protected function enableOneMatchRedirect()
+    {
+        $this->_oneMatchRedirect = true;
+        return $this;
     }
 
     /**
+     * Disables the one match redirect
+     *
+     * @return GlassOnion_Controller_Crud_Doctrine Provides a fluent interface
+     */
+    protected function disableOneMatchRedirect()
+    {
+        $this->_oneMatchRedirect = false;
+        return $this;
+    }
+
+    /**
+     * Returns an existing record
+     *
      * @return Doctrine_Record
      */
     protected function getRecord($id = null)
@@ -213,10 +262,72 @@ abstract class GlassOnion_Controller_Crud_Doctrine
     }
 
     /**
+     * Returns a new record
+     *
+     * @return Doctrine_Record
+     */
+    protected function getNewRecord()
+    {
+        $this->_assertModelIsDefined();
+        
+        $record = new $this->_modelClass;
+
+        if (!is_subclass_of($record, 'Doctrine_Record')) {
+            /**
+             * @see GlassOnion_Controller_Crud_Exception
+             */
+            require_once 'GlassOnion/Controller/Crud/Exception.php';
+            throw new GlassOnion_Controller_Crud_Exception(
+                'The object is not a Doctrine_Record');
+        }
+
+        return $record;
+    }
+
+    /**
+     * Returns the current table
+     *
      * @return Doctrine_Table
      */
     protected function getTable()
     {
-        return Doctrine_Core::getTable($this->_record_class);   
+        $this->_assertModelIsDefined();
+        return Doctrine_Core::getTable($this->_modelClass);   
+    }
+
+    /**
+     * Verify that the assumption of the existence of the method is correct
+     *
+     * @return void
+     */
+    private function _assertModelIsDefined()
+    {
+        if (null === $this->_modelClass) {
+            /**
+             * @see GlassOnion_Controller_Crud_Exception
+             */
+            require_once 'GlassOnion/Controller/Crud/Exception.php';
+            throw new GlassOnion_Controller_Crud_Exception(
+                'No model has been defined');
+        }
+    }
+    
+    /**
+     * @param string $method
+     * @param string $params
+     * @return void
+     */
+    private function _assertMethodExists($method, $params = null)
+    {
+        if (!method_exists($this, $method)) {
+            $signature = get_class($this) . '::' . $method . '(' . $params . ')';
+           
+            /**
+             * @see GlassOnion_Controller_Crud_Exception
+             */
+            require_once 'GlassOnion/Controller/Crud/Exception.php';
+            throw new GlassOnion_Controller_Crud_Exception(
+                "Method {$signature} must be implemented");
+        }
     }
 }

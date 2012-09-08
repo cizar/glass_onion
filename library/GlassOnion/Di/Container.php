@@ -50,7 +50,7 @@ class GlassOnion_Di_Container
     /**
      * @param string $id
      * @param GlassOnion_Di_Definition $definition
-     * @return GlassOnion_Di_Container
+     * @return GlassOnion_Di_Container Provides a fluent interface
      */
     public function addDefinition($id, GlassOnion_Di_Definition $definition)
     {
@@ -154,7 +154,7 @@ class GlassOnion_Di_Container
     /**
      * @param string $id
      * @param scalar $value
-     * @return GlassOnion_Di_Container
+     * @return GlassOnion_Di_Container Provides a fluent interface
      */
     public function setParameter($id, $value)
     {

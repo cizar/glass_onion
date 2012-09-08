@@ -15,7 +15,7 @@ class GlassOnion_Application_Resource_Headmeta
     /**
      * Defined by Zend_Application_Resource_Resource
      *
-     * @return void
+     * @return Zend_View_Helper_HeadMeta
      */
     public function init()
     {
@@ -26,11 +26,13 @@ class GlassOnion_Application_Resource_Headmeta
             throw new Zend_Application_Resource_Exception('No view defined');
         }
         
-        $view = $bootstrap->getResource('view');
+        $headMeta = $bootstrap->bootstrap('view')
+            ->getResource('view')->headMeta();
 
         foreach ($this->getOptions() as $key => $value) {
-            $view->headMeta()
-                ->appendHttpEquiv($key, $value);
+            $headMeta->appendHttpEquiv($key, $value);
         }
+        
+        return $headMeta;
     }
 }

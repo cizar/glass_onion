@@ -194,7 +194,7 @@ class GlassOnion_Fop_Command
         $this->xmlFilename = null;
         $this->xslFilename = null;
         $this->pdfFilename = null;
-        $this->cleanupTemporaryFiles();
+        return $this->cleanupTemporaryFiles();
     }
 
     /**

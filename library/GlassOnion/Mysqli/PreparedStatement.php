@@ -80,6 +80,8 @@ class GlassOnion_Mysqli_PreparedStatement
 
     /**
      * Appends a parameter for binding
+     *
+     * @return GlassOnion_Mysqli_PreparedStatement Provides a fluent interface
      */
     public function appendParam($type, $value)
     {
@@ -90,6 +92,8 @@ class GlassOnion_Mysqli_PreparedStatement
 
     /**
      * Prepends a parameter for binding
+     *
+     * @return GlassOnion_Mysqli_PreparedStatement Provides a fluent interface
      */
     public function prependParam($type, $value)
     {
@@ -100,6 +104,8 @@ class GlassOnion_Mysqli_PreparedStatement
 
     /**
      * Setups the parameters for binding
+     *
+     * @return GlassOnion_Mysqli_PreparedStatement Provides a fluent interface
      */
     public function setParams()
     {
@@ -111,6 +117,8 @@ class GlassOnion_Mysqli_PreparedStatement
 
     /**
      * Remove all parameters for binding
+     *
+     * @return GlassOnion_Mysqli_PreparedStatement Provides a fluent interface
      */
     public function clearParams()
     {
@@ -121,6 +129,8 @@ class GlassOnion_Mysqli_PreparedStatement
 
     /**
      * Executes the prepared query
+     *
+     * @return GlassOnion_Mysqli_ResultSet_PreparedStatement|null
      */
     public function execute()
     {
@@ -156,10 +166,13 @@ class GlassOnion_Mysqli_PreparedStatement
 
     /**
      * Close the prepared statement
+     *
+     * @return GlassOnion_Mysqli_PreparedStatement Provides a fluent interface
      */
     public function close()
     {
         $this->stmt->close();
+        return $this;
     }
 
     /**

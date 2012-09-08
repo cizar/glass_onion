@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @see Zend_Auth_Result
+ */
+require_once 'Zend/Auth/Result.php';
+
+/**
  * @see Zend_Auth_Adapter_Interface
  */
 require_once 'Zend/Auth/Adapter/Interface.php';
@@ -132,7 +137,6 @@ class GlassOnion_Auth_Adapter_Doctrine
         if (null === $this->_connection && null !== $this->_tableName) {
             $this->_connection = Doctrine_Core::getConnectionByTableName($this->_tableName);
         }
-        
         return $this->_connection;
     }
 

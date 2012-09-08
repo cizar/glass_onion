@@ -27,7 +27,7 @@ class GlassOnion_Controller_Plugin_ModuleAccessControl
      * Sets the name of the module thats requires authentification
      *
      * @param string $moduleName
-     * @return void
+     * @return GlassOnion_Controller_Plugin_ModuleAccessControl Provides a fluent interface
      */
     public function setModuleName($moduleName)
     {
@@ -51,7 +51,7 @@ class GlassOnion_Controller_Plugin_ModuleAccessControl
      * @param string $action
      * @param string $controller
      * @param string $module
-     * @return void
+     * @return GlassOnion_Controller_Plugin_ModuleAccessControl Provides a fluent interface
      */
     public function setDeniedAction($action, $controller, $module = null)
     {

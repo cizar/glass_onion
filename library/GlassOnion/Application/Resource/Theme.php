@@ -53,7 +53,8 @@ class GlassOnion_Application_Resource_Theme
     {
         if (null === $this->_theme) {
             $options = $this->getOptions();
-            $this->_theme = isset($options['name']) ? $options['name'] : 'default';
+            $this->_theme = isset($options['name'])
+                ? $options['name'] : 'default';
         }
         return $this->_theme;
     }
@@ -67,7 +68,8 @@ class GlassOnion_Application_Resource_Theme
     {
         if (null === $this->_baseUrl) {
             $options = $this->getOptions();
-            $this->_baseUrl = isset($options['base_url']) ? $options['base_url'] : '/themes';
+            $this->_baseUrl = isset($options['base_url'])
+                ? $options['base_url'] : '/themes';
         }
         return $this->_baseUrl;
     }

@@ -50,11 +50,12 @@ final class GlassOnion_Controller_Plugin_Acl
      * Sets the ACL object
      *
      * @param Zend_Acl $acl
-     * @return void
+     * @return GlassOnion_Controller_Plugin_Acl Provides a fluent interface
      */
     public function setAcl(Zend_Acl $acl)
     {
         $this->_acl = $acl;
+        return $this;
     }
 
     /**
@@ -73,7 +74,7 @@ final class GlassOnion_Controller_Plugin_Acl
      * @param string $action
      * @param string $controller
      * @param string $module
-     * @return void
+     * @return GlassOnion_Controller_Plugin_Acl Provides a fluent interface
      */
     public function setDeniedAction($action, $controller = 'error', $module = null)
     {
@@ -81,6 +82,7 @@ final class GlassOnion_Controller_Plugin_Acl
             'module' => $module,
             'controller' => $controller,
             'action' => $action);
+        return $this;
     }
 
     /**
@@ -97,10 +99,12 @@ final class GlassOnion_Controller_Plugin_Acl
      * Sets the current role name
      *
      * @param string $roleName
+     * @return GlassOnion_Controller_Plugin_Acl Provides a fluent interface
      */
     public function setRoleName($roleName)
     {
         $this->_roleName = $roleName;
+        return $this;
     }
 
     /**

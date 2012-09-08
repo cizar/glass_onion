@@ -16,7 +16,7 @@ class GlassOnion_Application_Resource_Paginator
      * Sets the default scrolling style for the paginator
      *
      * @param  string $scrollingStyle
-     * @return GlassOnion_Application_Resource_Paginator
+     * @return GlassOnion_Application_Resource_Paginator Provides a fluent interface
      */
     public function setDefaultScrollingStyle($scrollingStyle)
     {
@@ -28,7 +28,7 @@ class GlassOnion_Application_Resource_Paginator
      * Sets the default view partial for the paginator
      *
      * @param  string|array $viewPartial
-     * @return GlassOnion_Application_Resource_Paginator
+     * @return GlassOnion_Application_Resource_Paginator Provides a fluent interface
      */
     public function setDefaultViewPartial($viewPartial)
     {

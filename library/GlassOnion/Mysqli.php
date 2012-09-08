@@ -62,7 +62,7 @@ class GlassOnion_Mysqli
      * 
      * @param string $name
      * @throws GlassOnion_Mysqli_Exception
-     * @return GlassOnion_Mysqli
+     * @return GlassOnion_Mysqli Provides a fluent interface
      */
     public function selectDatabase($name)
     {
@@ -122,7 +122,7 @@ class GlassOnion_Mysqli
     /**
      * Begin a transaction
      *
-     * @return GlassOnion_Mysqli
+     * @return GlassOnion_Mysqli Provides a fluent interface
      */
     public function begin()
     {
@@ -133,7 +133,7 @@ class GlassOnion_Mysqli
     /**
      * Commit a transaction
      *
-     * @return GlassOnion_Mysqli
+     * @return GlassOnion_Mysqli Provides a fluent interface
      */
     public function commit()
     {
@@ -145,7 +145,7 @@ class GlassOnion_Mysqli
     /**
      * Roll-back a transaction
      * 
-     * @return GlassOnion_Mysqli
+     * @return GlassOnion_Mysqli Provides a fluent interface
      */
     public function rollback()
     {

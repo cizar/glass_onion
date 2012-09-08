@@ -17,10 +17,10 @@ class GlassOnion_View_Helper_SwitchTheme
      * Defined by Zend_Application_Resource_Resource
      *
      * @param string $filename
-     * @return GlassOnion_View_Helper_ThemeBaseUrl
+     * @return void
      */
     public function switchTheme($theme)
     {
-        return $this->view->getHelper('ThemeBaseUrl')->setTheme($theme);
+        $this->view->getHelper('ThemeBaseUrl')->setTheme($theme);
     }
 }

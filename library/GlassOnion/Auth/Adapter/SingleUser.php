@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @see Zend_Auth_Result
+ */
+require_once 'Zend/Auth/Result.php';
+
+/**
  * @see Zend_Auth_Adapter_Interface
  */
 require_once 'Zend/Auth/Adapter/Interface.php';
@@ -38,26 +43,27 @@ class GlassOnion_Auth_Adapter_SingleUser
 
     /**
      * This method sets the username and password expected
+     *
+     * @return InAdvant_Auth_Adapter_SingleUser Provides a fluent interface
      */
     public static function configure($username, $password = null)
     {
-        if (is_array($username))
-        {
+        if (is_array($username)) {
             self::$_username = $username['username'];
             self::$_password = $username['password'];
         }
-        else
-        {
+        else {
             self::$_username = $username;
             self::$_password = $password;
         }
+        return $this;
     }
 
     /**
      * This method sets the identity
      *
      * @param string
-     * @return InAdvant_Auth_Adapter_SingleUser
+     * @return InAdvant_Auth_Adapter_SingleUser Provides a fluent interface
      */
     public function setIdentity($value)
     {
@@ -69,7 +75,7 @@ class GlassOnion_Auth_Adapter_SingleUser
      * This method sets the credential
      *
      * @param string
-     * @return InAdvant_Auth_Adapter_SingleUser
+     * @return InAdvant_Auth_Adapter_SingleUser Provides a fluent interface
      */
     public function setCredential($credential)
     {
@@ -85,8 +91,7 @@ class GlassOnion_Auth_Adapter_SingleUser
      */
     public function authenticate()
     {
-        if ($this->_identity != self::$_username || $this->_credential != self::$_password)
-        {
+        if ($this->_identity != self::$_username || $this->_credential != self::$_password) {
             return new Zend_Auth_Result(Zend_Auth_Result::FAILURE,
                 null, array('Authentication failure.'));
         }

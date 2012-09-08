@@ -10,7 +10,8 @@ require_once 'Zend/View/Helper/Abstract.php';
  * @package    GlassOnion_View
  * @subpackage Helper
  */
-class GlassOnion_View_Helper_DoctrineErrors extends Zend_View_Helper_Abstract
+class GlassOnion_View_Helper_DoctrineErrors
+    extends Zend_View_Helper_Abstract
 {
     /**
      * @var Zend_Translate
@@ -43,12 +44,11 @@ class GlassOnion_View_Helper_DoctrineErrors extends Zend_View_Helper_Abstract
      * Sets the error prefix
      *
      * @param string $prefix
-     * @return Zend_View_Helper_Translate Provides a fluent interface
+     * @return GlassOnion_View_Helper_DoctrineErrors Provides a fluent interface
      */
     public function setPrefix($prefix)
     {
         $this->_errorPrefix = $prefix;
-
         return $this;
     }
 
@@ -57,7 +57,7 @@ class GlassOnion_View_Helper_DoctrineErrors extends Zend_View_Helper_Abstract
      *
      * @param Zend_Translate|Zend_Translate_Adapter $translate Instance of Zend_Translate
      * @throws Zend_View_Exception When no or a false instance was set
-     * @return Zend_View_Helper_Translate Provides a fluent interface
+     * @return GlassOnion_View_Helper_DoctrineErrors Provides a fluent interface
      */
     public function setTranslator($translate)
     {
@@ -83,6 +83,9 @@ class GlassOnion_View_Helper_DoctrineErrors extends Zend_View_Helper_Abstract
     public function getTranslator()
     {
         if ($this->_translator === null) {
+            /**
+             * @see Zend_Registry
+             */
             require_once 'Zend/Registry.php';
             if (Zend_Registry::isRegistered('Zend_Translate')) {
                 $this->setTranslator(Zend_Registry::get('Zend_Translate'));

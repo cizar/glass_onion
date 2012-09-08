@@ -37,7 +37,7 @@ class GlassOnion_View_Helper_ThemeBaseUrl
      * Defined by Zend_Application_Resource_Resource
      *
      * @param string $theme
-     * @return GlassOnion_View_Helper_ThemeBaseUrl
+     * @return string
      */
     public function themeBaseUrl($file = null)
     {
@@ -51,7 +51,7 @@ class GlassOnion_View_Helper_ThemeBaseUrl
      * Set the theme name
      *
      * @param string $theme
-     * @return GlassOnion_View_Helper_ThemeBaseUrl
+     * @return GlassOnion_View_Helper_ThemeBaseUrl Provides a fluent interface
      */
     public function setTheme($theme)
     {
@@ -76,7 +76,7 @@ class GlassOnion_View_Helper_ThemeBaseUrl
      * Set the theme base URL
      *
      * @param string $baseUrl
-     * @return GlassOnion_View_Helper_ThemeBaseUrl
+     * @return GlassOnion_View_Helper_ThemeBaseUrl Provides a fluent interface
      */
     public function setBaseUrl($baseUrl)
     {

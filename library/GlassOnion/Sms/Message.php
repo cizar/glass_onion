@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @category   GlassOnion
+ * @package    GlassOnion_Sms
+ */
 class GlassOnion_Sms_Message
 {
     /**
@@ -32,6 +36,8 @@ class GlassOnion_Sms_Message
 
     /**
      * Set one SMS receiver
+     *
+     * @return GlassOnion_Sms_Message Provides a fluent interface
      */
     public function setNumber($number)
     {
@@ -41,6 +47,8 @@ class GlassOnion_Sms_Message
 
     /**
      * Sets multiple SMS receivers
+     *
+     * @return GlassOnion_Sms_Message Provides a fluent interface
      */
     public function setNumbers($number)
     {
@@ -50,6 +58,8 @@ class GlassOnion_Sms_Message
     
     /**
      * Append one SMS receiver
+     *
+     * @return GlassOnion_Sms_Message Provides a fluent interface
      */
     public function addNumber($number)
     {
@@ -69,6 +79,8 @@ class GlassOnion_Sms_Message
     
     /**
      * Set the SMS message
+     *
+     * @return GlassOnion_Sms_Message Provides a fluent interface
      */
     public function setMessage($message)
     {
@@ -88,6 +100,8 @@ class GlassOnion_Sms_Message
     
     /**
      * Sets the SMS originator
+     *
+     * @return GlassOnion_Sms_Message Provides a fluent interface
      */
     public function setOriginator($originator)
     {
@@ -107,17 +121,23 @@ class GlassOnion_Sms_Message
     
     /**
      * Sets the SMS concrete sender
+     *
+     * @return GlassOnion_Sms_Message Provides a fluent interface
      */
     public function setSender(GlassOnion_Sms_Sender_Abstract $sender)
     {
         $this->sender = $sender;
+        return $this;
     }
     
     /**
      * Send the SMS throw the concrete sender
+     *
+     * @return GlassOnion_Sms_Message Provides a fluent interface
      */
     public function send()
     {
         $this->sender->send($this);
+        return $this;
     }
 }

@@ -69,7 +69,7 @@ class GlassOnion_Di_Definition
 
     /**
      * @param array $arguments
-     * @return GlassOnion_Di_Definition
+     * @return GlassOnion_Di_Definition Provides a fluent interface
      */
     public function setArguments(array $arguments)
     {
@@ -82,7 +82,7 @@ class GlassOnion_Di_Definition
 
     /**
      * @param mixed $argument
-     * @return GlassOnion_Di_Definition
+     * @return GlassOnion_Di_Definition Provides a fluent interface
      */
     public function addArgument($argument)
     {
@@ -100,7 +100,7 @@ class GlassOnion_Di_Definition
 
     /**
      * @param boolean $shared
-     * @return GlassOnion_Di_Definition
+     * @return GlassOnion_Di_Definition Provides a fluent interface
      */
     public function setShared($shared)
     {
@@ -121,7 +121,7 @@ class GlassOnion_Di_Definition
 
     /**
      * @param array $invokes
-     * @return GlassOnion_Di_Definition
+     * @return GlassOnion_Di_Definition Provides a fluent interface
      */
     public function setMethodInvokes(array $invokes)
     {
@@ -136,7 +136,7 @@ class GlassOnion_Di_Definition
     }
 
     /**
-     * @return GlassOnion_Di_Definition
+     * @return GlassOnion_Di_Definition Provides a fluent interface
      */
     public function resetMethodInvokes()
     {
@@ -147,7 +147,7 @@ class GlassOnion_Di_Definition
     /**
      * @param string $method
      * @param array $arguments
-     * @return GlassOnion_Di_Definition
+     * @return GlassOnion_Di_Definition Provides a fluent interface
      */
     public function addMethodInvoke($method, array $arguments = array())
     {

@@ -44,7 +44,7 @@ class GlassOnion_Fop
      * setOptions() - Set options en masse
      *
      * @param array|Zend_Config $options
-     * @return void
+     * @return GlassOnion_Fop Provides a fluent interface
      */
     public function setOptions($options)
     {
