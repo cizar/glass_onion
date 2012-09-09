@@ -22,10 +22,6 @@ class GlassOnion_View_Helper_SortClass
      */
     public function sortClass($field, $data)
     {
-        if ($field !== $data['field']) {
-            return '';
-        }
-        
-        return ('asc' === $data['order']) ? 'desc' : 'asc';
+        return ($field === $data['field']) ? $data['order'] : '';
     }
 }

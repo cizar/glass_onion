@@ -19,10 +19,11 @@ class GlassOnion_View_Helper_Script
      * @param string $href
      * @return Zend_View
      */
-    public function script($href)
+    public function script($href, $type = 'text/javascript')
     {
-        $url = preg_match('/^(ht|f)tp(s)*:\/\/|^\//', $href) ? $href : $this->view->baseUrl($href);
-        $this->view->headScript()->appendFile($url);
+        $url = preg_match('/^(ht|f)tp(s)*:\/\/|^\//', $href)
+            ? $href : $this->view->baseUrl($href);
+        $this->view->headScript()->appendFile($url, $type);
         return $this->view;
     }
 }

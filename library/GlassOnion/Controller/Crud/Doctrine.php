@@ -32,6 +32,20 @@ abstract class GlassOnion_Controller_Crud_Doctrine
      * @var boolean
      */
     private $_oneMatchRedirect = true;
+    
+    /**
+     * The default sort field
+     *
+     * @var string
+     */
+    private $_defaultSortField = null;
+
+    /**
+     * The default sort order (asc or desc)
+     *
+     * @var string
+     */
+    private $_defaultSortOrder = 'asc';
 
     /**
      * @return void
@@ -79,13 +93,26 @@ abstract class GlassOnion_Controller_Crud_Doctrine
      */
     protected function sortIndexQuery(Doctrine_Query $query)
     {
+        if ($data = $this->_getSortData()) {
+            list($field, $order) = $data;
+            $query->orderBy("$field $order");
+            $this->view->sort = array('order' => $order, 'field' => $field);
+        }
+    }
+    
+    /**
+     * @return array
+     */
+    private function _getSortData()
+    {
         $pattern = '/(asc|desc)ending_by_([a-z_]+)/';
         if (preg_match($pattern, $this->_getParam('sort'), $matches)) {
-            $query->orderBy($matches[2] . ' ' . $matches[1]);
-            $this->view->sort = array(
-                'order' => $matches[1],
-                'field' => $matches[2]);
+            return array($matches[2], $matches[1]);
         }
+        if ($this->_defaultSortField) {
+            return array($this->_defaultSortField, $this->_defaultSortOrder);
+        }
+        return null;
     }
 
     /**
@@ -244,6 +271,20 @@ abstract class GlassOnion_Controller_Crud_Doctrine
     protected function disableOneMatchRedirect()
     {
         $this->_oneMatchRedirect = false;
+        return $this;
+    }
+    
+    /**
+     * Sets the sorting defaults
+     *
+     * @return GlassOnion_Controller_Crud_Doctrine Provides a fluent interface
+     */
+    public function sortDefaults($field, $order = null)
+    {
+        $this->_defaultSortField = $field;
+        if (null !== $order) {
+            $this->_defaultSortOrder = $order;
+        }
         return $this;
     }
 
