@@ -26,6 +26,10 @@ class GlassOnion_View_Helper_SortUrl
     public function sortUrl($field, $data = null,
         $name = null, $reset = true, $encode = true)
     {
+        if (null === $data && isset($this->view->sortData)) {
+            $data = $this->view->sortData;
+        }
+        
         switch (gettype($data))
         {
             case 'string':

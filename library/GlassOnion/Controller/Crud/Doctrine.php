@@ -96,7 +96,7 @@ abstract class GlassOnion_Controller_Crud_Doctrine
         if ($data = $this->_getSortData()) {
             list($field, $order) = $data;
             $query->orderBy("$field $order");
-            $this->view->sort = array('order' => $order, 'field' => $field);
+            $this->view->sortData = array('order' => $order, 'field' => $field);
         }
     }
     

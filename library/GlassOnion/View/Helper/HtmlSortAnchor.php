@@ -19,7 +19,7 @@ class GlassOnion_View_Helper_HtmlSortAnchor
      * @param string $href
      * @return GlassOnion_View_Helper_HtmlAnchor
      */
-    public function htmlSortAnchor($label, $field, $order = 'asc',
+    public function htmlSortAnchor($label, $field, $order = null,
         $name = null, $reset = false, $encode = true)
     {
         return $this->view->htmlAnchor(

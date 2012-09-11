@@ -20,8 +20,11 @@ class GlassOnion_View_Helper_SortClass
      * @param array $data
      * @return string
      */
-    public function sortClass($field, $data)
+    public function sortClass($field, $data = null)
     {
+        if (null == $data) {
+            $data = $this->view->sortData;
+        }
         return ($field === $data['field']) ? $data['order'] : '';
     }
 }
