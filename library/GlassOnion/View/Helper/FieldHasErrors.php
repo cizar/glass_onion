@@ -19,8 +19,11 @@ class GlassOnion_View_Helper_FieldHasErrors extends Zend_View_Helper_FormElement
      * @param Doctrine_Record $record
      * @return boolean
      */
-    public function fieldHasErrors($field, Doctrine_Record $record)
+    public function fieldHasErrors($field, Doctrine_Record $record = null)
     {
+        if (null === $record) {
+            $record = $this->view->record;
+        }
         return $record->getErrorStack()->contains((string) $field);
     }
 }

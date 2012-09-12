@@ -14,8 +14,12 @@ class GlassOnion_View_Helper_FieldErrors extends Zend_View_Helper_FormElement
      * @param Doctrine_Record $record
      * @return Zend_View_Helper_FormLabel
      */
-    public function fieldErrors($field, Doctrine_Record $record)
+    public function fieldErrors($field, Doctrine_Record $record = null)
     {
+        if (null === $record) {
+            $record = $this->view->record;
+        }
+        
         $errors = $record->getErrorStack()->get($field);
 
         if (!$errors) {
