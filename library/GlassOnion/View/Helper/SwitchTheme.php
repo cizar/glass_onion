@@ -14,7 +14,7 @@ class GlassOnion_View_Helper_SwitchTheme
     extends Zend_View_Helper_Abstract
 {
     /**
-     * Defined by Zend_Application_Resource_Resource
+     * Changes the active theme
      *
      * @param string $filename
      * @return void

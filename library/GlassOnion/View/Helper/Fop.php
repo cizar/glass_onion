@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @see Zend_Controller_Front
+ */
+require_once 'Zend/Controller/Front.php';
+
+/**
  * @see Zend_View_Helper_Abstract
  */
 require_once 'Zend/View/Helper/Abstract.php';
@@ -12,6 +17,11 @@ require_once 'Zend/View/Helper/Abstract.php';
  */
 class GlassOnion_View_Helper_Fop extends Zend_View_Helper_Abstract
 {
+    /**
+     * Renders a PDF, disable the layout and set response header
+     *
+     * @return string
+     */
     public function fop($xml, $xslFilename, $charset = 'UTF-8', $keepLayouts = false)
     {
         $fop = Zend_Controller_Front::getInstance()

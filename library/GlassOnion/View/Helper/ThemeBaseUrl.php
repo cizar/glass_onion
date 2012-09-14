@@ -34,7 +34,7 @@ class GlassOnion_View_Helper_ThemeBaseUrl
     protected $_baseUrl;
 
     /**
-     * Defined by Zend_Application_Resource_Resource
+     * Returns the theme's base url or file with the base url prepended
      *
      * @param string $theme
      * @return string

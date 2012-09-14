@@ -14,7 +14,7 @@ class GlassOnion_View_Helper_SortClass
     extends Zend_View_Helper_Abstract
 {
     /**
-     * Defined by Zend_Application_Resource_Resource
+     * Returns a sort class given a field and sort condition
      *
      * @param string $field
      * @param array $data

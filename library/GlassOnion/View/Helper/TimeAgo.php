@@ -13,7 +13,7 @@ require_once 'Zend/View/Helper/Abstract.php';
 class GlassOnion_View_Helper_TimeAgo extends Zend_View_Helper_Abstract
 {
     /**
-     * Returns the identity of the current session
+     * Returns a time lapse in human readable format
      *
      * @param string $field
      * @return string

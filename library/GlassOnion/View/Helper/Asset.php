@@ -14,7 +14,7 @@ class GlassOnion_View_Helper_Asset
     extends Zend_View_Helper_Abstract
 {
     /**
-     * Defined by Zend_Application_Resource_Resource
+     * Appends an asset and all its dependencies
      *
      * @param string $href
      * @return Zend_View
@@ -28,12 +28,15 @@ class GlassOnion_View_Helper_Asset
         foreach ($assets->getRequiredAssets($id) as $asset) {
             switch ($asset->getClass()) {
                 case 'script':
-                        $this->view->script($asset->src,
-                            $asset->getProperty('type', 'text/javascript'));
+                    $this->view->script($asset->src,
+                        $asset->getProperty('type', 'text/javascript'));
                     break;
                 case 'stylesheet':
-                        $this->view->stylesheet($asset->href,
-                            $asset->getProperty('media', 'screen'));
+                    $this->view->stylesheet($asset->href,
+                        $asset->getProperty('media', 'screen'));
+                    break;
+                case 'favicon':
+                    $this->view->favicon($asset->href);
                     break;
             }
         }

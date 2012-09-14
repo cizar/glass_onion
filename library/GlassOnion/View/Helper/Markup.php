@@ -35,8 +35,7 @@ class GlassOnion_View_Helper_Markup extends Zend_View_Helper_Abstract
      */
     private function _format($text, $parser)
     {
-        if (is_null($text) || empty($text))
-        {
+        if (is_null($text) || empty($text)) {
             return '';
         }
 

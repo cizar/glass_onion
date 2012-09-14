@@ -42,7 +42,7 @@ class GlassOnion_View_Helper_HtmlAnchor
     protected $_translator;
     
     /**
-     * Defined by Zend_Application_Resource_Resource
+     * Generates a HTML anchor element
      *
      * @param string $href
      * @param string $label
@@ -57,7 +57,7 @@ class GlassOnion_View_Helper_HtmlAnchor
     }
     
     /**
-     * Returns the translated anchor label
+     * Returns the translated label
      *
      * @return string
      */

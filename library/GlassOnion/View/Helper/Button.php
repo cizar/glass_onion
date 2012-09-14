@@ -13,6 +13,8 @@ require_once 'GlassOnion/View/Helper/HtmlAnchor.php';
 class GlassOnion_View_Helper_Button extends GlassOnion_View_Helper_HtmlAnchor
 {
     /**
+     * Generates a HTML anchor element
+     *
      * @return GlassOnion_View_Helper_HtmlAnchor
      */
     public function button($href, $label = null, $attribs = array())

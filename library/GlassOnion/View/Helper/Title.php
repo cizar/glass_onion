@@ -14,7 +14,7 @@ class GlassOnion_View_Helper_Title
     extends Zend_View_Helper_Abstract
 {
     /**
-     * Defined by Zend_Application_Resource_Resource
+     * Sets the page title and returns its value
      *
      * @param string $title
      * @return string

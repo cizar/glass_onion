@@ -149,8 +149,6 @@ abstract class GlassOnion_Controller_Crud_Doctrine
      */
     public function newAction()
     {
-        $this->_assertMethodExists('create', 'Doctrine_Record $record');
-
         $record = $this->getNewRecord();
 
         if ($this->_request->isPost()) {
@@ -171,12 +169,18 @@ abstract class GlassOnion_Controller_Crud_Doctrine
     }
     
     /**
+     * Create
+     */
+    protected function create(Doctrine_Record $record)
+    {
+        $record->fromArray($this->_getParam('record'));
+    }
+    
+    /**
      * @return void
      */
     public function editAction()
     {
-        $this->_assertMethodExists('update', 'Doctrine_Record $record');
-
         $record = $this->getRecord($this->_getParam('id'));
 
         if ($this->_request->isPost()) {
@@ -196,6 +200,14 @@ abstract class GlassOnion_Controller_Crud_Doctrine
         $this->view->record = $record;
     }
 
+    /**
+     * Update
+     */
+    protected function update(Doctrine_Record $record)
+    {
+        $record->fromArray($this->_getParam('record'));
+    }
+    
     /**
      * @return void
      */
@@ -350,25 +362,6 @@ abstract class GlassOnion_Controller_Crud_Doctrine
             require_once 'GlassOnion/Controller/Crud/Exception.php';
             throw new GlassOnion_Controller_Crud_Exception(
                 'No model has been defined');
-        }
-    }
-    
-    /**
-     * @param string $method
-     * @param string $params
-     * @return void
-     */
-    private function _assertMethodExists($method, $params = null)
-    {
-        if (!method_exists($this, $method)) {
-            $signature = get_class($this) . '::' . $method . '(' . $params . ')';
-           
-            /**
-             * @see GlassOnion_Controller_Crud_Exception
-             */
-            require_once 'GlassOnion/Controller/Crud/Exception.php';
-            throw new GlassOnion_Controller_Crud_Exception(
-                "Method {$signature} must be implemented");
         }
     }
 }

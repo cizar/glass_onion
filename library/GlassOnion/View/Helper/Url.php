@@ -14,7 +14,7 @@ class GlassOnion_View_Helper_Url
     extends Zend_View_Helper_Url
 {
     /**
-     * Defined by Zend_Application_Resource_Resource
+     * Extends the Zend URL Helper response appending the query string
      *
      * @param array $urlOptions
      * @param mixed $name
@@ -26,9 +26,7 @@ class GlassOnion_View_Helper_Url
         $reset = false, $encode = true, $includeQueryString = true)
     {
         $url = parent::url($urlOptions, $name, $reset, $encode);
-        
-        $query = $_SERVER['QUERY_STRING'];
-        
-        return $includeQueryString && !empty($query) ? $url . '?' . $query : $url;
+        return $includeQueryString && !isset($_SERVER['QUERY_STRING'])
+            ? $url . '?' . $_SERVER['QUERY_STRING'] : $url;
     }
 }

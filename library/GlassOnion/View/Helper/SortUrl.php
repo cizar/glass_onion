@@ -14,7 +14,7 @@ class GlassOnion_View_Helper_SortUrl
     extends Zend_View_Helper_Abstract
 {
     /**
-     * Defined by Zend_Application_Resource_Resource
+     * Generates the sort url for a given field in a sort condition
      *
      * @param string $field
      * @param string|array $data

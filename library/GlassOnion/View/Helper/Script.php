@@ -14,7 +14,7 @@ class GlassOnion_View_Helper_Script
     extends Zend_View_Helper_Abstract
 {
     /**
-     * Defined by Zend_Application_Resource_Resource
+     * Appends a script to the head script placeholder
      *
      * @param string $href
      * @return Zend_View
