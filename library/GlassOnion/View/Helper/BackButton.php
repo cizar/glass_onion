@@ -3,14 +3,14 @@
 /**
  * @see GlassOnion_View_Helper_Button
  */
-require_once 'GlassOnion/View/Helper/SupportingButton.php';
+require_once 'GlassOnion/View/Helper/Button.php';
 
 /**
  * @category   GlassOnion
  * @package    GlassOnion_View
  * @subpackage Helper
  */
-class GlassOnion_View_Helper_BackButton extends GlassOnion_View_Helper_SupportingButton
+class GlassOnion_View_Helper_BackButton extends GlassOnion_View_Helper_Button
 {
     /**
      * Generates a HTML anchor element
@@ -19,7 +19,7 @@ class GlassOnion_View_Helper_BackButton extends GlassOnion_View_Helper_Supportin
      */
     public function backButton($label = null, $attribs = array())
     {
-        return parent::supportingButton('javascript:history.back(1)', $label, $attribs);
+        return parent::button('javascript:history.back(1)', $label, $attribs);
     }
 }
 
