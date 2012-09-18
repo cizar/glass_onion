@@ -17,7 +17,7 @@ class GlassOnion_View_Helper_BackButton extends GlassOnion_View_Helper_Button
      *
      * @return GlassOnion_View_Helper_HtmlAnchor
      */
-    public function backButton($label = null, $attribs = array())
+    public function backButton($label, $attribs = array())
     {
         return parent::button('javascript:history.back(1)', $label, $attribs);
     }
