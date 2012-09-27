@@ -13,43 +13,151 @@ require_once 'Zend/View/Helper/Abstract.php';
 class GlassOnion_View_Helper_Number extends Zend_View_Helper_Abstract
 {
     /**
-     * @var integer
+     * @const integer
      */
-    private $_decimals = 2;
+    const DEFAULT_DECIMALS = 2;
 
     /**
-     * @var string
+     * @const string
      */
-    private $_decPoint = '.';
+    const DEFAULT_DEC_POINT = '.';
 
     /**
-     * @var string
+     * @const string
      */
-    private $_thousandsSep = ',';
+    const DEFAULT_THOUSANDS_SEP = ',';
 
     /**
      * @var numeric
      */
-    private $_value = null;
+    private $_value;
 
-    public function number($value = null, $decimals = null, $decPoint = null, $thousandsSep = null)
+    /**
+     * @var integer
+     */
+    private $_decimals;
+
+    /**
+     * @var string
+     */
+    private $_decPoint;
+
+    /**
+     * @var string
+     */
+    private $_thousandsSep;
+
+    /**
+     * 
+     * @return GlassOnion_View_Helper_Number Provides a fluent interface
+     */
+    public function number($value, $decimals = null, $decPoint = null, $thousandsSep = null)
     {
-        $this->_value = $this->_format($value, $decimals, $decPoint, $thousandsSep);
+        if (null !== $decimals) {
+            $this->setDecimals($decimals);
+        }
+        if (null !== $decPoint) {
+            $this->setDecPoint($decPoint);
+        }
+        if (null !== $thousandsSep) {
+            $this->setThousandsSep($thousandsSep);
+        }
+        return $this->setValue($value);
+    }
+
+    /**
+     * Returns the number to being formatted
+     *
+     * @return numeric
+     */
+    public function getValue()
+    {
+        return $this->_value;
+    }
+
+    /**
+     * Sets the number to being formatted
+     *
+     * @return GlassOnion_View_Helper_Number Provides a fluent interface
+     */
+    public function setValue($value)
+    {
+        if (!is_numeric($value)) {
+            throw new Zend_View_Exception('The value must be numeric.');
+        }
+        $this->_value = $value;
         return $this;
     }
 
+    /**
+     * Returns the number of decimal points
+     *
+     * @return integer
+     */
+    public function getDecimals()
+    {
+        if (null === $this->_decimals) {
+            $this->_decimals = self::DEFAULT_DECIMALS;
+        }
+        return $this->_decimals;
+    }
+
+    /**
+     * Sets the number of decimal points
+     *
+     * @return GlassOnion_View_Helper_Number Provides a fluent interface
+     */
     public function setDecimals($decimals)
     {
+        if (!is_integer($decimals) || $decimals < 0) {
+            throw new Zend_View_Exception('The number of decimal points must be integer and positive.');
+        }
         $this->_decimals = $decimals;
         return $this;
     }
 
+    /**
+     * Returns the separator for the decimal point
+     *
+     * @return string
+     */
+    public function getDecPoint()
+    {
+        if (null === $this->_decPoint) {
+            $this->_decPoint = self::DEFAULT_DEC_POINT;
+        }
+        return $this->_decPoint;
+    }
+
+    /**
+     * Sets the separator for the decimal point
+     *
+     * @return GlassOnion_View_Helper_Number Provides a fluent interface
+     */
     public function setDecPoint($decPoint)
     {
         $this->_decPoint = $decPoint;
         return $this;
     }
 
+    /**
+     * Returns the thousands separator
+     *
+     * @return string
+     */
+    public function getThousandsSep()
+    {
+        if (null === $this->_thousandsSep) {
+            $this->_thousandsSep = self::DEFAULT_THOUSANDS_SEP;
+        }
+        return $this->_thousandsSep;
+    }
+
+    /**
+     * Sets the thousands separator
+     *
+     * @return GlassOnion_View_Helper_Number Provides a fluent interface
+     */
     public function setThousandsSep($thousandsSep)
     {
         $this->_thousandsSep = $thousandsSep;
@@ -57,34 +165,12 @@ class GlassOnion_View_Helper_Number extends Zend_View_Helper_Abstract
     }
 
     /**
-     * Returns the formated string.
-     *
-     * @return string
-     */
-    private function _format($value, $decimals, $decPoint, $thousandsSep)
-    {
-        if (null === $value) {
-            return '';
-        }
-
-        if (!is_numeric($value)) {
-            throw new Zend_View_Exception('The value must be numeric.');
-        }
-
-        return number_format($value,
-            is_null($decimals) ? $this->_decimals : $decimals,
-            is_null($decPoint) ? $this->_decPoint : $decPoint,
-            is_null($thousandsSep) ? $this->_thousandsSep : $thousandsSep
-        );
-    }
-    
-    /**
      * Cast to string
      *
      * @return string
      */
     public function __toString()
     {
-        return $this->_value;
+        return number_format($this->getValue(), $this->getDecimals(), $this->getDecPoint(), $this->getThousandsSep());
     }
 }

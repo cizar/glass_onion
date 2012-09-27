@@ -13,35 +13,71 @@ require_once 'Zend/View/Helper/Abstract.php';
 class GlassOnion_View_Helper_Markup extends Zend_View_Helper_Abstract
 {
     /**
+     * @const string
+     */
+    const DEFAULT_PARSER = 'Bbcode';
+
+    /**
      * @var string
      */
-    private $_value = null;
+    private $_value;
+
+    /**
+     * @var string
+     */
+    private $_parser;
 
     /**
      * Renders a text usign Zend_Markup
      *
      * @return GlassOnion_View_Helper_Markup Provides a fluent interface
      */
-    public function markup($text, $parser = 'Bbcode')
+    public function markup($value, $parser = null)
     {
-        $this->_value = $this->_format($text, $parser);
-        return $this;
+        if (null !== $parser) {
+            $this->setParser($parser);
+        }
+        return $this->setValue($value);
+    }
+    
+    /**
+     * @return string
+     */
+    public function getValue()
+    {
+        if (null === $this->_value) {
+            return ' ';
+        }
+        return $this->_value;
     }
 
     /**
-     * Returns the formated string.
-     *
+     * @return GlassOnion_View_Helper_Markup Provides a fluent interface
+     */
+    public function setValue($value)
+    {
+        $this->_value = $value;
+        return $this;
+    }
+    
+    /**
      * @return string
      */
-    private function _format($text, $parser)
+    public function getParser()
     {
-        if (is_null($text) || empty($text)) {
-            return '';
+        if (null === $this->_parser) {
+            $this->_parser = self::DEFAULT_PARSER;
         }
+        return $this->_parser;
+    }
 
-        $markup = Zend_Markup::factory($parser, 'Html');
-
-        return $markup->render($text);
+    /**
+     * @return GlassOnion_View_Helper_Markup Provides a fluent interface
+     */
+    public function setParser($parser)
+    {
+        $this->_parser = $parser;
+        return $this;
     }
 
     /**
@@ -51,6 +87,14 @@ class GlassOnion_View_Helper_Markup extends Zend_View_Helper_Abstract
      */
     public function __toString()
     {
-        return $this->_value;
+        try
+        {
+            $markup = Zend_Markup::factory($this->getParser(), 'Html');
+            return $markup->render($this->getValue());
+        }
+        catch (Exception $e)
+        {
+            return $e->getMessage();
+        }
     }
 }

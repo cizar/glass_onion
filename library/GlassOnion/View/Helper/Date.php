@@ -18,35 +18,77 @@ require_once 'Zend/Date.php';
 class GlassOnion_View_Helper_Date extends Zend_View_Helper_Abstract
 {
     /**
-     * @var string
+     * @const string
      */
-    private $_format = '';
+    const DEFAULT_FORMAT = 'Y-m-d';
 
     /**
      * @var string
      */
-    private $_value = null;
+    private $_format;
+
+    /**
+     * @var string
+     */
+    private $_value;
 
     /**
      * Returns a formated date
      *
+     * @param string $value
+     * @param string $format
      * @return GlassOnion_View_Helper_Date Provides a fluent interface
      */
-    public function date($date, $format = null)
+    public function date($value)//, $format = null)
     {
-        $this->_value = $this->_format($date, $format);
+        return $this->setValue($value);//->setFormat($format);
+    }
+
+    /**
+     * Returns the date value
+     *
+     * @return string
+     */
+    public function getValue()
+    {
+        return $this->_value;
+    }
+
+    /**
+     * Returns a formated date
+     *
+     * @param string $value
+     * @return GlassOnion_View_Helper_Date Provides a fluent interface
+     */
+    public function setValue($value)
+    {
+        $this->_value = $value;
         return $this;
     }
 
     /**
-     * Returns the formated string.
+     * Returns the date format
      *
      * @return string
      */
-    private function _format($date, $format)
+    public function getFormat()
     {
-        $obj = new Zend_Date($date);
-        return $obj->toString($format);
+        if (null === $this->_format) {
+            $this->_format = self::DEFAULT_FORMAT;
+        }
+        return $this->_format;
+    }
+
+    /**
+     * Returns a formated date
+     *
+     * @param string $format
+     * @return GlassOnion_View_Helper_Date Provides a fluent interface
+     */
+    public function setFormat($format)
+    {
+        $this->_format = $format;
+        return $this;
     }
 
     /**
@@ -56,6 +98,7 @@ class GlassOnion_View_Helper_Date extends Zend_View_Helper_Abstract
      */
     public function __toString()
     {
-        return $this->_value;
+        $obj = new Zend_Date($this->getValue(), 'Y-m-d');
+        return $obj->toString($this->getformat());
     }
 }
