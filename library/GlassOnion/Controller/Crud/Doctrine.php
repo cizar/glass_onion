@@ -63,8 +63,12 @@ abstract class GlassOnion_Controller_Crud_Doctrine
 
         $paginator->setItemCountPerPage($this->_itemCountPerPage)
             ->setCurrentPageNumber($this->_getParam('page', 1));
-            
-        if ($this->_oneMatchRedirect && 1 == $paginator->getTotalItemCount()) {
+
+        if (
+            $this->_oneMatchRedirect
+            && $this->_queryIsFiltered($query)
+            && 1 == $paginator->getTotalItemCount()
+        ) {
             $this->_helper->redirector('show', null, null,
                 array('id' => $id = $paginator->getItem(1)->id));
         }
@@ -363,5 +367,16 @@ abstract class GlassOnion_Controller_Crud_Doctrine
             throw new GlassOnion_Controller_Crud_Exception(
                 'No model has been defined');
         }
+    }
+    
+    /**
+     * Check if the query has filter
+     *
+     * @return boolean
+     */
+    private function _queryIsFiltered(Doctrine_Query $query)
+    {
+        $params = $query->getParams();
+        return isset($params['where']) && count($params['where']) > 0;
     }
 }
