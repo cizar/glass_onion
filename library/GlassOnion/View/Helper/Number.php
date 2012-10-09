@@ -1,7 +1,5 @@
 <?php
 
-// TODO: No debe aceptar NULL como valor, revisar hradvant y quitar esta posibilidad
-
 /**
  * @see Zend_View_Helper_Abstract
  */
