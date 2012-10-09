@@ -1,5 +1,7 @@
 <?php
 
+// TODO: No debe aceptar NULL como valor, revisar hradvant y quitar esta posibilidad
+
 /**
  * @see Zend_View_Helper_Abstract
  */
@@ -48,11 +50,15 @@ class GlassOnion_View_Helper_Number extends Zend_View_Helper_Abstract
     private $_thousandsSep;
 
     /**
-     * 
+     * Helper entry point
+     *
      * @return GlassOnion_View_Helper_Number Provides a fluent interface
      */
-    public function number($value, $decimals = null, $decPoint = null, $thousandsSep = null)
+    public function number($value = null, $decimals = null, $decPoint = null, $thousandsSep = null)
     {
+        if (null !== $value) {
+            $this->setValue($value);
+        }
         if (null !== $decimals) {
             $this->setDecimals($decimals);
         }
@@ -62,7 +68,7 @@ class GlassOnion_View_Helper_Number extends Zend_View_Helper_Abstract
         if (null !== $thousandsSep) {
             $this->setThousandsSep($thousandsSep);
         }
-        return $this->setValue($value);
+        return $this;
     }
 
     /**
