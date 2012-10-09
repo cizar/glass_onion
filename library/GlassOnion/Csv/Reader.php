@@ -79,12 +79,12 @@ class GlassOnion_Csv_Reader implements Iterator, Countable
     var $_hasHeader = null;
    
     /**
-     * The header information.
+     * The names of the columns.
      *
      * @var mixed
      * @access private
      */
-    private $_header = null;
+    private $_columnNames = null;
 
     /**
      * The constructor. It try to open the CSV file.
@@ -149,6 +149,23 @@ class GlassOnion_Csv_Reader implements Iterator, Countable
     }
     
     /**
+     * Sets the names of the columns.
+     *
+     * @access public
+     * @param array $columnNames
+     * @return GlassOnion_Csv_Reader Provides a fluent interface
+     */
+    public function setColumnNames($columnNames)
+    {
+        if ($this->_hasHeader) {
+            require_once 'GlassOnion/Csv/Exception.php';
+            throw new GlassOnion_Csv_Exception('The column names will be taken from the header');
+        }
+        $this->_columnNames = $columnNames;
+        return $this;
+    }
+
+    /**
      * Returns the current CSV row data.
      *
      * @access public
@@ -156,7 +173,7 @@ class GlassOnion_Csv_Reader implements Iterator, Countable
      */
     public function current()
     {
-        return $this->_hasHeader ? array_combine($this->_header, $this->_current) : $this->_current;
+        return isset($this->_columnNames) ? array_combine($this->_columnNames, $this->_current) : $this->_current;
     }
 
     /**
@@ -192,7 +209,7 @@ class GlassOnion_Csv_Reader implements Iterator, Countable
     {
         rewind($this->_handler);
         if ($this->_hasHeader) {
-            $this->_header = $this->_read();
+            $this->_columnNames = $this->_read();
         }
         $this->_current = $this->_read();
         $this->_position = 0;
