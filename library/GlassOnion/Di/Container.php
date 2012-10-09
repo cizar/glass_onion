@@ -167,7 +167,7 @@ class GlassOnion_Di_Container
 
     /**
      * @param array $parameters
-     * @return GlassOnion_Di_Container
+     * @return GlassOnion_Di_Container Provides a fluent interface
      */
     public function setParameters(array $parameters)
     {
