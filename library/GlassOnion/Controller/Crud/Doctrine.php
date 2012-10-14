@@ -303,6 +303,54 @@ abstract class GlassOnion_Controller_Crud_Doctrine
         }
         return $this;
     }
+    
+    /**
+     * Find a record or create a new one if not exists. Either case return the record.
+     *
+     * @param  string $tableName
+     * @param  string $fieldName
+     * @param  string $value
+     * @param  bool $createIfNotExists
+     * @return void
+     * @throws Zend_Controller_Action_Exception
+     */
+    public function getRecordBy($tableName, $fieldName, $value, $createIfNotExists = false)
+    {
+        $record = Doctrine_Core::getTable($tableName)->findOneBy($fieldName, $value);
+        if (!$record && $createIfNotExists) {
+            $record = new $tableName;
+            $record->set($fieldName, $value);
+        }
+        return $record;
+    }
+    
+    /**
+     * Proxy for undefined methods.  
+     *
+     * @param  string $methodName
+     * @param  array $args
+     * @return void
+     * @throws Zend_Controller_Action_Exception
+     */
+    public function __call($methodName, $args)
+    {
+        $pattern = '/(getOrCreate|get)([a-z_]+)By([a-z_]+)/i';
+        
+        if (!preg_match($pattern, $methodName, $matches)) {
+            return parent::__call($methodName, $args);
+        }
+        
+        if (1 !== count($args)) {
+            require_once 'GlassOnion/Controller/Crud/Exception.php';
+            throw new GlassOnion_Controller_Crud_Exception(
+                sprintf('%s requires one and only one argument', $methodName));
+        }
+        
+        require_once 'Doctrine/Inflector.php';
+        $fieldName = Doctrine_Inflector::tableize($matches[3]);
+        
+        return $this->getRecordBy($matches[2], $fieldName, $args[0], 'getOrCreate' === $matches[1]);
+    }
 
     /**
      * Returns an existing record
