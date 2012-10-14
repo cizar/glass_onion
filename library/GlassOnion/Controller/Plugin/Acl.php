@@ -15,7 +15,7 @@ require_once 'Zend/Controller/Plugin/Abstract.php';
  * @package    GlassOnion_Controller
  * @subpackage Plugin
  */
-final class GlassOnion_Controller_Plugin_Acl
+class GlassOnion_Controller_Plugin_Acl
     extends Zend_Controller_Plugin_Abstract
 {
     /**
