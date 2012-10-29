@@ -289,9 +289,36 @@ abstract class GlassOnion_Controller_Crud_Doctrine
         }
         require_once 'Doctrine/Inflector.php';
         $fieldName = Doctrine_Inflector::tableize($matches[3]);
-        return $this->getRecordBy($fieldName, $args, 'getOrCreate' === $matches[1], $matches[2]);
+        return $this->getRecordBy($fieldName, $args[0], 'getOrCreate' === $matches[1], $matches[2]);
     }
-    
+
+    /**
+     * Returns 
+     * @param Doctrine_Query|Doctrine_Collection $records
+     * @return array
+     */
+    public static function getOptions($records, $format = '%value$s', $key = 'id')
+    {
+        if ($records instanceof Doctrine_Query) {
+            $records = $records->execute()->toArray();
+        } else if ($records instanceof Doctrine_Collection) {
+            $records = $records->toArray();
+        } else {
+            /**
+             * @see GlassOnion_Controller_Crud_Exception
+             */
+            require_once 'GlassOnion/Controller/Crud/Exception.php';
+            throw new GlassOnion_Controller_Crud_Exception(
+                'The colection must be an instance of Doctrine_Query or Doctrine_Collection');
+        }
+
+        $options = array();
+        foreach ($records as $record) {
+            $options[$record[$key]] = InAdvant_String::vnsprintf($format, $record);
+        }
+        return $options;
+    }
+        
     /**
      * Find a record or create a new one if not exists. Either case return the record.
      *
@@ -309,6 +336,14 @@ abstract class GlassOnion_Controller_Crud_Doctrine
         if (!$record && $createIfNotExists) {
             $record = $table->create();
             $record->set($fieldName, $value);
+        }
+        if (!$record) {
+            /**
+             * @see GlassOnion_Controller_Crud_Exception
+             */
+            require_once 'GlassOnion/Controller/Crud/Exception.php';
+            throw new GlassOnion_Controller_Crud_Exception(
+                "The record of $tableName could not be found by $fieldName = '$value'");
         }
         return $record;
     }
@@ -354,7 +389,48 @@ abstract class GlassOnion_Controller_Crud_Doctrine
         }
         return Doctrine_Core::getTable($tableName);   
     }
+
+    /**
+     * Start a transaction
+     *
+     * @return integer
+     */
+    protected function beginTransaction()
+    {
+        return $this->getConnection()->beginTransaction();
+    }
+
     
+    /**
+     * Commit the database changes done during a transaction
+     *
+     * @return boolean
+     */
+    protected function commit()
+    {
+        return $this->getConnection()->commit();
+    }
+    
+    /**
+     * Cancel any database changes done during a transaction
+     *
+     * @return boolean
+     */
+    protected function rollback()
+    {
+        return $this->getConnection()->rollback();
+    }
+    
+    /**
+     * Returns the current Doctrine connection
+     *
+     * @return Doctrine_Connection
+     */
+    protected function getConnection()
+    {
+        return Doctrine_Manager::connection();
+    }
+
     /**
      * Check if the query has filter
      *
@@ -365,4 +441,5 @@ abstract class GlassOnion_Controller_Crud_Doctrine
         $params = $query->getParams();
         return isset($params['where']) && count($params['where']) > 0;
     }
+    
 }
