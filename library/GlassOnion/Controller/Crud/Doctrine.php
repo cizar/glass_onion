@@ -279,7 +279,6 @@ abstract class GlassOnion_Controller_Crud_Doctrine
      * @param  string $methodName
      * @param  array $args
      * @return void
-     * @throws Zend_Controller_Action_Exception
      */
     public function __call($methodName, $args)
     {
@@ -294,10 +293,12 @@ abstract class GlassOnion_Controller_Crud_Doctrine
 
     /**
      * Returns 
+     *
      * @param Doctrine_Query|Doctrine_Collection $records
      * @return array
+     * @throws Zend_Controller_Action_Exception
      */
-    public static function getOptions($records, $format = '%value$s', $key = 'id')
+    public function getMultiOptions($records, $format = '%value$s', $key = 'id')
     {
         if ($records instanceof Doctrine_Query) {
             $records = $records->execute()->toArray();
@@ -314,7 +315,7 @@ abstract class GlassOnion_Controller_Crud_Doctrine
 
         $options = array();
         foreach ($records as $record) {
-            $options[$record[$key]] = InAdvant_String::vnsprintf($format, $record);
+            $options[$record[$key]] = $this->_vnsprintf($format, $record);
         }
         return $options;
     }
@@ -343,7 +344,7 @@ abstract class GlassOnion_Controller_Crud_Doctrine
              */
             require_once 'GlassOnion/Controller/Crud/Exception.php';
             throw new GlassOnion_Controller_Crud_Exception(
-                "The record of $tableName could not be found by $fieldName = '$value'");
+                "A record of $tableName with $fieldName equals '$value' could not be found");
         }
         return $record;
     }
@@ -352,6 +353,7 @@ abstract class GlassOnion_Controller_Crud_Doctrine
      * Returns an existing record
      *
      * @return Doctrine_Record
+     * @throws Zend_Controller_Action_Exception
      */
     protected function getRecord($id, $tableName = null)
     {
@@ -441,5 +443,32 @@ abstract class GlassOnion_Controller_Crud_Doctrine
         $params = $query->getParams();
         return isset($params['where']) && count($params['where']) > 0;
     }
-    
+
+    /**
+     * TBD
+     *
+     * @return string
+     */
+    private function _vnsprintf($format, array $data)
+    {
+        $pattern = '/ (?<!%) % ( (?: [[:alpha:]_-][[:alnum:]_-]* | ([-+])? [0-9]+ (?(2) (?:\.[0-9]+)? | \.[0-9]+ ) ) ) \$ [-+]? \'? .? -? [0-9]* (\.[0-9]+)? \w/x';
+        
+        preg_match_all($pattern, $format, $match, PREG_SET_ORDER | PREG_OFFSET_CAPTURE);
+        $offset = 0;
+        $keys = array_keys($data);
+
+        foreach ($match as $value) {
+            if (
+                ($key = array_search($value[1][0], $keys, TRUE)) !== FALSE
+                || (is_numeric($value[1][0])
+                && ($key = array_search((int)$value[1][0], $keys, TRUE)) !== FALSE)
+            ) {
+                $len = strlen($value[1][0]);
+                $format = substr_replace($format, 1 + $key, $offset + $value[1][1], $len);
+                $offset -= $len - strlen(1 + $key);
+            }
+        }
+
+        return vsprintf($format, $data);
+    }    
 }
