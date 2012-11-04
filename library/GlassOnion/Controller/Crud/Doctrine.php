@@ -283,12 +283,20 @@ abstract class GlassOnion_Controller_Crud_Doctrine
     public function __call($methodName, $args)
     {
         $pattern = '/(getOrCreate|get)([a-z_]+)By([a-z_]+)/i';
-        if (!preg_match($pattern, $methodName, $matches)) {
-            return parent::__call($methodName, $args);
+        if (preg_match($pattern, $methodName, $matches)) {
+            require_once 'Doctrine/Inflector.php';
+            $fieldName = Doctrine_Inflector::tableize($matches[3]);
+            return $this->getRecordBy($fieldName, $args[0], 'getOrCreate' === $matches[1], $matches[2]);
         }
-        require_once 'Doctrine/Inflector.php';
-        $fieldName = Doctrine_Inflector::tableize($matches[3]);
-        return $this->getRecordBy($fieldName, $args[0], 'getOrCreate' === $matches[1], $matches[2]);
+            
+        $pattern = '/getMaxValueOf([a-z_]+)From([a-z_]+)/i';
+        if (preg_match($pattern, $methodName, $matches)) {
+            require_once 'Doctrine/Inflector.php';
+            $fieldName = Doctrine_Inflector::tableize($matches[1]);
+            return $this->getMaxValueOf($fieldName, $matches[2]);
+        }
+
+        return parent::__call($methodName, $args);
     }
 
     /**
@@ -318,6 +326,24 @@ abstract class GlassOnion_Controller_Crud_Doctrine
             $options[$record[$key]] = $this->_vnsprintf($format, $record);
         }
         return $options;
+    }
+
+    /**
+     * Returns the max value of a field
+     *
+     * @param  string $tableName
+     * @param  string $fieldName
+     * @return integer
+     */
+    public function getMaxValueOf($fieldName, $tableName)
+    {
+        return (int) Doctrine_Query::create()
+            ->from($tableName)
+            ->andWhere($fieldName . ' IS NOT NULL')
+            ->orderBy($fieldName . ' DESC')
+            ->limit(1)
+            ->fetchOne()
+            ->get($fieldName);
     }
         
     /**
@@ -402,7 +428,6 @@ abstract class GlassOnion_Controller_Crud_Doctrine
         return $this->getConnection()->beginTransaction();
     }
 
-    
     /**
      * Commit the database changes done during a transaction
      *
