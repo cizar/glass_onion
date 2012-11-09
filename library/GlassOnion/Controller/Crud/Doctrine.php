@@ -370,7 +370,7 @@ abstract class GlassOnion_Controller_Crud_Doctrine
              */
             require_once 'GlassOnion/Controller/Crud/Exception.php';
             throw new GlassOnion_Controller_Crud_Exception(
-                "A record of $tableName with $fieldName equals '$value' could not be found");
+                "A record of $tableName with $fieldName '$value' could not be found");
         }
         return $record;
     }

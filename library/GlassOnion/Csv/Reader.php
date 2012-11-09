@@ -219,14 +219,15 @@ class GlassOnion_Csv_Reader implements Iterator, Countable
     public function rewind()
     {
         rewind($this->_handler);
+        $this->_position = 0;
         if (self::WITH_HEADER == $this->_headerMode || self::IGNORE_HEADER == $this->_headerMode) {
             $firstRow = $this->_read();
             if (!$this->_columnNames && self::WITH_HEADER == $this->_headerMode) {
                 $this->_columnNames = $firstRow;
             }
+            $this->_position = 1;
         }
         $this->_current = $this->_read();
-        $this->_position = 0;
     }
 
     /**
