@@ -134,6 +134,10 @@ class GlassOnion_Csv_Reader implements Iterator, Countable
      */
     public function open($filename)
     {
+        if (empty($filename)) {
+            require_once 'GlassOnion/Csv/Exception.php';
+            throw new GlassOnion_Csv_Exception("Filename cannot be empty");
+        }
         $handler = fopen($filename, 'r');
         if (!$handler) {
             require_once 'GlassOnion/Csv/Exception.php';
@@ -151,7 +155,9 @@ class GlassOnion_Csv_Reader implements Iterator, Countable
      */
     public function close()
     {
-        fclose($this->_handler);
+        if ($this->_handler) {
+            fclose($this->_handler);
+        }
         return $this;
     }
     

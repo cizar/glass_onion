@@ -21,13 +21,16 @@ class GlassOnion_Controller_Action_Helper_Log
     /**
      * Returns the logger and logs a message if it's defined
      *
-     * @param string $message
+     * @param string|Exception $message
      * @param int $priority
      * @return Zend_Log
      */
     public function direct($message = null, $priority = Zend_Log::INFO)
     {
         $logger = $this->getLogger();
+        if ($message instanceof Exception) {
+            $message = get_class($message) . ' "' . $message->getMessage() . '"';
+        }
         if (null !== $message) {
             $request = $this->getRequest();
             $trace = debug_backtrace();
