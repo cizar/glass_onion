@@ -128,14 +128,12 @@ abstract class GlassOnion_Controller_Crud_Doctrine
         $record = $this->getNewRecord();
 
         if ($this->_request->isPost()) {
-            try
-            {
+            try {
                 $this->create($record);
                 $record->save();
                 $this->_helper->redirector();
             }
-            catch (Doctrine_Validator_Exception $ex)
-            {
+            catch (Doctrine_Validator_Exception $ex) {
                 $this->view->invalidRecords = $ex->getInvalidRecords();
             }
         }
@@ -152,14 +150,12 @@ abstract class GlassOnion_Controller_Crud_Doctrine
         $record = $this->getRecord($this->_getParam('id'));
 
         if ($this->_request->isPost()) {
-            try
-            {
+            try {
                 $this->update($record);
                 $record->save();
                 $this->_helper->redirector();
             }
-            catch (Doctrine_Validator_Exception $ex)
-            {
+            catch (Doctrine_Validator_Exception $ex) {
                 $this->view->invalidRecords = $ex->getInvalidRecords();
             }
         }
@@ -174,7 +170,19 @@ abstract class GlassOnion_Controller_Crud_Doctrine
     public function deleteAction()
     {
         $record = $this->getRecord($this->_getParam('id'));
-        $this->destroy($record);
+        try {
+            $this->destroy($record);
+        }
+        catch (Doctrine_Connection_Mysql_Exception $ex) {
+            switch ($ex->getCode()) {
+                case 23000:
+                    $this->_helper->flashMessenger->error('No se puede eliminar el registro, está siendo usado por el sistema');
+                    break;
+                
+                default:
+                    throw $ex;
+            }
+        }
         $this->_helper->redirector('index');
     }
 
