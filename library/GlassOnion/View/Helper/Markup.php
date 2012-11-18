@@ -45,9 +45,6 @@ class GlassOnion_View_Helper_Markup extends Zend_View_Helper_Abstract
      */
     public function getValue()
     {
-        if (null === $this->_value) {
-            return ' ';
-        }
         return $this->_value;
     }
 
@@ -87,14 +84,16 @@ class GlassOnion_View_Helper_Markup extends Zend_View_Helper_Abstract
      */
     public function __toString()
     {
-        try
-        {
+        try {
+            $value = $this->getValue();
+            if (empty($value)) {
+                return '';
+            }
             $markup = Zend_Markup::factory($this->getParser(), 'Html');
-            return $markup->render($this->getValue());
+            return $markup->render($value);
         }
-        catch (Exception $e)
-        {
-            return $e->getMessage();
+        catch (Exception $e) {
+            return get_class($e) . ' ' . $e->getMessage();
         }
     }
 }
