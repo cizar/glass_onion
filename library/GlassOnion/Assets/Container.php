@@ -75,19 +75,27 @@ class GlassOnion_Assets_Container
      */    
     public static function fromYaml($filename)
     {
-        /**
-         * @see Zend_Config_Yaml
-         */
-        require_once 'Zend/Config/Yaml.php';
-        $yaml = new Zend_Config_Yaml($filename, 'assets');
-        /**
-         * @see GlassOnion_Assets_Asset
-         */
-        require_once 'GlassOnion/Assets/Asset.php';
-        $container = new self;
-        foreach ($yaml as $id => $config) {
-            $container->addAsset($id, GlassOnion_Assets_Asset::fromConfig($config));
+        try {
+            /**
+             * @see Zend_Config_Yaml
+             */
+            require_once 'Zend/Config/Yaml.php';
+            $yaml = new Zend_Config_Yaml($filename, 'assets');
+            /**
+             * @see GlassOnion_Assets_Asset
+             */
+            require_once 'GlassOnion/Assets/Asset.php';
+            $container = new self;
+            foreach ($yaml as $id => $config) {
+                $container->addAsset($id, GlassOnion_Assets_Asset::fromConfig($config));
+            }
+            return $container;
+        } catch (Zend_Config_Exception $ex) {
+            /**
+             * @see GlassOnion_Assets_Exception
+             */
+            require_once 'GlassOnion/Assets/Exception.php';
+            throw new GlassOnion_Assets_Exception("Failed to load config file $filename");
         }
-        return $container;
     }
 }
