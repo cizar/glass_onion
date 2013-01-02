@@ -95,7 +95,7 @@ class GlassOnion_Assets_Container
              * @see GlassOnion_Assets_Exception
              */
             require_once 'GlassOnion/Assets/Exception.php';
-            throw new GlassOnion_Assets_Exception("Failed to load config file $filename");
+            throw new GlassOnion_Assets_Exception("Failed to load the config file: " . $ex->getMessage());
         }
     }
 }
