@@ -6,6 +6,11 @@
 require_once 'Zend/Application/Resource/ResourceAbstract.php';
 
 /**
+ * @see GlassOnion_Assets_Container
+ */
+require_once 'GlassOnion/Assets/Container.php';
+
+/**
  * @category   GlassOnion
  * @package    GlassOnion_Application
  */
