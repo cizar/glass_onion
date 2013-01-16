@@ -22,6 +22,12 @@ class GlassOnion_Controller_Action_Helper_Identity
     public function direct($field = null)
     {
         $identity = Zend_Auth::getInstance()->getIdentity();
-        return is_null($field) ? $identity : $identity->$field;
+        if (null !== $field) {
+            if (!is_object($identity) || !property_exists($identity, $field)) {
+                throw new Exception("Unable to get the '$field' property from the identity");
+            }
+            return $identity->$field;
+        }
+        return $identity;
     }
 }

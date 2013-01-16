@@ -13,51 +13,17 @@ require_once 'Zend/View/Helper/Abstract.php';
 class GlassOnion_View_Helper_FlashMessenger
     extends Zend_View_Helper_Abstract
 {
-	/**
-	 * @const string
-	 */
-	const DEFAULT_TEMPLATE = '<div class="message %s">%s</div>';
-
     /**
      * @var Zend_Controller_Action_Helper_FlashMessenger
      */
     private $_flashMessenger = null;
 
     /**
-     * Display Flash Messages.
-     *
-     * @return string
-     */
-    public function flashMessenger($template = null)
-    {
-    	if (null === $template) {
-	    	$template = self::DEFAULT_TEMPLATE;
-    	}
-
-        $flashMessenger = $this->_getFlashMessenger();
-
-        $messages = $flashMessenger->getMessages();
-
-        if (!$messages) {
-            $messages = $flashMessenger->getCurrentMessages();
-            $flashMessenger->clearCurrentMessages();
-        }
-
-        $output ='';
-
-        foreach ($messages as $message) {
-            $output .= sprintf($template, $message->status, $message->message);
-        }
-
-        return $output;
-    }
-
-    /**
-     * Lazily fetches FlashMessenger Instance.
+     * Returns the Flash Messenger object.
      *
      * @return Zend_Controller_Action_Helper_FlashMessenger
      */
-    public function _getFlashMessenger()
+    public function flashMessenger()
     {
         if (null === $this->_flashMessenger) {
             $this->_flashMessenger = Zend_Controller_Action_HelperBroker::getStaticHelper('FlashMessenger');

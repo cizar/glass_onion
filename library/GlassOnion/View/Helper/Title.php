@@ -19,9 +19,13 @@ class GlassOnion_View_Helper_Title
      * @param string $title
      * @return string
      */
-    public function title($title)
+    public function title($title = null)
     {
-        $this->view->headTitle($title);
+        $helper = $this->view->headTitle();
+        if (null == $title) {
+            return $helper->offsetGet(0);
+        }
+        $helper->append($title);
         return $title;
     }
 }

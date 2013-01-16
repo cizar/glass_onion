@@ -228,7 +228,7 @@ class GlassOnion_Auth_Adapter_Doctrine
      *
      * @return stdClass|false
      */
-    function getResultRowObject()
+    public function getResultRowObject()
     {
         if (!$this->_resultRow) {
             return false;

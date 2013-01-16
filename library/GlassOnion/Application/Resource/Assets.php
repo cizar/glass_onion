@@ -25,6 +25,6 @@ class GlassOnion_Application_Resource_Assets
     public function init()
     {
         $options = $this->getOptions();
-        return GlassOnion_Assets_Container::fromYaml($options['filename']);
+        return GlassOnion_Assets_Container::fromYaml($options['config']);
     }
 }

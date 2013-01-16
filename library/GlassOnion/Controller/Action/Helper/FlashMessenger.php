@@ -14,18 +14,7 @@ class GlassOnion_Controller_Action_Helper_FlashMessenger
     extends Zend_Controller_Action_Helper_FlashMessenger
 {
     /**
-     * Strategy pattern: proxy to addMessage()
-     *
-     * @param  string $message
-     * @return void
-     */
-    public function direct($message)
-    {
-        return parent::direct($this->_factory($message, 'info'));
-    }
-
-    /**
-     * Add a message to flash message
+     * Add a formated message to the flash messenger
      *
      * @param string $method
      * @param array $args
@@ -33,19 +22,11 @@ class GlassOnion_Controller_Action_Helper_FlashMessenger
      */
     public function __call($method, $args)
     {
+        if (!preg_match('/^(success|info|warning|error)$/', $method)) {
+            throw new Exception("Status '$method' is not allowed");
+        }
         foreach ($args as $message) {
-            $this->addMessage($this->_factory($message, $method));
+            $this->addMessage(array('status' => $method, 'message' => $message));
         }
-    }
-
-    private function _factory($message, $status)
-    {
-        if (!preg_match('/^(success|info|warning|error)$/', $status)) {
-            throw new Exception("Status '$status' is not allowed");
-        }
-        $obj = new stdClass();
-        $obj->message = $message;
-        $obj->status = $status;
-        return $obj;
     }
 }
