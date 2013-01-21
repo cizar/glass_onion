@@ -176,7 +176,7 @@ abstract class GlassOnion_Controller_Crud_Doctrine
         catch (Doctrine_Connection_Mysql_Exception $ex) {
             switch ($ex->getCode()) {
                 case 23000:
-                    $this->_helper->flashMessenger->error('No se puede eliminar el registro, está siendo usado por el sistema');
+                    $this->_helper->flashMessenger->error($ex->getMessage());
                     break;
                 
                 default:
