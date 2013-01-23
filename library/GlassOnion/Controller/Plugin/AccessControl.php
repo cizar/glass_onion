@@ -172,7 +172,7 @@ class GlassOnion_Controller_Plugin_AccessControl
             return;
         }
 
-        Zend_Controller_Action_HelperBroker::getStaticHelper('LastRequest')->rememberCurrentRequest();
+        Zend_Controller_Action_HelperBroker::getStaticHelper('RedirectToLastRequest')->rememberCurrentRequest();
 
         $this->denyAccess();
     }
