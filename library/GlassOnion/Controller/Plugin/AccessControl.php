@@ -166,13 +166,12 @@ class GlassOnion_Controller_Plugin_AccessControl
             $resourceName = 'unknown';
         }
 
-        $session = new Zend_Session_Namespace('LastRequest');
-
         if ($acl->isAllowed($this->getRoleName(), $resourceName, $request->getActionName())) {
             return;
         }
 
-        Zend_Controller_Action_HelperBroker::getStaticHelper('RedirectToLastRequest')->rememberCurrentRequest();
+        $helper = Zend_Controller_Action_HelperBroker::getStaticHelper('RedirectToLastRequest');
+        $helper->rememberCurrentRequest();
 
         $this->denyAccess();
     }
