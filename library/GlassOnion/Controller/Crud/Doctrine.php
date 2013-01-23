@@ -134,6 +134,7 @@ abstract class GlassOnion_Controller_Crud_Doctrine
                 $this->_helper->redirector();
             }
             catch (Doctrine_Validator_Exception $ex) {
+                $this->_helper->flashMessenger->error('Se han encontrado errores, verifique los datos ingresados y vuelva a intentar');
                 $this->view->invalidRecords = $ex->getInvalidRecords();
             }
         }
@@ -156,6 +157,7 @@ abstract class GlassOnion_Controller_Crud_Doctrine
                 $this->_helper->redirector();
             }
             catch (Doctrine_Validator_Exception $ex) {
+                $this->_helper->flashMessenger->error('Se han encontrado errores, verifique los datos ingresados y vuelva a intentar');
                 $this->view->invalidRecords = $ex->getInvalidRecords();
             }
         }
