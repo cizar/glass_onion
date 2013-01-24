@@ -28,52 +28,52 @@ class GlassOnion_View_Helper_TimeAgo extends Zend_View_Helper_Abstract
 
         if ( $distanceInMinutes <= 1 ) {
             if ( !$showLessThanAMinute ) {
-                return ($distanceInMinutes == 0) ? 'less than a minute' : '1 minute';
+                return $this->view->translate(($distanceInMinutes == 0) ? 'less than a minute' : '1 minute');
             } else {
                 if ( $distanceInSeconds < 5 ) {
-                    return 'less than 5 seconds';
+                    return $this->view->translate('less than %s seconds', 5);
                 }
                 if ( $distanceInSeconds < 10 ) {
-                    return 'less than 10 seconds';
+                    return $this->view->translate('less than %s seconds', 10);
                 }
                 if ( $distanceInSeconds < 20 ) {
-                    return 'less than 20 seconds';
+                    return $this->view->translate('less than %s seconds', 20);
                 }
                 if ( $distanceInSeconds < 40 ) {
-                    return 'about half a minute';
+                    return $this->view->translate('about half a minute');
                 }
                 if ( $distanceInSeconds < 60 ) {
-                    return 'less than a minute';
+                    return $this->view->translate('less than a minute');
                 }
 
-                return '1 minute';
+                return $this->view->translate('1 minute');
             }
         }
         if ( $distanceInMinutes < 45 ) {
-            return $distanceInMinutes . ' minutes';
+            return $this->view->translate('%s minutes', $distanceInMinutes);
         }
         if ( $distanceInMinutes < 90 ) {
-            return 'about 1 hour';
+            return $this->view->translate('about 1 hour');
         }
         if ( $distanceInMinutes < 1440 ) {
-            return 'about ' . round(floatval($distanceInMinutes) / 60.0) . ' hours';
+            return $this->view->translate('about %s hours', round(floatval($distanceInMinutes) / 60.0));
         }
         if ( $distanceInMinutes < 2880 ) {
-            return '1 day';
+            return $this->view->translate('1 day');
         }
         if ( $distanceInMinutes < 43200 ) {
-            return 'about ' . round(floatval($distanceInMinutes) / 1440) . ' days';
+            return $this->view->translate('about %s days', round(floatval($distanceInMinutes) / 1440));
         }
         if ( $distanceInMinutes < 86400 ) {
-            return 'about 1 month';
+            return $this->view->translate('about 1 month');
         }
         if ( $distanceInMinutes < 525600 ) {
-            return round(floatval($distanceInMinutes) / 43200) . ' months';
+            return $this->view->translate('%s months', round(floatval($distanceInMinutes) / 43200));
         }
         if ( $distanceInMinutes < 1051199 ) {
-            return 'about 1 year';
+            return $this->view->translate('about 1 year');
         }
 
-        return 'over ' . round(floatval($distanceInMinutes) / 525600) . ' years';
+        return $this->view->translate('over %s years', array(round(floatval($distanceInMinutes) / 525600)));
     }
 }

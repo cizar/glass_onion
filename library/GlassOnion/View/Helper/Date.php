@@ -39,9 +39,9 @@ class GlassOnion_View_Helper_Date extends Zend_View_Helper_Abstract
      * @param string $format
      * @return GlassOnion_View_Helper_Date Provides a fluent interface
      */
-    public function date($value)//, $format = null)
+    public function date($value, $format = null)
     {
-        return $this->setValue($value);//->setFormat($format);
+        return $this->setValue($value)->setFormat($format);
     }
 
     /**

@@ -131,10 +131,11 @@ abstract class GlassOnion_Controller_Crud_Doctrine
             try {
                 $this->create($record);
                 $record->save();
+                $this->_helper->flashMessenger->success($this->getCreateSuccessMessage($record));
                 $this->_helper->redirector();
             }
             catch (Doctrine_Validator_Exception $ex) {
-                $this->_helper->flashMessenger->error('Se han encontrado errores, verifique los datos ingresados y vuelva a intentar');
+                $this->_helper->flashMessenger->error($this->getCreateErrorMessage($ex));
                 $this->view->invalidRecords = $ex->getInvalidRecords();
             }
         }
@@ -142,7 +143,23 @@ abstract class GlassOnion_Controller_Crud_Doctrine
         $this->record = $record;
         $this->view->record = $record;
     }
-        
+
+    /**
+     * @retrurn string
+     */
+    public function getCreateSuccessMessage(Doctrine_Record $record)
+    {
+        return 'Se ha creado el registro';
+    }
+
+    /**
+     * @retrurn string
+     */
+    public function getCreateErrorMessage(Doctrine_Validator_Exception $ex)
+    {
+        return 'Se han encontrado errores, verifique los datos ingresados y vuelva a intentar';
+    }
+
     /**
      * @return void
      */
@@ -154,10 +171,11 @@ abstract class GlassOnion_Controller_Crud_Doctrine
             try {
                 $this->update($record);
                 $record->save();
+                $this->_helper->flashMessenger->success($this->getUpdateSuccessMessage($record));
                 $this->_helper->redirector();
             }
             catch (Doctrine_Validator_Exception $ex) {
-                $this->_helper->flashMessenger->error('Se han encontrado errores, verifique los datos ingresados y vuelva a intentar');
+                $this->_helper->flashMessenger->error($this->getUpdateErrorMessage($ex));
                 $this->view->invalidRecords = $ex->getInvalidRecords();
             }
         }
@@ -165,7 +183,23 @@ abstract class GlassOnion_Controller_Crud_Doctrine
         $this->record = $record;
         $this->view->record = $record;
     }
+
+    /**
+     * @return void
+     */
+    public function getUpdateSuccessMessage(Doctrine_Record $record)
+    {
+        return 'Se ha actualizado el registro';
+    }
     
+    /**
+     * @retrurn string
+     */
+    public function getUpdateErrorMessage(Doctrine_Validator_Exception $ex)
+    {
+        return 'Se han encontrado errores, verifique los datos ingresados y vuelva a intentar';
+    }
+
     /**
      * @return void
      */
