@@ -1,6 +1,37 @@
 <?php
 
 /**
+ * Glass Onion
+ *
+ * Copyright (c) 2009 César Kästli (cesarkastli@gmail.com)
+ *
+ * Permission is hereby granted, free of charge, to any
+ * person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the
+ * Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish,
+ * distribute, sublicense, and/or sell copies of the
+ * Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice
+ * shall be included in all copies or substantial portions of
+ * the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY
+ * KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+ * WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+ * PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS
+ * OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+ * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+ * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ * @copyright  Copyright (c) 2009 César Kästli (cesarkastli@gmail.com)
+ * @license    MIT
+ */
+
+/**
  * @see Zend_View_Helper_Abstract
  */
 require_once 'Zend/View/Helper/Abstract.php';
@@ -15,17 +46,12 @@ class GlassOnion_View_Helper_Number extends Zend_View_Helper_Abstract
     /**
      * @const integer
      */
-    const DEFAULT_DECIMALS = 2;
+    const DEFAULT_PRECISION = 0;
 
     /**
      * @const string
      */
-    const DEFAULT_DEC_POINT = '.';
-
-    /**
-     * @const string
-     */
-    const DEFAULT_THOUSANDS_SEP = ',';
+    const DEFAULT_LOCALE = 'en_US';
 
     /**
      * @var numeric
@@ -35,36 +61,26 @@ class GlassOnion_View_Helper_Number extends Zend_View_Helper_Abstract
     /**
      * @var integer
      */
-    private $_decimals;
+    private $_precision;
 
     /**
      * @var string
      */
-    private $_decPoint;
-
-    /**
-     * @var string
-     */
-    private $_thousandsSep;
+    private $_locale;
 
     /**
      * Helper entry point
      *
      * @return GlassOnion_View_Helper_Number Provides a fluent interface
      */
-    public function number($value = null, $decimals = null, $decPoint = null, $thousandsSep = null)
+    public function number($value, $precision = null, $locale = null)
     {
-        if (null !== $value) {
-            $this->setValue($value);
+        $this->setValue($value);
+        if (null !== $precision) {
+            $this->setPrecision($precision);
         }
-        if (null !== $decimals) {
-            $this->setDecimals($decimals);
-        }
-        if (null !== $decPoint) {
-            $this->setDecPoint($decPoint);
-        }
-        if (null !== $thousandsSep) {
-            $this->setThousandsSep($thousandsSep);
+        if (null !== $locale) {
+            $this->setLocale($locale);
         }
         return $this;
     }
@@ -94,77 +110,59 @@ class GlassOnion_View_Helper_Number extends Zend_View_Helper_Abstract
     }
 
     /**
-     * Returns the number of decimal points
+     * Returns the decimal precision of the number
      *
      * @return integer
      */
-    public function getDecimals()
+    public function getPrecision()
     {
-        if (null === $this->_decimals) {
-            $this->_decimals = self::DEFAULT_DECIMALS;
+        if (null === $this->_precision) {
+            $this->_precision = self::DEFAULT_PRECISION;
         }
-        return $this->_decimals;
+        return $this->_precision;
     }
 
     /**
-     * Sets the number of decimal points
+     * Sets the decimal precision of the number
      *
      * @return GlassOnion_View_Helper_Number Provides a fluent interface
      */
-    public function setDecimals($decimals)
+    public function setPrecision($precision)
     {
-        if (!is_integer($decimals) || $decimals < 0) {
-            throw new Zend_View_Exception('The number of decimal points must be integer and positive.');
+        if (!is_integer($precision) || $precision < 0) {
+            throw new Zend_View_Exception('The precision value must be integer and positive.');
         }
-        $this->_decimals = $decimals;
+        $this->_precision = $precision;
         return $this;
     }
 
     /**
-     * Returns the separator for the decimal point
+     * Returns the locale
      *
      * @return string
      */
-    public function getDecPoint()
+    public function getLocale()
     {
-        if (null === $this->_decPoint) {
-            $this->_decPoint = self::DEFAULT_DEC_POINT;
+        if (null === $this->_locale) {
+            require_once 'Zend/Registry.php';
+            if (Zend_Registry::isRegistered('Zend_Locale')) {
+                $this->_locale = Zend_Registry::get('Zend_Locale');
+                die;
+            } else {
+                $this->_locale = self::DEFAULT_LOCALE;
+            }
         }
-        return $this->_decPoint;
+        return $this->_locale;
     }
 
     /**
-     * Sets the separator for the decimal point
+     * Sets the locale
      *
      * @return GlassOnion_View_Helper_Number Provides a fluent interface
      */
-    public function setDecPoint($decPoint)
+    public function setLocale($locale)
     {
-        $this->_decPoint = $decPoint;
-        return $this;
-    }
-
-    /**
-     * Returns the thousands separator
-     *
-     * @return string
-     */
-    public function getThousandsSep()
-    {
-        if (null === $this->_thousandsSep) {
-            $this->_thousandsSep = self::DEFAULT_THOUSANDS_SEP;
-        }
-        return $this->_thousandsSep;
-    }
-
-    /**
-     * Sets the thousands separator
-     *
-     * @return GlassOnion_View_Helper_Number Provides a fluent interface
-     */
-    public function setThousandsSep($thousandsSep)
-    {
-        $this->_thousandsSep = $thousandsSep;
+        $this->_locale = $locale;
         return $this;
     }
 
@@ -175,6 +173,8 @@ class GlassOnion_View_Helper_Number extends Zend_View_Helper_Abstract
      */
     public function __toString()
     {
-        return number_format($this->getValue(), $this->getDecimals(), $this->getDecPoint(), $this->getThousandsSep());
+        require_once 'Zend/Locale/Format.php';
+        return Zend_Locale_Format::toNumber($this->getValue(),
+            array('precision' => $this->getPrecision(), 'locale' => $this->getLocale()));
     }
 }
