@@ -147,7 +147,6 @@ class GlassOnion_View_Helper_Number extends Zend_View_Helper_Abstract
             require_once 'Zend/Registry.php';
             if (Zend_Registry::isRegistered('Zend_Locale')) {
                 $this->_locale = Zend_Registry::get('Zend_Locale');
-                die;
             } else {
                 $this->_locale = self::DEFAULT_LOCALE;
             }
