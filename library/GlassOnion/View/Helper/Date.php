@@ -37,11 +37,6 @@
 require_once 'Zend/View/Helper/Abstract.php';
 
 /**
- * @see Zend_Date
- */
-require_once 'Zend/Date.php';
-
-/**
  * @category   GlassOnion
  * @package    GlassOnion_View
  * @subpackage Helper
@@ -51,12 +46,7 @@ class GlassOnion_View_Helper_Date extends Zend_View_Helper_Abstract
     /**
      * @const string
      */
-    const DEFAULT_FORMAT = 'Y-m-d';
-
-    /**
-     * @var string
-     */
-    private $_format;
+    const DEFAULT_LOCALE = 'en_US';
 
     /**
      * @var string
@@ -64,15 +54,24 @@ class GlassOnion_View_Helper_Date extends Zend_View_Helper_Abstract
     private $_value;
 
     /**
+     * @var string
+     */
+    private $_locale;
+
+    /**
      * Returns a formated date
      *
      * @param string $value
-     * @param string $format
+     * @param string $locale
      * @return GlassOnion_View_Helper_Date Provides a fluent interface
      */
-    public function date($value, $format = null)
+    public function date($value, $locale = null)
     {
-        return $this->setValue($value)->setFormat($format);
+        $this->setValue($value);
+        if (null !== $locale) {
+            $this->setLocale($locale);
+        }
+        return $this;
     }
 
     /**
@@ -98,27 +97,35 @@ class GlassOnion_View_Helper_Date extends Zend_View_Helper_Abstract
     }
 
     /**
-     * Returns the date format
+     * Returns the locale
      *
      * @return string
      */
-    public function getFormat()
+    public function getLocale()
     {
-        if (null === $this->_format) {
-            $this->_format = self::DEFAULT_FORMAT;
+        if (null === $this->_locale) {
+            require_once 'Zend/Registry.php';
+            if (Zend_Registry::isRegistered('Zend_Locale')) {
+                $this->_locale = Zend_Registry::get('Zend_Locale');
+            } else {
+                $this->_locale = self::DEFAULT_LOCALE;
+            }
         }
-        return $this->_format;
+        return $this->_locale;
     }
 
     /**
-     * Returns a formated date
+     * Returns the locale
      *
-     * @param string $format
+     * @param string $locale
      * @return GlassOnion_View_Helper_Date Provides a fluent interface
      */
-    public function setFormat($format)
+    public function setLocale($locale)
     {
-        $this->_format = $format;
+        if (!Zend_Locale::isLocale($locale)) {
+            throw new Zend_View_Exception('The given locale is not valid.');
+        }
+        $this->_locale = $locale;
         return $this;
     }
 
@@ -129,7 +136,8 @@ class GlassOnion_View_Helper_Date extends Zend_View_Helper_Abstract
      */
     public function __toString()
     {
-        $obj = new Zend_Date($this->getValue(), 'Y-m-d');
-        return $obj->toString($this->getformat());
+        require_once 'Zend/Date.php';
+        $date = new Zend_Date($this->getValue(), 'Y-m-d');
+        return $date->toString(Zend_Date::DATES, null, $this->getLocale());
     }
 }

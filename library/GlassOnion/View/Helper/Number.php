@@ -161,6 +161,9 @@ class GlassOnion_View_Helper_Number extends Zend_View_Helper_Abstract
      */
     public function setLocale($locale)
     {
+        if (!Zend_Locale::isLocale($locale)) {
+            throw new Zend_View_Exception('The given locale is not valid.');
+        }
         $this->_locale = $locale;
         return $this;
     }
