@@ -41,17 +41,30 @@ class GlassOnion_View_Helper_FieldErrors extends Zend_View_Helper_FormElement
     /**
      * Returns a form label with the record error stack (Only for Doctrine)
      *
-     * @param string $field
+     * @param string|array $fields
      * @param Doctrine_Record $record
      * @return Zend_View_Helper_FormLabel
      */
-    public function fieldErrors($field, Doctrine_Record $record = null)
+    public function fieldErrors($fields, Doctrine_Record $record = null)
     {
         if (null === $record) {
             $record = $this->view->record;
         }
         
-        $errors = $record->getErrorStack()->get($field);
+        $errors = array();
+
+        foreach ((array) $fields as $field) {
+            if (!is_string($field)) {
+                /**
+                 * @see Zend_View_Exception
+                 */
+                require_once 'Zend/View/Exception.php';
+                throw new Zend_View_Exception('The field name must be string');
+            }
+            if ($fieldErrors = $record->getErrorStack()->get($field)) {
+                $errors = array_merge($errors, $fieldErrors);
+            }
+        }
 
         if (!$errors) {
             return '';

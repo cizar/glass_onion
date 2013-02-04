@@ -46,15 +46,29 @@ class GlassOnion_View_Helper_FieldHasErrors extends Zend_View_Helper_FormElement
     /**
      * Returns true if the field has errors (Only for Doctrine)
      *
-     * @param string $field
+     * @param string|array $fields
      * @param Doctrine_Record $record
      * @return boolean
      */
-    public function fieldHasErrors($field, Doctrine_Record $record = null)
+    public function fieldHasErrors($fields, Doctrine_Record $record = null)
     {
         if (null === $record) {
             $record = $this->view->record;
         }
-        return $record->getErrorStack()->contains((string) $field);
+
+        foreach ((array) $fields as $field) {
+            if (!is_string($field)) {
+                /**
+                 * @see Zend_View_Exception
+                 */
+                require_once 'Zend/View/Exception.php';
+                throw new Zend_View_Exception('The field name must be string');
+            }
+            if ($record->getErrorStack()->contains($field)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

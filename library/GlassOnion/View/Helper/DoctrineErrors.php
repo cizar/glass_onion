@@ -119,7 +119,7 @@ class GlassOnion_View_Helper_DoctrineErrors
              */
             require_once 'Zend/Registry.php';
             if (Zend_Registry::isRegistered('Zend_Translate')) {
-                $this->setTranslator(Zend_Registry::get('Zend_Translate'));
+                $this->_translator = Zend_Registry::get('Zend_Translate');
             }
         }
 
