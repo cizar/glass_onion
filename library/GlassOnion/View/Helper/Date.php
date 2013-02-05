@@ -51,12 +51,12 @@ class GlassOnion_View_Helper_Date extends Zend_View_Helper_Abstract
     /**
      * @var string
      */
-    private $_value;
+    private $_value = null;
 
     /**
      * @var string
      */
-    private $_locale;
+    private $_locale = null;
 
     /**
      * Returns a formated date
@@ -72,6 +72,16 @@ class GlassOnion_View_Helper_Date extends Zend_View_Helper_Abstract
             $this->setLocale($locale);
         }
         return $this;
+    }
+
+    /**
+     * Checks if a value has been defined
+     *
+     * @return boolean
+     */
+    public function hasValue()
+    {
+        return null !== $this->_value;
     }
 
     /**
@@ -136,8 +146,11 @@ class GlassOnion_View_Helper_Date extends Zend_View_Helper_Abstract
      */
     public function __toString()
     {
-        require_once 'Zend/Date.php';
-        $date = new Zend_Date($this->getValue(), 'Y-m-d');
-        return $date->toString(Zend_Date::DATES, null, $this->getLocale());
+        if ($this->hasValue()) {
+            require_once 'Zend/Date.php';
+            $date = new Zend_Date($this->getValue(), 'Y-m-d');
+            return $date->toString(Zend_Date::DATES, null, $this->getLocale());
+        }
+        return '';
     }
 }
