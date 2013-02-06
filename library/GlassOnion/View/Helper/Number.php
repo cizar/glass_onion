@@ -75,13 +75,9 @@ class GlassOnion_View_Helper_Number extends Zend_View_Helper_Abstract
      */
     public function number($value, $precision = null, $locale = null)
     {
-        $this->setValue($value);
-        if (null !== $precision) {
-            $this->setPrecision($precision);
-        }
-        if (null !== $locale) {
-            $this->setLocale($locale);
-        }
+        $this->_value = $value;
+        $this->_precision = $precision;
+        $this->_locale = $locale;
         return $this;
     }
 
@@ -117,7 +113,7 @@ class GlassOnion_View_Helper_Number extends Zend_View_Helper_Abstract
     public function getPrecision()
     {
         if (null === $this->_precision) {
-            $this->_precision = self::DEFAULT_PRECISION;
+            return self::DEFAULT_PRECISION;
         }
         return $this->_precision;
     }
@@ -143,15 +139,16 @@ class GlassOnion_View_Helper_Number extends Zend_View_Helper_Abstract
      */
     public function getLocale()
     {
-        if (null === $this->_locale) {
-            require_once 'Zend/Registry.php';
-            if (Zend_Registry::isRegistered('Zend_Locale')) {
-                $this->_locale = Zend_Registry::get('Zend_Locale');
-            } else {
-                $this->_locale = self::DEFAULT_LOCALE;
-            }
+        if (null !== $this->_locale) {
+            return $this->_locale;
         }
-        return $this->_locale;
+
+        require_once 'Zend/Registry.php';
+        if (Zend_Registry::isRegistered('Zend_Locale')) {
+            return Zend_Registry::get('Zend_Locale');
+        }
+        
+        return self::DEFAULT_LOCALE;
     }
 
     /**

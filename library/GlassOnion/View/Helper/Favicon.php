@@ -45,17 +45,32 @@ class GlassOnion_View_Helper_Favicon
     extends Zend_View_Helper_Abstract
 {
     /**
+     * @see string
+     */
+    const DEFAULT_HREF = 'favicon.ico';
+
+    /**
+     * @see string
+     */
+    const DEFAULT_TYPE = 'image/x-icon';
+
+    /**
+     * @see string
+     */
+    const DEFAULT_PLACEMENT = Zend_View_Helper_Placeholder_Container_Abstract::APPEND;
+
+    /**
      * Appends a theme's favicon to the head link placeholder 
      *
      * @param string $href
      * @param string $placement
      * @return Zend_View
      */
-    public function favicon($href, $placement = Zend_View_Helper_Placeholder_Container_Abstract::APPEND)
+    public function favicon($href = self::DEFAULT_HREF, $type = self::DEFAULT_TYPE, $placement = self::DEFAULT_PLACEMENT)
     {
         $url = preg_match('/^(ht|f)tp(s)*:\/\/|^\//', $href)
-            ? $href : $this->view->themeBaseUrl($href);
-        $this->view->headLink(array('rel' => 'icon', 'href' => $url));
+            ? $href : $this->view->baseUrl($href);
+        $this->view->headLink(array('rel' => 'shortcut icon', 'href' => $url, 'type' => $type));
         return $this->view;
     }
 }
