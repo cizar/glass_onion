@@ -67,10 +67,8 @@ class GlassOnion_View_Helper_Date extends Zend_View_Helper_Abstract
      */
     public function date($value, $locale = null)
     {
-        $this->setValue($value);
-        if (null !== $locale) {
-            $this->setLocale($locale);
-        }
+        $this->_value = $value;
+        $this->_locale = $locale;
         return $this;
     }
 
@@ -81,7 +79,7 @@ class GlassOnion_View_Helper_Date extends Zend_View_Helper_Abstract
      */
     public function hasValue()
     {
-        return null !== $this->_value;
+        return !empty($this->_value);
     }
 
     /**
@@ -113,15 +111,16 @@ class GlassOnion_View_Helper_Date extends Zend_View_Helper_Abstract
      */
     public function getLocale()
     {
-        if (null === $this->_locale) {
-            require_once 'Zend/Registry.php';
-            if (Zend_Registry::isRegistered('Zend_Locale')) {
-                $this->_locale = Zend_Registry::get('Zend_Locale');
-            } else {
-                $this->_locale = self::DEFAULT_LOCALE;
-            }
+        if (null !== $this->_locale) {
+            return $this->_locale;
         }
-        return $this->_locale;
+
+        require_once 'Zend/Registry.php';
+        if (Zend_Registry::isRegistered('Zend_Locale')) {
+            return Zend_Registry::get('Zend_Locale');
+        }
+        
+        return self::DEFAULT_LOCALE;
     }
 
     /**
