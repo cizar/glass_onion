@@ -63,16 +63,16 @@ class GlassOnion_Application_Resource_Doctrine
 
         $manager = Doctrine_Manager::getInstance();
 
-        $attributes = array(
-            Doctrine_Core::ATTR_AUTO_ACCESSOR_OVERRIDE => TRUE,
+        $managerAttributes = array(
+            Doctrine_Core::ATTR_AUTO_ACCESSOR_OVERRIDE => true,
             Doctrine_Core::ATTR_MODEL_LOADING          => Doctrine_Core::MODEL_LOADING_CONSERVATIVE,
-            Doctrine_Core::ATTR_AUTOLOAD_TABLE_CLASSES => TRUE,
+            Doctrine_Core::ATTR_AUTOLOAD_TABLE_CLASSES => true,
             Doctrine_Core::ATTR_VALIDATE               => Doctrine_Core::VALIDATE_ALL,
-            Doctrine_Core::ATTR_USE_DQL_CALLBACKS      => TRUE,
-            Doctrine_Core::ATTR_QUOTE_IDENTIFIER       => TRUE,
+            Doctrine_Core::ATTR_USE_DQL_CALLBACKS      => true,
+            Doctrine_Core::ATTR_QUOTE_IDENTIFIER       => true,
         );
 
-        foreach ($attributes as $key => $value) {
+        foreach ($managerAttributes as $key => $value) {
             $manager->setAttribute($key, $value);
         }
 
@@ -97,7 +97,18 @@ class GlassOnion_Application_Resource_Doctrine
             }
         }
 
-        $manager->openConnection($config['dsn']);
+        $connection = $manager->openConnection($config['dsn']);
+
+        $connectionAttributes = array(
+            Doctrine_Core::ATTR_USE_NATIVE_ENUM         => true,
+            Doctrine_Core::ATTR_DEFAULT_TABLE_COLLATE   => 'utf8_unicode_ci',
+            Doctrine_Core::ATTR_DEFAULT_TABLE_CHARSET   => 'utf8',
+            Doctrine_Core::ATTR_AUTO_FREE_QUERY_OBJECTS => true
+        );
+
+        foreach ($connectionAttributes as $key => $value) {
+            $connection->setAttribute($key, $value);
+        }
 
         return $manager;
     }

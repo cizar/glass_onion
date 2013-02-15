@@ -146,9 +146,14 @@ class GlassOnion_View_Helper_Date extends Zend_View_Helper_Abstract
     public function __toString()
     {
         if ($this->hasValue()) {
-            require_once 'Zend/Date.php';
-            $date = new Zend_Date($this->getValue(), 'Y-m-d');
-            return $date->toString(Zend_Date::DATES, null, $this->getLocale());
+            try {
+                require_once 'Zend/Date.php';
+                $date = new Zend_Date($this->getValue(), 'Y-m-d');
+                return $date->toString(Zend_Date::DATES, null, $this->getLocale());                
+            }
+            catch (Exception $ex) {
+                return $this->getValue();
+            }
         }
         return '';
     }
