@@ -100,10 +100,8 @@ class GlassOnion_Application_Resource_Doctrine
         $connection = $manager->openConnection($config['dsn']);
 
         $connectionAttributes = array(
-            Doctrine_Core::ATTR_USE_NATIVE_ENUM         => true,
             Doctrine_Core::ATTR_DEFAULT_TABLE_COLLATE   => 'utf8_unicode_ci',
-            Doctrine_Core::ATTR_DEFAULT_TABLE_CHARSET   => 'utf8',
-            Doctrine_Core::ATTR_AUTO_FREE_QUERY_OBJECTS => true
+            Doctrine_Core::ATTR_DEFAULT_TABLE_CHARSET   => 'utf8'
         );
 
         foreach ($connectionAttributes as $key => $value) {
