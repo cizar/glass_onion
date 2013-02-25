@@ -32,19 +32,9 @@
  */
 
 /**
- * @see ZendX_JQuery
- */
-require_once 'ZendX/JQuery.php';
-
-/**
  * @see ZendX_JQuery_View_Helper_JQuery
  */
 require_once 'ZendX/JQuery/View/Helper/JQuery.php';
-
-/**
- * @see ZendX_JQuery_View_Helper_DatePicker
- */
-require_once 'ZendX/JQuery/View/Helper/DatePicker.php';
 
 /**
  * @see Zend_View_Helper_FormElement
@@ -56,44 +46,20 @@ require_once 'Zend/View/Helper/FormElement.php';
  * @package    GlassOnion_View
  * @subpackage Helper
  */
-class GlassOnion_View_Helper_FormDate extends Zend_View_Helper_FormElement
+class GlassOnion_View_Helper_FormAutocompleteselect extends Zend_View_Helper_FormElement
 {
-	/**
-	 * @var array
-	 */
-	protected $_info;
-
     /**
      * @return string
      */
-    public function formDate($name, $value = null, $params = null, $attribs = null)
+    public function formAutocompleteselect($name, $value = null, $attribs = null,
+        $options = null, $listsep = "<br />\n")
     {
-    	$this->_info = $this->_getInfo($name, $value, $attribs);
-    	if (!isset($params['dateFormat']) && Zend_Registry::isRegistered('Zend_Locale')) {
-    		$params['dateFormat'] = ZendX_JQuery_View_Helper_DatePicker::resolveZendLocaleToDatePickerFormat();
-    	}
-    	$js = sprintf('%s("#%s").datepicker(%s);',
+    	$info = $this->_getInfo($name, $value, $attribs, $options, $listsep);
+    	$js = sprintf('%s("#%s").autocompleteselect();',
     		ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(),
-    		$this->_info['id'],
-    		ZendX_JQuery::encodeJson($params)
+    		$info['id']
     	);
     	$this->view->jQuery()->addOnLoad($js);
-    	return $this;
-    }
-
-    /**
-     * Return the complete HTML element tag
-     *
-     * @return string
-     */
-    public function __toString()
-    {
-        return sprintf('<input type="text" name="%s" id="%s" value="%s"%s%s%s',
-        	$this->view->escape($this->_info['name']),
-        	$this->view->escape($this->_info['id']),
-        	$this->view->escape($this->_info['value']),
-        	$this->_info['disable'] ? ' disabled="disabled"' : '',
-            $this->_htmlAttribs($this->_info['attribs']),
-            $this->getClosingBracket());
+    	return $this->view->formSelect($name, $value, $attribs, $options, $listsep);
     }
 }
