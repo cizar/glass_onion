@@ -361,14 +361,21 @@ abstract class GlassOnion_Controller_Crud_Doctrine
         if (preg_match($pattern, $methodName, $matches)) {
             require_once 'Doctrine/Inflector.php';
             $fieldName = Doctrine_Inflector::tableize($matches[3]);
-            return $this->getRecordBy($fieldName, $args[0], 'getOrCreate' === $matches[1], $matches[2]);
+            return $this->getRecordBy($fieldName, $args[0],
+                'getOrCreate' === $matches[1], $matches[2]);
         }
-            
+
         $pattern = '/getMaxValueOf([a-z_]+)From([a-z_]+)/i';
         if (preg_match($pattern, $methodName, $matches)) {
             require_once 'Doctrine/Inflector.php';
             $fieldName = Doctrine_Inflector::tableize($matches[1]);
             return $this->getMaxValueOf($fieldName, $matches[2]);
+        }
+
+        $pattern = '/getMultiOptionsFrom([a-z_]+)/i';
+        if (preg_match($pattern, $methodName, $matches)) {
+            return call_user_func_array(array($this, 'getMultiOptions'),
+                array_merge(array($matches[1]), $args));
         }
 
         return parent::__call($methodName, $args);
@@ -377,16 +384,20 @@ abstract class GlassOnion_Controller_Crud_Doctrine
     /**
      * Returns 
      *
-     * @param Doctrine_Query|Doctrine_Collection $records
+     * @param Doctrine_Query|Doctrine_Collection|string $source
+     * @param string $format
+     * @param string $key
      * @return array
      * @throws Zend_Controller_Action_Exception
      */
-    public function getMultiOptions($records, $format = '%value$s', $key = 'id')
+    public function getMultiOptions($source, $format = '%value$s', $key = 'id')
     {
-        if ($records instanceof Doctrine_Query) {
-            $records = $records->execute()->toArray();
-        } else if ($records instanceof Doctrine_Collection) {
-            $records = $records->toArray();
+        if ($source instanceof Doctrine_Collection) {
+            $records = $source;
+        } else if ($source instanceof Doctrine_Query) {
+            $records = $source->execute();
+        } else if (Doctrine_Core::isValidModelClass($source)) {
+            $records = Doctrine_Query::create()->from($source)->execute();
         } else {
             /**
              * @see GlassOnion_Controller_Crud_Exception
@@ -397,7 +408,7 @@ abstract class GlassOnion_Controller_Crud_Doctrine
         }
 
         $options = array();
-        foreach ($records as $record) {
+        foreach ($records->toArray() as $record) {
             $options[$record[$key]] = $this->_vnsprintf($format, $record);
         }
         return $options;
