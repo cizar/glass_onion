@@ -148,8 +148,8 @@ class GlassOnion_View_Helper_Date extends Zend_View_Helper_Abstract
         if ($this->hasValue()) {
             try {
                 require_once 'Zend/Date.php';
-                $date = new Zend_Date($this->getValue(), 'Y-m-d');
-                return $date->toString(Zend_Date::DATES, null, $this->getLocale());                
+                $date = new Zend_Date($this->getValue(), Zend_Date::ISO_8601);
+                return $date->toString(Zend_Date::DATE_SHORT, null, $this->getLocale());                
             }
             catch (Exception $ex) {
                 return $this->getValue();

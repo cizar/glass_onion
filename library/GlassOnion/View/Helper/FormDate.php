@@ -68,16 +68,20 @@ class GlassOnion_View_Helper_FormDate extends Zend_View_Helper_FormElement
      */
     public function formDate($name, $value = null, $params = null, $attribs = null)
     {
-    	$this->_info = $this->_getInfo($name, $value, $attribs);
+        $this->_info = array(
+            'formated' => $this->_getInfo('datepicker-' . $name, $value, $attribs),
+            'normalized' => $this->_getInfo($name, $value, $attribs)
+        );
     	if (!isset($params['dateFormat']) && Zend_Registry::isRegistered('Zend_Locale')) {
     		$params['dateFormat'] = ZendX_JQuery_View_Helper_DatePicker::resolveZendLocaleToDatePickerFormat();
     	}
-    	$js = sprintf('%s("#%s").datepicker(%s);',
-    		ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(),
-    		$this->_info['id'],
-    		ZendX_JQuery::encodeJson($params)
-    	);
-    	$this->view->jQuery()->addOnLoad($js);
+        $params['altField'] = '#' . $this->_info['normalized']['id'];
+        $params['altFormat'] = 'yy-mm-dd';
+    	$this->view->jQuery()->addOnLoad(sprintf('%s("#%s").datepicker(%s);',
+            ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(),
+            $this->_info['formated']['id'],
+            is_null($params) ? '' : ZendX_JQuery::encodeJson($params)
+        ));
     	return $this;
     }
 
@@ -88,12 +92,17 @@ class GlassOnion_View_Helper_FormDate extends Zend_View_Helper_FormElement
      */
     public function __toString()
     {
-        return sprintf('<input type="text" name="%s" id="%s" value="%s"%s%s%s',
-        	$this->view->escape($this->_info['name']),
-        	$this->view->escape($this->_info['id']),
-        	$this->view->escape($this->_info['value']),
-        	$this->_info['disable'] ? ' disabled="disabled"' : '',
-            $this->_htmlAttribs($this->_info['attribs']),
+        $string = $this->_hidden($this->_info['normalized']['name'],
+            null, array('id' => $this->_info['normalized']['id']));
+
+        $string .= sprintf('<input type="text" name="%s" id="%s" value="%s"%s%s%s',
+        	$this->view->escape($this->_info['formated']['name']),
+        	$this->view->escape($this->_info['formated']['id']),
+        	$this->view->escape($this->_info['formated']['value']),
+        	$this->_info['formated']['disable'] ? ' disabled="disabled"' : '',
+            $this->_htmlAttribs($this->_info['formated']['attribs']),
             $this->getClosingBracket());
+
+        return $string;
     }
 }
