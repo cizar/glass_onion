@@ -93,12 +93,12 @@ class GlassOnion_View_Helper_FormDate extends Zend_View_Helper_FormElement
     public function __toString()
     {
         $string = $this->_hidden($this->_info['normalized']['name'],
-            null, array('id' => $this->_info['normalized']['id']));
+            $this->_info['normalized']['value'], array('id' => $this->_info['normalized']['id']));
 
         $string .= sprintf('<input type="text" name="%s" id="%s" value="%s"%s%s%s',
         	$this->view->escape($this->_info['formated']['name']),
         	$this->view->escape($this->_info['formated']['id']),
-        	$this->view->escape($this->_info['formated']['value']),
+        	$this->view->escape($this->view->date($this->_info['formated']['value'])),
         	$this->_info['formated']['disable'] ? ' disabled="disabled"' : '',
             $this->_htmlAttribs($this->_info['formated']['attribs']),
             $this->getClosingBracket());
