@@ -357,25 +357,30 @@ abstract class GlassOnion_Controller_Crud_Doctrine
      */
     public function __call($methodName, $args)
     {
-        $pattern = '/(getOrCreate|get)([a-z_]+)By([a-z_]+)/i';
-        if (preg_match($pattern, $methodName, $matches)) {
-            require_once 'Doctrine/Inflector.php';
-            $fieldName = Doctrine_Inflector::tableize($matches[3]);
-            return $this->getRecordBy($fieldName, $args[0],
-                'getOrCreate' === $matches[1], $matches[2]);
-        }
-
-        $pattern = '/getMaxValueOf([a-z_]+)From([a-z_]+)/i';
+        $pattern = '/^getMaxValueOf([a-z_]+)From([a-z_]+)/i';
         if (preg_match($pattern, $methodName, $matches)) {
             require_once 'Doctrine/Inflector.php';
             $fieldName = Doctrine_Inflector::tableize($matches[1]);
             return $this->getMaxValueOf($fieldName, $matches[2]);
         }
 
-        $pattern = '/getMultiOptionsFrom([a-z_]+)/i';
+        $pattern = '/^getMultiOptionsFrom([a-z_]+)/i';
         if (preg_match($pattern, $methodName, $matches)) {
             return call_user_func_array(array($this, 'getMultiOptions'),
                 array_merge(array($matches[1]), $args));
+        }
+
+        $pattern = '/^(getOrCreate|get)([a-z_]+)By([a-z_]+)/i';
+        if (preg_match($pattern, $methodName, $matches)) {
+            require_once 'Doctrine/Inflector.php';
+            $fieldName = Doctrine_Inflector::tableize($matches[3]);
+            return $this->getRecordBy($fieldName, $args[0],
+                $matches[2], 'getOrCreate' === $matches[1]);
+        }
+
+        $pattern = '/^get([a-z_]+)/i';
+        if (preg_match($pattern, $methodName, $matches)) {
+            return $this->getRecord($args[0], $matches[1]);
         }
 
         return parent::__call($methodName, $args);
@@ -442,7 +447,7 @@ abstract class GlassOnion_Controller_Crud_Doctrine
      * @return void
      * @throws Zend_Controller_Action_Exception
      */
-    protected function getRecordBy($fieldName, $value, $createIfNotExists = false, $tableName = null)
+    protected function getRecordBy($fieldName, $value, $tableName = null, $createIfNotExists = false)
     {
         $table = $this->getTable($tableName);
         $record = $table->findOneBy($fieldName, $value);
