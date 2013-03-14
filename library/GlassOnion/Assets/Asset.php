@@ -36,22 +36,37 @@
  * @package    GlassOnion_Assets
  */
 class GlassOnion_Assets_Asset
-{    
+{
     /**
      * @var string
      */
-    private $_class;
+    const DEFAULT_ASSET_CLASS = 'virtual'; 
+
+    /**
+     * @var string
+     */
+    const CLASS_CONFIG_KEY = 'class'; 
+
+    /**
+     * @var string
+     */
+    const DEPENDENCIES_CONFIG_KEY = 'depends'; 
+
+    /**
+     * @var string
+     */
+    private $_class = self::DEFAULT_ASSET_CLASS;
+        
+    /**
+     * @var array
+     */
+    private $_dependencies = array();
     
     /**
      * @var array
      */
-    private $_properties;
-    
-    /**
-     * @var array
-     */
-    private $_dependencies;
-    
+    private $_properties = array();
+
     /**
      * @return string
      */
@@ -59,7 +74,15 @@ class GlassOnion_Assets_Asset
     {
         return $this->_class;
     }
-    
+        
+    /**
+     * @return array
+     */
+    public function getDependencies()
+    {
+        return $this->_dependencies;
+    }
+
     /**
      * @param string $key
      * @return boolean
@@ -84,7 +107,7 @@ class GlassOnion_Assets_Asset
         }
         return $this->_properties[$key];
     }
-    
+
     /**
      * @param string $key
      * @param mixed $default
@@ -92,18 +115,7 @@ class GlassOnion_Assets_Asset
      */
     public function getProperty($key, $default = null)
     {
-        if ($this->__isset($key)) {
-            return $this->__get($key);
-        }
-        return $default;
-    }
-    
-    /**
-     * @return array
-     */
-    public function getDependencies()
-    {
-        return $this->_dependencies;
+        return $this->__isset($key) ? $this->__get($key) : $default;
     }
     
     /**
@@ -111,11 +123,17 @@ class GlassOnion_Assets_Asset
      * @param string $type
      * @param array $dependencies
      */
-    public function __construct($class = 'virtual', $properties = array(), $dependencies = array())
+    public function __construct($class = null, $dependencies = null, $properties = null)
     {
-        $this->_class = $class;
-        $this->_properties = $properties;
-        $this->_dependencies = $dependencies;
+        if (null != $class) {
+            $this->_class = $class;
+        }
+        if (null != $dependencies) {
+            $this->_dependencies = $dependencies;
+        }
+        if (null != $properties) {
+            $this->_properties = $properties;
+        }
     }
 
     /**
@@ -130,18 +148,19 @@ class GlassOnion_Assets_Asset
 
         $class = null;
         
-        if (isset($properties['class'])) {
-            $class = $properties['class'];
-            unset($properties['class']);
+        if (isset($properties[self::CLASS_CONFIG_KEY])) {
+            $class = $properties[self::CLASS_CONFIG_KEY];
+            unset($properties[self::CLASS_CONFIG_KEY]);
         }
         
-        $depends = array();
+        $dependencies = array();
 
-        if (isset($properties['depends'])) {
-            $depends = array_map('trim', explode(',', $properties['depends']));
-            unset($properties['depends']);
+        if (isset($properties[self::DEPENDENCIES_CONFIG_KEY])) {
+            $dependencies = array_map('trim',
+                explode(',', $properties[self::DEPENDENCIES_CONFIG_KEY]));
+            unset($properties[self::DEPENDENCIES_CONFIG_KEY]);
         }
         
-        return new self($class, $properties, $depends);
+        return new self($class, $dependencies, $properties);
     }
 }

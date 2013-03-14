@@ -43,12 +43,37 @@ class GlassOnion_Assets_Container
     private $_assets;
     
     /**
+     * @param string $key
+     * @return boolean
+     */
+    public function __isset($id)
+    {
+        return array_key_exists($id, $this->_assets);
+    }
+
+    /**
+     * @param string $key
+     * @return mixed
+     */
+    public function __get($id)
+    {
+        if (!$this->__isset($id)) {
+            /**
+             * @see GlassOnion_Assets_Exception
+             */
+            require_once 'GlassOnion/Assets/Exception.php';
+            throw new GlassOnion_Assets_Exception("The asset \"{$id}\" could not be found");
+        }
+        return $this->_assets[$id];
+    }
+
+    /**
      * @param string $id
      * @return boolean
      */
     public function hasAsset($id)
     {
-        return array_key_exists($id, $this->_assets);
+        return $this->__isset($id);
     }
 
     /**
@@ -57,10 +82,7 @@ class GlassOnion_Assets_Container
      */
     public function getAsset($id)
     {
-        if (!$this->hasAsset($id)) {
-            throw new InvalidArgumentException("The asset \"{$id}\" could not be found");
-        }
-        return $this->_assets[$id];
+        return $this->__get($id);
     }
         
     /**
@@ -77,7 +99,7 @@ class GlassOnion_Assets_Container
      * @param string $id
      * @return array
      */    
-    public function getDependencies($id)
+    public function getAssetDependencies($id)
     {
         return $this->getAsset($id)->getDependencies();
     }
@@ -89,7 +111,7 @@ class GlassOnion_Assets_Container
     public function getRequiredAssets($id)
     {
         $assets = array();
-        foreach ($this->getDependencies($id) as $depId) {
+        foreach ($this->getAssetDependencies($id) as $depId) {
             foreach ($this->getRequiredAssets($depId) as $dep) {
                 $assets[] = $dep;
             }
@@ -97,9 +119,29 @@ class GlassOnion_Assets_Container
         $assets[] = $this->getAsset($id);
         return $assets;
     }
+
+    /**
+     * Factory (From Zend_Config)
+     *
+     * @param Zend_Config $config
+     * @return GlassOnion_Assets_Container
+     */
+    public static function fromConfig(Zend_Config $config)
+    {
+        /**
+         * @see GlassOnion_Assets_Asset
+         */
+        require_once 'GlassOnion/Assets/Asset.php';
+        $container = new self;
+        foreach ($config as $id => $assetConfig) {
+            $container->addAsset($id,
+                GlassOnion_Assets_Asset::fromConfig($assetConfig));
+        }
+        return $container;
+    }
     
     /**
-     * Factory
+     * Factory (From YAML File)
      *
      * @param string $filename
      * @return GlassOnion_Assets_Container
@@ -111,16 +153,8 @@ class GlassOnion_Assets_Container
              * @see Zend_Config_Yaml
              */
             require_once 'Zend/Config/Yaml.php';
-            $yaml = new Zend_Config_Yaml($filename, 'assets');
-            /**
-             * @see GlassOnion_Assets_Asset
-             */
-            require_once 'GlassOnion/Assets/Asset.php';
-            $container = new self;
-            foreach ($yaml as $id => $config) {
-                $container->addAsset($id, GlassOnion_Assets_Asset::fromConfig($config));
-            }
-            return $container;
+            $config = new Zend_Config_Yaml($filename, 'assets');
+            return self::fromConfig($config);
         } catch (Zend_Config_Exception $ex) {
             /**
              * @see GlassOnion_Assets_Exception

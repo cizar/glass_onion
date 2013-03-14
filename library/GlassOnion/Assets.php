@@ -47,6 +47,21 @@ class GlassOnion_Assets
         require_once 'GlassOnion/Assets/Container.php';
         return new GlassOnion_Assets_Container();
     }
+
+    /**
+     * The Dependency Container Factory
+     *
+     * @param string $filename
+     * @return GlassOnion_Assets_Container
+     */
+    public static function load($filename)
+    {
+        /**
+         * @see GlassOnion_Assets_Container
+         */
+        require_once 'GlassOnion/Assets/Container.php';
+        return GlassOnion_Assets_Container::fromYaml($filename);
+    }
     
     /**
      * The Asset Definition Factory
