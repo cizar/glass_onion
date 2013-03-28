@@ -50,7 +50,12 @@ class GlassOnion_View_Helper_Coalesce extends Zend_View_Helper_Abstract
      */
     public function coalesce()
     {
-        return array_shift(array_filter(func_get_args()));
+        return array_shift(array_filter(func_get_args(), array($this, 'filter')));
+    }
+
+    private function filter($value)
+    {
+        return !is_null($value);
     }
 }
 
