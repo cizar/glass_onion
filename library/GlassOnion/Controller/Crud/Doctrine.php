@@ -447,13 +447,29 @@ abstract class GlassOnion_Controller_Crud_Doctrine
      * @return void
      * @throws Zend_Controller_Action_Exception
      */
-    protected function getRecordBy($fieldName, $value, $tableName = null, $createIfNotExists = false)
+    protected function getRecordBy()
     {
+        $args = func_get_args();
+        if (0 == count($args) || 1 == count($args) && !is_array($args[0]) || 4 < count($args)) {
+            throw new InvalidArgumentException();
+        }
+        $criteria = is_array($args[0])
+            ? array_shift($args) : array(array_shift($args) => array_shift($args));
+        $tableName = empty($args)
+            ? null : array_shift($args);
+        $createIfNotExists = empty($args)
+            ? false : array_shift($args);
         $table = $this->getTable($tableName);
-        $record = $table->findOneBy($fieldName, $value);
+        $query = $table->createQuery();
+        foreach ($criteria as $fieldName => $value) {
+            $query->andWhere($fieldName . ' = ?', (array) $value);
+        }
+        $record = $query->limit(1)->fetchOne();
         if (!$record && $createIfNotExists) {
             $record = $table->create();
-            $record->set($fieldName, $value);
+            foreach ($criteria as $fieldName => $value) {
+                $record->set($fieldName, $value);
+            }
         }
         if (!$record) {
             /**
