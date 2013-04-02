@@ -442,8 +442,8 @@ abstract class GlassOnion_Controller_Crud_Doctrine
      *
      * @param  string $fieldName
      * @param  string $value
-     * @param  bool $createIfNotExists
      * @param  string $tableName
+     * @param  bool $createIfNotExists
      * @return void
      * @throws Zend_Controller_Action_Exception
      */
