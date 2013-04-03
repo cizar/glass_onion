@@ -95,7 +95,7 @@ class GlassOnion_View_Helper_FormDate extends Zend_View_Helper_FormElement
         $string = $this->_hidden($this->_info['normalized']['name'],
             $this->_info['normalized']['value'], array('id' => $this->_info['normalized']['id']));
 
-        $string .= sprintf('<input type="text" name="%s" id="%s" value="%s"%s%s%s',
+        $string .= sprintf('<input type="text" name="%s" id="%s" value="%s"%s%s autocomplete="off"%s',
         	$this->view->escape($this->_info['formated']['name']),
         	$this->view->escape($this->_info['formated']['id']),
         	$this->view->escape($this->view->date($this->_info['formated']['value'])),
