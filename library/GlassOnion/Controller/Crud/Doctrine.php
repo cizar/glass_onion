@@ -444,7 +444,12 @@ abstract class GlassOnion_Controller_Crud_Doctrine
      * @param  string $value
      * @param  string $tableName
      * @param  bool $createIfNotExists
-     * @return void
+     *   or
+     * @param  array $fieldValueArray
+     * @param  string $tableName
+     * @param  bool $createIfNotExists
+     *
+     * @return Doctrine_Record
      * @throws Zend_Controller_Action_Exception
      */
     protected function getRecordBy()
@@ -460,11 +465,11 @@ abstract class GlassOnion_Controller_Crud_Doctrine
         $createIfNotExists = empty($args)
             ? false : array_shift($args);
         $table = $this->getTable($tableName);
-        $query = $table->createQuery();
+        $query = $table->createQuery()->limit(1);
         foreach ($criteria as $fieldName => $value) {
             $query->andWhere($fieldName . ' = ?', (array) $value);
         }
-        $record = $query->limit(1)->fetchOne();
+        $record = $query->fetchOne();
         if (!$record && $createIfNotExists) {
             $record = $table->create();
             foreach ($criteria as $fieldName => $value) {
