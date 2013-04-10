@@ -285,6 +285,8 @@ class GlassOnion_Auth_Adapter_Doctrine
      */
     public function authenticate()
     {
+        $this->_validatePrecondition();
+
         $identities = $this->_executeAuthenticationQuery();
 
         if (count($identities) < 1) {
@@ -306,6 +308,38 @@ class GlassOnion_Auth_Adapter_Doctrine
 
         return new Zend_Auth_Result(Zend_Auth_Result::SUCCESS,
             $this->_identity, array('Authentication sucessful.'));
+    }
+
+    private function _validatePrecondition()
+    {
+        $exception = null;
+        
+        if (null === $this->getConnection()) {
+            $exception = 'A database connection was not set, nor could one be created.';
+        }
+        else if (empty($this->_tableName)) {
+            $exception = 'A table must be supplied for the GlassOnion_Auth_Adapter_Doctrine authentication adapter.';
+        }
+        else if (empty($this->_identityColumnName)) {
+            $exception = 'An identity column must be supplied for the GlassOnion_Auth_Adapter_Doctrine authentication adapter.';
+        }
+        else if (empty($this->_credentialColumnName)) {
+            $exception = 'A credential column must be supplied for the GlassOnion_Auth_Adapter_Doctrine authentication adapter.';
+        }
+        else if (empty($this->_identity)) {
+            $exception = 'A value for the identity was not provided prior to authentication with GlassOnion_Auth_Adapter_Doctrine.';
+        }
+        else if (empty($this->_credential)) {
+            $exception = 'A credential value was not provided prior to authentication with GlassOnion_Auth_Adapter_Doctrine.';
+        }
+
+        if (null !== $exception) {
+            /**
+             * @see Zend_Auth_Adapter_Exception
+             */
+            require_once 'Zend/Auth/Adapter/Exception.php';
+            throw new Zend_Auth_Adapter_Exception($exception);
+        }        
     }
 
     /**
@@ -345,18 +379,15 @@ class GlassOnion_Auth_Adapter_Doctrine
         if (empty($this->_credentialTreatment) || (strpos($this->_credentialTreatment, '?') === false)) {
             $this->_credentialTreatment = '?';
         }
-        
-        $credentialExpression = sprintf('(CASE WHEN %s = %s THEN 1 ELSE 0 END) AS %s',
+
+        $select = sprintf('*, (%s = %s) AS zend_auth_credential_match',
             $this->_credentialColumnName,
-            str_replace('?',
-                $this->getConnection()->quote($this->_credential),
-                $this->_credentialTreatment),
-            'zend_auth_credential_match'
+            str_replace('?', $this->getConnection()->quote($this->_credential), $this->_credentialTreatment)
         );
-        
+
         return Doctrine_Query::create($this->getConnection())
-            ->select('*, ' . $credentialExpression)
             ->from($this->_tableName)
-            ->where($this->_identityColumnName . ' = ?', $this->_identity);
+            ->select($select)
+            ->addWhere($this->_identityColumnName .' = ?', $this->_identity);
     }
 }
