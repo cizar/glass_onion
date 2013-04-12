@@ -34,15 +34,15 @@
 /**
  * @see GlassOnion_View_Helper_Messages
  */
-require_once 'GlassOnion/View/Helper/FlashMessenger.php';
+require_once 'GlassOnion/View/Helper/Messages.php';
 
 /**
  * @category   GlassOnion
  * @package    GlassOnion_View
  * @subpackage Helper
  */
-class GlassOnion_View_Helper_Messages
-    extends GlassOnion_View_Helper_FlashMessenger
+class GlassOnion_View_Helper_FoundationMessages
+    extends GlassOnion_View_Helper_Messages
 {
     /**
      * @const string
@@ -52,14 +52,14 @@ class GlassOnion_View_Helper_Messages
     /**
      * @const string
      */
-    const DEFAULT_TEMPLATE = '<div class="%s">%s</div>';
+    const DEFAULT_TEMPLATE = '<div data-alert class="alert-box %s">%s<a href="#" class="close">&times;</a></div>';
 
     /**
      * Returns the Flash Messenger object.
      *
      * @return Zend_Controller_Action_Helper_FlashMessenger
      */
-    public function messages($status = null, $template = null)
+    public function foundationMessages($status = null, $template = null)
     {
         if (null == $status) {
             $status = self::DEFAULT_STATUS;
@@ -69,24 +69,6 @@ class GlassOnion_View_Helper_Messages
             $template = self::DEFAULT_TEMPLATE;
         }
 
-        $flashMessenger = $this->flashMessenger();
-
-        $messages = $flashMessenger->getMessages();
-
-        if ($flashMessenger->hasCurrentMessages()) {
-            $messages = array_merge($messages, $flashMessenger->getCurrentMessages());
-            $flashMessenger->clearCurrentMessages();
-        }
-
-        $output ='';
-
-        foreach ($messages as $message) {
-            if (is_string($message)) {
-                $message = array('status' => $status, 'message' => $message);
-            }
-            $output .= sprintf($template, $message['status'], $message['message']);
-        }
-
-        return $output;
+        return $this->messages($status, $template);
     }
 }
