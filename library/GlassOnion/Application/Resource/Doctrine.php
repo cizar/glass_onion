@@ -64,6 +64,8 @@ class GlassOnion_Application_Resource_Doctrine
         $manager = Doctrine_Manager::getInstance();
 
         $managerAttributes = array(
+            Doctrine_Core::ATTR_DEFAULT_TABLE_CHARSET  => 'utf8',
+            Doctrine_Core::ATTR_DEFAULT_TABLE_COLLATE  => 'utf8_unicode_ci',
             Doctrine_Core::ATTR_AUTO_ACCESSOR_OVERRIDE => true,
             Doctrine_Core::ATTR_MODEL_LOADING          => Doctrine_Core::MODEL_LOADING_CONSERVATIVE,
             Doctrine_Core::ATTR_AUTOLOAD_TABLE_CLASSES => true,
@@ -99,14 +101,7 @@ class GlassOnion_Application_Resource_Doctrine
 
         $connection = $manager->openConnection($config['dsn']);
 
-        $connectionAttributes = array(
-            Doctrine_Core::ATTR_DEFAULT_TABLE_COLLATE   => 'utf8_unicode_ci',
-            Doctrine_Core::ATTR_DEFAULT_TABLE_CHARSET   => 'utf8'
-        );
-
-        foreach ($connectionAttributes as $key => $value) {
-            $connection->setAttribute($key, $value);
-        }
+        $connection->setCharset('utf8');
 
         return $manager;
     }
