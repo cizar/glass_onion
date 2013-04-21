@@ -49,6 +49,11 @@ class GlassOnion_View_Helper_Lang extends Zend_View_Helper_Abstract
     const DEFAULT_LANGUAGE = 'en';
 
     /**
+     * @var string
+     */
+    private $_locale;
+
+    /**
      * Returns the current locale language
      *
      * @return string
