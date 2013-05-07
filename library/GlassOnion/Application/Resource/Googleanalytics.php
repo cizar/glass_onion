@@ -74,6 +74,9 @@ class GlassOnion_Application_Resource_Googleanalytics
             . "ga('create', '{$options['account']}', '{$options['domain']}');"
             . "ga('send', 'pageview');";
 
-        return $view->headScript()->appendScript($script);
+        $place = (isset($options['place']) && 'header' == $options['place'])
+            ? $view->inlineScript() : $view->inlineScript();
+
+        return $place->appendScript($script);
     }
 }
