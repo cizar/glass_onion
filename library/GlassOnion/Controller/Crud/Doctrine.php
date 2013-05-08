@@ -258,7 +258,7 @@ abstract class GlassOnion_Controller_Crud_Doctrine
      */
     protected function create(Doctrine_Record $record)
     {
-        $record->fromArray($this->_getParam('record'));
+        $record->fromArray($this->_getFilteredParam('record'));
     }
 
     /**
@@ -266,7 +266,7 @@ abstract class GlassOnion_Controller_Crud_Doctrine
      */
     protected function update(Doctrine_Record $record)
     {
-        $record->fromArray($this->_getParam('record'));
+        $record->fromArray($this->_getFilteredParam('record'));
     }
 
     /**
@@ -607,5 +607,18 @@ abstract class GlassOnion_Controller_Crud_Doctrine
         }
 
         return vsprintf($format, $data);
-    }    
+    }
+
+    /**
+     * TBD
+     *
+     * @return mixed
+     */
+    private function _getFilteredParam($paramName, $default = null)
+    {
+        $param = $this->_getParam($paramName, $default);
+        return is_array($param) ? array_filter($param, function($var){
+            return ('' !== $var);
+        }) : $param;
+    }
 }
