@@ -614,7 +614,7 @@ abstract class GlassOnion_Controller_Crud_Doctrine
      *
      * @return mixed
      */
-    private function _getFilteredParam($paramName, $default = null)
+    protected function _getFilteredParam($paramName, $default = null)
     {
         $param = $this->_getParam($paramName, $default);
         return is_array($param) ? array_filter($param, function($var){
