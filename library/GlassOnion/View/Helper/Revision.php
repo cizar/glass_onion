@@ -41,46 +41,18 @@ require_once 'Zend/View/Helper/Abstract.php';
  * @package    GlassOnion_View
  * @subpackage Helper
  */
-class GlassOnion_View_Helper_Lang
+class GlassOnion_View_Helper_Revision
     extends Zend_View_Helper_Abstract
 {
     /**
-     * @const string
-     */
-    const DEFAULT_LANGUAGE = 'en';
-
-    /**
-     * @var string
-     */
-    private $_locale;
-
-    /**
-     * Returns the current locale language
+     * Generates a HTML anchor element
      *
-     * @return string
+     * @return GlassOnion_View_Helper_HtmlAnchor
      */
-    public function lang()
+    public function revision($path)
     {
-        $locale = $this->getLocale();
-        if (is_null($locale)) {
-            return self::DEFAULT_LANGUAGE;
-        }
-        return $locale->getLanguage();
-    }
-
-    /**
-     * Returns the locale
-     *
-     * @return string
-     */
-    public function getLocale()
-    {
-        if (null == $this->_locale) {
-            require_once 'Zend/Registry.php';
-            if (Zend_Registry::isRegistered('Zend_Locale')) {
-                $this->_locale = Zend_Registry::get('Zend_Locale');
-            }
-        }
-        return $this->_locale;
+        return shell_exec('svnversion "' . $path . '"');
     }
 }
+
+
