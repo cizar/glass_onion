@@ -617,8 +617,24 @@ abstract class GlassOnion_Controller_Crud_Doctrine
     protected function _getFilteredParam($paramName, $default = null)
     {
         $param = $this->_getParam($paramName, $default);
-        return is_array($param) ? array_filter($param, function($var){
-            return ('' !== $var);
-        }) : $param;
+        if (is_array($param)) {
+            return array_filter($param, function($var){
+                return $var !== '';
+            });
+        }
+        return $param;
+    }
+
+    /**
+     * TBD
+     *
+     * @return array
+     */
+    protected function _getFilteredParams()
+    {
+        $params = $this->_getAllParams();
+        return array_filter($params, function($var){
+            return $var !== '';
+        });
     }
 }
