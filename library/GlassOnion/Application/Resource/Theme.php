@@ -44,64 +44,33 @@ class GlassOnion_Application_Resource_Theme
     extends Zend_Application_Resource_ResourceAbstract
 {
     /**
-     * @var string
-     */
-    protected $_theme;
-
-    /**
-     * @var string
-     */
-    protected $_baseUrl;
-
-    /**
      * Defined by Zend_Application_Resource_Resource
      *
      * @return string
      */
     public function init()
     {
-        $theme = $this->getTheme();
+        $options = $this->getOptions();
 
-        // Optionally seed the ThemeBaseUrl view helper 
         $bootstrap = $this->getBootstrap();
-        if ($bootstrap->hasResource('view')) {
-            $bootstrap->bootstrap('view')
-                ->getResource('view')
-                ->getHelper('themeBaseUrl')
-                ->setTheme($theme)
-                ->setBaseUrl($this->getBaseUrl());
+
+        if (!$bootstrap->hasResource('view')) {
+            require_once 'Zend/Application/Resource/Exception.php';
+            throw new Zend_Application_Resource_Exception('No view defined');
         }
 
-        return $theme;
-    }
+        $helper = $bootstrap->bootstrap('view')
+            ->getResource('view')
+            ->getHelper('themeBaseUrl');
 
-    /**
-     * Returns the defined theme name
-     *
-     * @return string
-     */
-    public function getTheme()
-    {
-        if (null === $this->_theme) {
-            $options = $this->getOptions();
-            $this->_theme = isset($options['name'])
-                ? $options['name'] : 'default';
+        if (isset($options['name'])) {
+            $helper->setTheme($options['name']);
         }
-        return $this->_theme;
-    }
-    
-    /**
-     * Returns the defined theme base url
-     *
-     * @return string
-     */
-    public function getBaseUrl()
-    {
-        if (null === $this->_baseUrl) {
-            $options = $this->getOptions();
-            $this->_baseUrl = isset($options['base_url'])
-                ? $options['base_url'] : '/themes';
+
+        if (isset($options['base_url'])) {
+            $helper->setBaseUrl($options['base_url']);
         }
-        return $this->_baseUrl;
+
+        return $helper;
     }
 }

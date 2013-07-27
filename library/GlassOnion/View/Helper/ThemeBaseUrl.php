@@ -72,10 +72,8 @@ class GlassOnion_View_Helper_ThemeBaseUrl
      */
     public function themeBaseUrl($file = null)
     {
-        return $this->view->baseUrl(sprintf('%s/%s/%s',
-            $this->getBaseUrl(),
-            $this->getTheme(),
-            $file));
+        $path = $this->getBaseUrl() . '/' . $this->getTheme() . '/' . $file;
+        return $this->view->baseUrl($path);
     }
 
     /**
