@@ -41,44 +41,20 @@ require_once 'Zend/View/Helper/Abstract.php';
  * @package    GlassOnion_View
  * @subpackage Helper
  */
-class GlassOnion_View_Helper_Asset
+class GlassOnion_View_Helper_JqueryScript
     extends Zend_View_Helper_Abstract
 {
     /**
-     * Appends an asset and all its dependencies
+     * Appends a script to the jQuery placeholder
      *
-     * @param string $id
+     * @param string $href
      * @return Zend_View
      */
-    public function asset()
+    public function jqueryScript($href)
     {
-        $ids = func_get_args();
-
-        $assets = Zend_Controller_Front::getInstance()
-            ->getParam('bootstrap')
-            ->getResource('assets');
-        
-        foreach ($ids as $id) {
-            foreach ($assets->getRequiredAssets($id) as $asset) {
-                switch ($asset->getClass()) {
-                    case 'script':
-                        $this->view->script($asset->src,
-                            $asset->getProperty('type', 'text/javascript'));
-                        break;
-                    case 'jquery':
-                        $this->view->jqueryScript($asset->src);
-                        break;
-                    case 'stylesheet':
-                        $this->view->stylesheet($asset->href,
-                            $asset->getProperty('media', 'screen'));
-                        break;
-                    case 'favicon':
-                        $this->view->favicon($asset->href);
-                        break;
-                }
-            }
-        }
-
+        $url = preg_match('/^(ht|f)tp(s)*:\/\/|^\//', $href)
+            ? $href : $this->view->baseUrl($href);
+        $this->view->jQuery()->addJavascriptFile($url);
         return $this->view;
     }
 }

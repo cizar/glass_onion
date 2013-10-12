@@ -48,6 +48,7 @@ class GlassOnion_View_Helper_Script
      * Appends a script to the head script placeholder
      *
      * @param string $href
+     * @param string $type
      * @return Zend_View
      */
     public function script($href, $type = 'text/javascript')
