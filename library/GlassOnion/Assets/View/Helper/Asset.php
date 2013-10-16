@@ -41,25 +41,23 @@ require_once 'Zend/View/Helper/Abstract.php';
  * @package    GlassOnion_View
  * @subpackage Helper
  */
-class GlassOnion_View_Helper_Asset
+class GlassOnion_Assets_View_Helper_Asset
     extends Zend_View_Helper_Abstract
 {
+    private $_container;
+
     /**
      * Appends an asset and all its dependencies
      *
      * @param string $id
-     * @return Zend_View
+     * @return GlassOnion_Assets_View_Helper_Asset
      */
     public function asset()
     {
         $ids = func_get_args();
-
-        $assets = Zend_Controller_Front::getInstance()
-            ->getParam('bootstrap')
-            ->getResource('assets');
         
         foreach ($ids as $id) {
-            foreach ($assets->getRequiredAssets($id) as $asset) {
+            foreach ($this->_container->getAssetAndDependencies($id) as $asset) {
                 switch ($asset->getClass()) {
                     case 'script':
                         $this->view->script($asset->src,
@@ -79,6 +77,18 @@ class GlassOnion_View_Helper_Asset
             }
         }
 
-        return $this->view;
+        return $this;
+    }
+
+    /**
+     * Set the asset container
+     *
+     * @param GlassOnion_Assets_Container $container
+     * @return GlassOnion_Assets_View_Helper_Asset
+     */
+    public function setContainer(GlassOnion_Assets_Container $container)
+    {
+        $this->_container = $container;
+        return $this;
     }
 }

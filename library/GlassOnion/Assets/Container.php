@@ -108,11 +108,11 @@ class GlassOnion_Assets_Container
      * @param string $id
      * @return array
      */
-    public function getRequiredAssets($id)
+    public function getAssetAndDependencies($id)
     {
         $assets = array();
         foreach ($this->getAssetDependencies($id) as $depId) {
-            foreach ($this->getRequiredAssets($depId) as $dep) {
+            foreach ($this->getAssetAndDependencies($depId) as $dep) {
                 $assets[] = $dep;
             }
         }

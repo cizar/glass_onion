@@ -45,12 +45,12 @@ class GlassOnion_Assets_Asset
     /**
      * @var string
      */
-    const CLASS_CONFIG_KEY = 'class'; 
+    const CONFIG_CLASS_KEY = 'class'; 
 
     /**
      * @var string
      */
-    const DEPENDENCIES_CONFIG_KEY = 'depends'; 
+    const CONFIG_DEPENDENCIES_KEY = 'depends'; 
 
     /**
      * @var string
@@ -148,19 +148,24 @@ class GlassOnion_Assets_Asset
 
         $class = null;
         
-        if (isset($properties[self::CLASS_CONFIG_KEY])) {
-            $class = $properties[self::CLASS_CONFIG_KEY];
-            unset($properties[self::CLASS_CONFIG_KEY]);
+        if (isset($properties[self::CONFIG_CLASS_KEY])) {
+            $class = $properties[self::CONFIG_CLASS_KEY];
+            unset($properties[self::CONFIG_CLASS_KEY]);
         }
         
-        $dependencies = array();
+        $dependencies = null;
 
-        if (isset($properties[self::DEPENDENCIES_CONFIG_KEY])) {
+        if (isset($properties[self::CONFIG_DEPENDENCIES_KEY])) {
             $dependencies = array_map('trim',
-                explode(',', $properties[self::DEPENDENCIES_CONFIG_KEY]));
-            unset($properties[self::DEPENDENCIES_CONFIG_KEY]);
+                explode(',', $properties[self::CONFIG_DEPENDENCIES_KEY]));
+            unset($properties[self::CONFIG_DEPENDENCIES_KEY]);
         }
         
         return new self($class, $dependencies, $properties);
+    }
+
+    public function toString()
+    {
+        return __CLASS__ . ' ' . $this->_class;
     }
 }

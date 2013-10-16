@@ -48,6 +48,8 @@ require_once 'GlassOnion/Assets/Container.php';
 class GlassOnion_Application_Resource_Assets
     extends Zend_Application_Resource_ResourceAbstract
 {
+    private $_container;
+
     /**
      * Defined by Zend_Application_Resource_Resource
      *
@@ -55,7 +57,26 @@ class GlassOnion_Application_Resource_Assets
      */
     public function init()
     {
-        $options = $this->getOptions();
-        return GlassOnion_Assets_Container::fromYaml($options['config']);
+        return $this->getContainer();
+    }
+
+    /**
+     * Retrieve the assets container
+     *
+     * @return GlassOnion_Assets_Container
+     */
+    private function getContainer()
+    {
+        if (null == $this->_container) {
+            $options = $this->getOptions();
+            $this->_container = GlassOnion_Assets_Container::fromYaml($options['config']);
+            
+            $this->getBootstrap()->bootstrap('view');
+            $view = $this->getBootstrap()->view;
+
+            $view->addHelperPath('GlassOnion/Assets/View/Helper', 'GlassOnion_Assets_View_Helper');
+            $view->asset()->setContainer($this->_container);
+        }
+        return $this->_container;
     }
 }
