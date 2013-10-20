@@ -401,15 +401,22 @@ abstract class GlassOnion_Controller_Crud_Doctrine
             $records = $source;
         } else if ($source instanceof Doctrine_Query) {
             $records = $source->execute();
-        } else if (Doctrine_Core::isValidModelClass($source)) {
+        } else if (is_string($source)) {
+            if (!Doctrine_Core::isValidModelClass($source)) {
+                /**
+                 * @see GlassOnion_Controller_Crud_Exception
+                 */
+                require_once 'GlassOnion/Controller/Crud/Exception.php';
+                throw new GlassOnion_Controller_Crud_Exception(
+                    'The class "' . $source . '" is not a valid model');
+            }
             $records = Doctrine_Query::create()->from($source)->execute();
         } else {
             /**
              * @see GlassOnion_Controller_Crud_Exception
              */
             require_once 'GlassOnion/Controller/Crud/Exception.php';
-            throw new GlassOnion_Controller_Crud_Exception(
-                'The colection must be an instance of Doctrine_Query or Doctrine_Collection');
+            throw new GlassOnion_Controller_Crud_Exception('Unknown source type');
         }
 
         $options = array();
