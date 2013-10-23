@@ -50,6 +50,13 @@ class GlassOnion_Controller_Plugin_AccessControl
     extends Zend_Controller_Plugin_Abstract
 {
     /**
+     * Default denied page
+     */
+    const DEFAULT_DENIED_PAGE_ACTION = 'login';
+    const DEFAULT_DENIED_PAGE_CONTROLLER = 'session';
+    const DEFAULT_DENIED_PAGE_MODULE = 'default';
+
+    /**
      * @var Zend_Acl
      */
     protected $_acl;
@@ -116,21 +123,6 @@ class GlassOnion_Controller_Plugin_AccessControl
     }
 
     /**
-     * @return boolean
-     */
-    public function isAccessDeniedPage()
-    {
-        $request = $this->getRequest();
-        $deniedPage = $this->getAccessDeniedPage();
-        if ($request->getModuleName() !== $deniedPage->moduleName
-            || $request->getControllerName() !== $deniedPage->controllerName
-            || $request->getActionName() !== $deniedPage->actionName) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
      * Sets the access denied page
      *
      * @param string $action
@@ -140,10 +132,13 @@ class GlassOnion_Controller_Plugin_AccessControl
      */
     public function setAccessDeniedPage($action, $controller = null, $module = null)
     {
+        if (is_array($action) and count($action) == 3) {
+            list($action, $controller, $module) = $action;
+        }
         $page = new stdClass();
-        $page->actionName = $action;
-        $page->controllerName = $controller;
-        $page->moduleName = $module;
+        $page->actionName = is_null($action) ? self::DEFAULT_DENIED_PAGE_ACTION : $action;
+        $page->controllerName = is_null($controller) ? self::DEFAULT_DENIED_PAGE_CONTROLLER : $controller;
+        $page->moduleName = is_null($module) ? self::DEFAULT_DENIED_PAGE_MODULE : $module;
         $this->_accessDeniedPage = $page;
         return $this;
     }
@@ -156,9 +151,30 @@ class GlassOnion_Controller_Plugin_AccessControl
     public function getAccessDeniedPage()
     {
         if (null == $this->_accessDeniedPage) {
-            $this->setAccessDeniedPage('login', 'session', 'default');
+            $page = new stdClass();
+            $page->actionName = self::DEFAULT_DENIED_PAGE_ACTION;
+            $page->controllerName = self::DEFAULT_DENIED_PAGE_CONTROLLER;
+            $page->moduleName = self::DEFAULT_DENIED_PAGE_MODULE;
+            $this->_accessDeniedPage = $page;
         }
         return $this->_accessDeniedPage;
+    }
+
+    /**
+     * Returns true if the current page is the access denied page
+     *
+     * @return boolean
+     */
+    public function isAccessDeniedPage()
+    {
+        $request = $this->getRequest();
+        $accessDeniedPage = $this->getAccessDeniedPage();
+        if ($accessDeniedPage->actionName == $request->getActionName()
+            && $accessDeniedPage->controllerName == $request->getControllerName()
+            && $accessDeniedPage->moduleName == $request->getModuleName()) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -172,11 +188,11 @@ class GlassOnion_Controller_Plugin_AccessControl
         $moduleName = $request->getModuleName();
         $controllerName = $request->getControllerName();
 
-        if (empty($moduleName) || Zend_Controller_Front::getInstance()->getDefaultModule() == $moduleName) {
-            return $controllerName;
+        if (!empty($moduleName) && Zend_Controller_Front::getInstance()->getDefaultModule() != $moduleName) {
+            return $moduleName . '::' . $controllerName;
         }
 
-        return $moduleName . ':' . $controllerName;
+        return $controllerName;
     }
 
     /**
@@ -189,20 +205,15 @@ class GlassOnion_Controller_Plugin_AccessControl
      */
     public function preDispatch(Zend_Controller_Request_Abstract $request)
     {
-        $resourceName = $this->getResourceName();
-
-        $acl = $this->getAcl();
-
-        if (!$acl->has($resourceName)) {
-            $resourceName = 'unknown';
-        }
-
-        if ($acl->isAllowed($this->getRoleName(), $resourceName, $request->getActionName())) {
+        if ($this->isAccessDeniedPage()) {
             return;
         }
 
-        $helper = Zend_Controller_Action_HelperBroker::getStaticHelper('RedirectToLastRequest');
-        $helper->rememberCurrentRequest();
+        if ($this->getAcl()->isAllowed($this->getRoleName(), $this->getResourceName(), $request->getActionName())) {
+            return;
+        }
+
+        Zend_Controller_Action_HelperBroker::getStaticHelper('ReturnToPreviousUri')->rememberRequestUri();
 
         $this->denyAccess();
     }
@@ -218,7 +229,7 @@ class GlassOnion_Controller_Plugin_AccessControl
         $deniedPage = $this->getAccessDeniedPage();
 
         $this->_request
-            ->setDispatched(FALSE)
+            ->setDispatched(false)
             ->setModuleName($deniedPage->moduleName)
             ->setControllerName($deniedPage->controllerName)
             ->setActionName($deniedPage->actionName);
