@@ -58,6 +58,11 @@ class GlassOnion_Application_Resource_Security
         Zend_Controller_Front::getInstance()->registerPlugin($this->getPlugin());
     }
 
+    /**
+     * Defined by Zend_Application_Resource_Resource
+     *
+     * @return void
+     */
     public function getPlugin()
     {
         $plugin = new GlassOnion_Controller_Plugin_AccessControl();
@@ -66,13 +71,24 @@ class GlassOnion_Application_Resource_Security
         return $plugin;
     }
 
+    /**
+     * Returns the configured ACL
+     *
+     * @return Zend_Acl
+     */
     public function getAcl()
     {
+        echo "ALA";
         $options = $this->getOptions();
         $class = new ReflectionClass($options['acl']);
         return $class->newInstance();
     }
 
+    /**
+     * Return the configured login page info
+     *
+     * @return array
+     */
     public function getLoginPage()
     {
         $options = $this->getOptions();
