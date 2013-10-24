@@ -68,6 +68,10 @@ class GlassOnion_Application_Resource_Security
         $plugin = new GlassOnion_Controller_Plugin_AccessControl();
         $plugin->setAcl($this->getAcl());
         $plugin->setAccessDeniedPage($this->getLoginPage());
+        $role = $this->getRole();
+        if (null != $role) {
+            $plugin->setRole($role);
+        }
         return $plugin;
     }
 
@@ -81,6 +85,41 @@ class GlassOnion_Application_Resource_Security
         $options = $this->getOptions();
         $class = new ReflectionClass($options['acl']);
         return $class->newInstance();
+    }
+
+    /**
+     * Returns the current role
+     *
+     * @return Zend_Acl_Role_Interface|null
+     */
+    public function getRole()
+    {
+        $factory = $this->getRoleFactory();
+        if (is_callable($factory)) {
+            return call_user_func($factory);
+        }
+        return null;
+    }
+
+    /**
+     * Returns the current role factory
+     *
+     * @return callable|null
+     */
+    private function getRoleFactory()
+    {
+        $options = $this->getOptions();
+        if (!isset($options['roleFactory'])) {
+            return null;
+        }
+        $factory = $options['roleFactory'];
+        if (class_exists($factory) && method_exists($factory, 'build')) {
+            return array($factory, 'build');
+        } else if (function_exists($factory) || is_callable($factory)) {
+            return $factory;
+        }
+        require_once 'Zend/Application/Resource/Exception.php';
+        throw new Zend_Application_Resource_Exception("Factory $factory is not callable");
     }
 
     /**

@@ -123,6 +123,18 @@ class GlassOnion_Controller_Plugin_AccessControl
     }
 
     /**
+     * Sets the current role name by a given role
+     *
+     * @param Zend_Acl_Role_Interface $role
+     * @return GlassOnion_Controller_Plugin_AccessControl Provides a fluent interface
+     */
+    public function setRole(Zend_Acl_Role_Interface $role)
+    {
+        $this->setRoleName($role->getRoleId());
+        return $this;
+    }
+
+    /**
      * Sets the access denied page
      *
      * @param string $action
