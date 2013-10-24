@@ -78,7 +78,6 @@ class GlassOnion_Application_Resource_Security
      */
     public function getAcl()
     {
-        echo "ALA";
         $options = $this->getOptions();
         $class = new ReflectionClass($options['acl']);
         return $class->newInstance();
