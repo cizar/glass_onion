@@ -44,21 +44,26 @@ require_once 'Zend/Controller/Action/Helper/Abstract.php';
 class GlassOnion_Controller_Action_Helper_ReturnToPreviousUri
     extends Zend_Controller_Action_Helper_Abstract
 {
+	const DEFAULT_NAMESPACE = __CLASS__;
+
 	/**
 	 * @var string
 	 */
-	protected $_namespace = __CLASS__;
+	protected $_namespace;
 
 	/**
 	 * @var Zend_Session_Namespace
 	 */
-	protected $_session = null;
+	protected $_session;
 
 	/**
 	 * @return string
 	 */
 	public function getNamespace()
 	{
+		if (null == $this->_namespace) {
+			$this->_namespace = self::DEFAULT_NAMESPACE;	
+		}
 		return $this->_namespace;
 	}
 
@@ -153,17 +158,17 @@ class GlassOnion_Controller_Action_Helper_ReturnToPreviousUri
 	/**
 	 * @return void
 	 */
-	public function redirect()
+	public function redirect($defaultUri = '/')
 	{
-		$uri = $this->hasUri() ? $this->popUri() : '/';
+		$uri = $this->hasUri() ? $this->popUri() : $defaultUri;
 		Zend_Controller_Action_HelperBroker::getStaticHelper('Redirector')->gotoUrl($uri);
 	}
 
 	/**
 	 * @return void
 	 */
-	public function direct()
+	public function direct($defaultUri)
 	{
-		$this->redirect();
+		$this->redirect($defaultUri);
 	}
 }
