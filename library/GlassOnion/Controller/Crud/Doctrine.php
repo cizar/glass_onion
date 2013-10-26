@@ -387,43 +387,21 @@ abstract class GlassOnion_Controller_Crud_Doctrine
     }
 
     /**
-     * Returns 
+     * TBD 
      *
      * @param Doctrine_Query|Doctrine_Collection|string $source
      * @param string $format
      * @param string $key
      * @return array
-     * @throws Zend_Controller_Action_Exception
+     * @throws InvalidArgumentException
      */
     public function getMultiOptions($source, $format = '%value$s', $key = 'id')
     {
-        if ($source instanceof Doctrine_Collection) {
-            $records = $source;
-        } else if ($source instanceof Doctrine_Query) {
-            $records = $source->execute();
-        } else if (is_string($source)) {
-            if (!Doctrine_Core::isValidModelClass($source)) {
-                /**
-                 * @see GlassOnion_Controller_Crud_Exception
-                 */
-                require_once 'GlassOnion/Controller/Crud/Exception.php';
-                throw new GlassOnion_Controller_Crud_Exception(
-                    'The class "' . $source . '" is not a valid model');
-            }
-            $records = Doctrine_Query::create()->from($source)->execute();
-        } else {
-            /**
-             * @see GlassOnion_Controller_Crud_Exception
-             */
-            require_once 'GlassOnion/Controller/Crud/Exception.php';
-            throw new GlassOnion_Controller_Crud_Exception('Unknown source type');
-        }
-
-        $options = array();
-        foreach ($records->toArray() as $record) {
-            $options[$record[$key]] = $this->_vnsprintf($format, $record);
-        }
-        return $options;
+        /**
+         * @see GlassOnion_Doctrine
+         */
+        require_once 'GlassOnion/Doctrine.php';
+        return GlassOnion_Doctrine::getMultiOptions($source, $format, $key);
     }
 
     /**
@@ -586,34 +564,6 @@ abstract class GlassOnion_Controller_Crud_Doctrine
     {
         $params = $query->getParams();
         return isset($params['where']) && count($params['where']) > 0;
-    }
-
-    /**
-     * TBD
-     *
-     * @return string
-     */
-    private function _vnsprintf($format, array $data)
-    {
-        $pattern = '/ (?<!%) % ( (?: [[:alpha:]_-][[:alnum:]_-]* | ([-+])? [0-9]+ (?(2) (?:\.[0-9]+)? | \.[0-9]+ ) ) ) \$ [-+]? \'? .? -? [0-9]* (\.[0-9]+)? \w/x';
-        
-        preg_match_all($pattern, $format, $match, PREG_SET_ORDER | PREG_OFFSET_CAPTURE);
-        $offset = 0;
-        $keys = array_keys($data);
-
-        foreach ($match as $value) {
-            if (
-                ($key = array_search($value[1][0], $keys, TRUE)) !== FALSE
-                || (is_numeric($value[1][0])
-                && ($key = array_search((int)$value[1][0], $keys, TRUE)) !== FALSE)
-            ) {
-                $len = strlen($value[1][0]);
-                $format = substr_replace($format, 1 + $key, $offset + $value[1][1], $len);
-                $offset -= $len - strlen(1 + $key);
-            }
-        }
-
-        return vsprintf($format, $data);
     }
 
     /**
