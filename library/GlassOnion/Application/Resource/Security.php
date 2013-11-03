@@ -51,17 +51,19 @@ class GlassOnion_Application_Resource_Security
     /**
      * Defined by Zend_Application_Resource_Resource
      *
-     * @return void
+     * @return GlassOnion_Controller_Plugin_AccessControl
      */
     public function init()
     {
-        Zend_Controller_Front::getInstance()->registerPlugin($this->getPlugin());
+        $plugin = $this->getPlugin();
+        Zend_Controller_Front::getInstance()->registerPlugin($plugin);
+        return $plugin;
     }
 
     /**
-     * Defined by Zend_Application_Resource_Resource
+     * Returns the access control plugin for the controller
      *
-     * @return void
+     * @return GlassOnion_Controller_Plugin_AccessControl
      */
     public function getPlugin()
     {

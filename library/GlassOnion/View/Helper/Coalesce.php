@@ -41,7 +41,8 @@ require_once 'Zend/View/Helper/Abstract.php';
  * @package    GlassOnion_View
  * @subpackage Helper
  */
-class GlassOnion_View_Helper_Coalesce extends Zend_View_Helper_Abstract
+class GlassOnion_View_Helper_Coalesce
+    extends Zend_View_Helper_Abstract
 {
     /**
      * Returns the first not-null argument
@@ -53,6 +54,11 @@ class GlassOnion_View_Helper_Coalesce extends Zend_View_Helper_Abstract
         return array_shift(array_filter(func_get_args(), array($this, 'filter')));
     }
 
+    /**
+     * Returns true if the value is null
+     *
+     * @return boolean
+     */
     private function filter($value)
     {
         return !is_null($value);

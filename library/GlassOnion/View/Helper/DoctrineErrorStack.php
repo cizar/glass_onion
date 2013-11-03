@@ -41,7 +41,8 @@ require_once 'Zend/View/Helper/Abstract.php';
  * @package    GlassOnion_View
  * @subpackage Helper
  */
-class Zend_View_Helper_DoctrineErrorStack extends Zend_View_Helper_Abstract
+class Zend_View_Helper_DoctrineErrorStack
+    extends Zend_View_Helper_Abstract
 {
     /**
      * @return string

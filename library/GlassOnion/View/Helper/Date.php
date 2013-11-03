@@ -41,7 +41,8 @@ require_once 'Zend/View/Helper/Abstract.php';
  * @package    GlassOnion_View
  * @subpackage Helper
  */
-class GlassOnion_View_Helper_Date extends Zend_View_Helper_Abstract
+class GlassOnion_View_Helper_Date
+    extends Zend_View_Helper_Abstract
 {
     /**
      * @const string

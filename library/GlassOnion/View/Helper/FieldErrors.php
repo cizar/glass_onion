@@ -36,7 +36,8 @@
  */
 require_once 'Zend/View/Helper/FormElement.php';
 
-class GlassOnion_View_Helper_FieldErrors extends Zend_View_Helper_FormElement
+class GlassOnion_View_Helper_FieldErrors
+    extends Zend_View_Helper_FormElement
 {
     /**
      * Returns a form label with the record error stack (Only for Doctrine)

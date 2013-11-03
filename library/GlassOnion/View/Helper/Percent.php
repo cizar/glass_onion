@@ -41,29 +41,38 @@ require_once 'Zend/View/Helper/Abstract.php';
  * @package    GlassOnion_View
  * @subpackage Helper
  */
-class GlassOnion_View_Helper_Percent extends Zend_View_Helper_Abstract
+class GlassOnion_View_Helper_Percent
+    extends Zend_View_Helper_Abstract
 {
+    /**
+     * @var integer
+     */
     private $_decimals = 0;
 
-    private $_symbol = '%';
-
+    /**
+     * @var float
+     */
     private $_value = null;
 
+    /**
+     * Returns the formatted percent value
+     *
+     * @return GlassOnion_View_Helper_Percent
+     */
     public function percent($data = null, $decimals = null)
     {
         $this->_value = $this->_format($data, $decimals);
         return $this;
     }
 
+    /**
+     * Sets the percent decimals
+     *
+     * @return GlassOnion_View_Helper_Percent Provides a fluent interface
+     */
     public function setDecimals($decimals)
     {
         $this->_decimals = $decimals;
-        return $this;
-    }
-
-    public function setSymbol($symbol)
-    {
-        $this->_symbol = $symbol;
         return $this;
     }
 
@@ -80,14 +89,18 @@ class GlassOnion_View_Helper_Percent extends Zend_View_Helper_Abstract
 
         $percent = $this->_getPercent($data);
 
-        if (null === $decimals)
-        {
+        if (null === $decimals) {
             $decimals = $this->_decimals;
         }
 
-        return $this->view->number($percent, $decimals) . $this->_symbol;
+        return $this->view->number($percent, $decimals) . '%';
     }
 
+    /**
+     * Returns the percent value
+     *
+     * @return float
+     */
     private function _getPercent($data)
     {
         if (is_array($data)) {

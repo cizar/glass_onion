@@ -46,7 +46,7 @@ class GlassOnion_Application_Resource_Theme
     /**
      * Defined by Zend_Application_Resource_Resource
      *
-     * @return string
+     * @return GlassOnion_View_Helper_ThemeBaseUrl
      */
     public function init()
     {

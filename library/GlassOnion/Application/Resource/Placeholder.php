@@ -40,35 +40,46 @@ require_once 'Zend/Application/Resource/ResourceAbstract.php';
  * @category   GlassOnion
  * @package    GlassOnion_Application
  */
-class GlassOnion_Application_Resource_Fop
+class GlassOnion_Application_Resource_Placeholder
     extends Zend_Application_Resource_ResourceAbstract
 {
     /**
-     * @var GlassOnion_Fop
-     */
-    protected $_fop = null;
-
-    /**
      * Defined by Zend_Application_Resource_Resource
      *
-     * @return GlassOnion_Fop
+     * @return void
      */
     public function init()
     {
-        return $this->getFop();
+        $placeholders = $this->getOptions();
+        if ($placeholders) {
+            $view = $this->_getView();
+            foreach ($placeholders as $name => $placeholder) {
+                switch (gettype($placeholder)) {
+                    case 'array':
+                        foreach ($placeholder as $key => $value) {
+                            $view->placeholder($name)->$key = $value;
+                        }
+                        break;
+                    default:
+                        $view->placeholder($name)->set($placeholder);
+                        break;
+                }
+            }
+        }
     }
 
     /**
-     * Returns a configured FOP object
+     * Returns the current view instance.
      *
-     * @return GlassOnion_Fop
+     * @return Zend_View
      */
-    public function getFop()
+    private function _getView()
     {
-        if (null === $this->_fop) {
-            $this->_fop = GlassOnion_Fop::factory($this->getOptions());
+        $bootstrap = $this->getBootstrap();
+        if (!$bootstrap->hasResource('view')) {
+            require_once 'Zend/Application/Resource/Exception.php';
+            throw new Zend_Application_Resource_Exception('No view defined');
         }
-
-        return $this->_fop;
+        return $bootstrap->bootstrap('view')->getResource('view');
     }
 }

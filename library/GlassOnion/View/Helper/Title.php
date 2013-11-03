@@ -54,7 +54,7 @@ class GlassOnion_View_Helper_Title
     {
         $helper = $this->view->headTitle();
         if (null == $title) {
-            return $helper->offsetGet(0);
+            return $helper->offsetExists(0) ? $helper->offsetGet(0) : '';
         }
         $helper->append($title);
         return $title;
