@@ -152,7 +152,7 @@ class GlassOnion_View_Helper_HeadBase extends Zend_View_Helper_Abstract
     /**
      * @return string
      */
-    public function getEndTag()
+    public function getClosingBracket()
     {
         return $this->view->doctype()->isXhtml() ? '/>' : '>';
     }
@@ -162,7 +162,7 @@ class GlassOnion_View_Helper_HeadBase extends Zend_View_Helper_Abstract
      */
     public function toString()
     {
-        return '<base href="' . $this->getUrl() . '"' . $this->getEndTag() . PHP_EOL;
+        return '<base href="' . $this->getUrl() . '"' . $this->getClosingBracket() . PHP_EOL;
     }
     
     /**
