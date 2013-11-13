@@ -128,7 +128,9 @@ class GlassOnion_Controller_Action_Helper_RedirectToPreviousUri
 		if (null == $request) {
 			$request = Zend_Controller_Front::getInstance()->getRequest();
 		}
-		return $this->setUri($request->getRequestUri());
+		$session = $this->getSession();
+		$session->previousUri = $request->getRequestUri();
+		return $this;
 	}
 
 	/**
