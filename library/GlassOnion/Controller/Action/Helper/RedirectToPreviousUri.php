@@ -41,7 +41,7 @@ require_once 'Zend/Controller/Action/Helper/Abstract.php';
  * @package    GlassOnion_Controller
  * @subpackage Helper
  */
-class GlassOnion_Controller_Action_Helper_ReturnToPreviousUri
+class GlassOnion_Controller_Action_Helper_RedirectToPreviousUri
     extends Zend_Controller_Action_Helper_Abstract
 {
 	const DEFAULT_NAMESPACE = __CLASS__;
@@ -68,7 +68,7 @@ class GlassOnion_Controller_Action_Helper_ReturnToPreviousUri
 	}
 
 	/**
-	 * @return GlassOnion_Controller_Action_Helper_ReturnToUri
+	 * @return GlassOnion_Controller_Action_Helper_RedirectToPreviousUri
 	 */
 	public function setNamespace($namespace)
 	{
@@ -88,7 +88,7 @@ class GlassOnion_Controller_Action_Helper_ReturnToPreviousUri
 	}
 
 	/**
-	 * @return GlassOnion_Controller_Action_Helper_ReturnToUri
+	 * @return GlassOnion_Controller_Action_Helper_RedirectToPreviousUri
 	 */
 	public function setSession(Zend_Session_Namespace $session)
 	{
@@ -99,76 +99,52 @@ class GlassOnion_Controller_Action_Helper_ReturnToPreviousUri
 	/**
 	 * @return boolean
 	 */
-	public function hasUri()
+	public function hasPreviousUri()
 	{
 		$session = $this->getSession();
-		return isset($session->uri);
+        return isset($session->previousUri);
 	}
 
 	/**
 	 * @return string
 	 */
-	public function getUri()
+	public function popPreviousUri()
 	{
 		$session = $this->getSession();
-		return $session->uri;
+		if (isset($session->previousUri)) {
+			$previousUri = $session->previousUri;
+			unset($session->previousUri);
+			return $previousUri;
+		}
+		return null;
 	}
 
 	/**
-	 * @return GlassOnion_Controller_Action_Helper_ReturnToUri
+	 * @param Zend_Controller_Request_Abstract
+	 * @return GlassOnion_Controller_Action_Helper_RedirectToPreviousUri
 	 */
-	public function setUri($uri)
-	{
-		$session = $this->getSession();
-		$session->uri = $uri;
-		return $this;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function popUri()
-	{
-		$uri = $this->getUri();
-		$this->reset();
-		return $uri;
-	}
-
-	/**
-	 * @return GlassOnion_Controller_Action_Helper_ReturnToUri
-	 */
-	public function rememberRequestUri(Zend_Controller_Request_Abstract $request = null)
+	public function storeRequestUri(Zend_Controller_Request_Abstract $request = null)
 	{
 		if (null == $request) {
-			$request = $this->getRequest();
+			$request = Zend_Controller_Front::getInstance()->getRequest();
 		}
 		return $this->setUri($request->getRequestUri());
 	}
 
 	/**
-	 * @return GlassOnion_Controller_Action_Helper_ReturnToUri
+	 * @return void
 	 */
-	public function reset()
+	public function redirect()
 	{
-		$session = $this->getSession();
-		unset($session->uri);
-		return $this;
+		$previousUri = $this->hasPreviousUri() ? $this->popPreviousUri() : '/';
+		Zend_Controller_Action_HelperBroker::getStaticHelper('Redirector')->gotoUrl($previousUri);
 	}
 
 	/**
 	 * @return void
 	 */
-	public function redirect($defaultUri = '/')
+	public function direct()
 	{
-		$uri = $this->hasUri() ? $this->popUri() : $defaultUri;
-		Zend_Controller_Action_HelperBroker::getStaticHelper('Redirector')->gotoUrl($uri);
-	}
-
-	/**
-	 * @return void
-	 */
-	public function direct($defaultUri)
-	{
-		$this->redirect($defaultUri);
+		$this->redirect();
 	}
 }

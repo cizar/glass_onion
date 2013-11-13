@@ -225,7 +225,7 @@ class GlassOnion_Controller_Plugin_AccessControl
             return;
         }
 
-        Zend_Controller_Action_HelperBroker::getStaticHelper('ReturnToPreviousUri')->rememberRequestUri();
+        Zend_Controller_Action_HelperBroker::getStaticHelper('RedirectToPreviousUri')->storeRequestUri();
 
         $this->denyAccess();
     }
