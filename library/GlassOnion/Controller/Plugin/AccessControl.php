@@ -64,7 +64,7 @@ class GlassOnion_Controller_Plugin_AccessControl
     /**
      * @var string
      */
-    protected $_roleName;
+    protected $_roleId;
 
     /**
      * @var array
@@ -97,47 +97,47 @@ class GlassOnion_Controller_Plugin_AccessControl
     }
 
     /**
-     * Sets the current role name
+     * Sets the current role ID
      *
-     * @param string $roleName
+     * @param string $roleId
      * @return GlassOnion_Controller_Plugin_AccessControl Provides a fluent interface
      */
-    public function setRoleName($roleName)
+    public function setRoleId($roleId)
     {
-        $this->_roleName = $roleName;
+        $this->_roleId = $roleId;
         return $this;
     }
 
     /**
-     * Returns the current role name
+     * Returns the current role ID
      *
      * @return string
      */
-    public function getRoleName()
+    public function getRoleId()
     {
-        if (null == $this->_roleName) {
+        if (null == $this->_roleId) {
             $auth = Zend_Auth::getInstance();
-            $this->_roleName = $auth->hasIdentity() ? $auth->getIdentity() : 'guest';
+            $this->_roleId = $auth->hasIdentity() ? $auth->getIdentity() : 'guest';
         }
-        return $this->_roleName;
+        return $this->_roleId;
     }
 
     /**
-     * Sets the current role name by a given role
+     * Sets the current role ID by a given role
      *
      * @param Zend_Acl_Role_Interface $role
      * @return GlassOnion_Controller_Plugin_AccessControl Provides a fluent interface
      */
     public function setRole(Zend_Acl_Role_Interface $role)
     {
-        $this->setRoleName($role->getRoleId());
+        $this->setRoleId($role->getRoleId());
         return $this;
     }
 
     /**
      * Sets the access denied page
      *
-     * @param string $action
+     * @param string|array $action
      * @param string $controller
      * @param string $module
      * @return GlassOnion_Controller_Plugin_AccessControl Provides a fluent interface
@@ -209,7 +209,7 @@ class GlassOnion_Controller_Plugin_AccessControl
 
     /**
      * Predispatch
-     * Checks if the current user identified by roleName has rights to the requested url (module/controller/action)
+     * Checks if the current user identified by roleId has rights to the requested url (module/controller/action)
      * If not, it will call denyAccess to be redirected to deniedAction
      *
      * @param Zend_Controller_Request_Abstract $request
@@ -221,7 +221,7 @@ class GlassOnion_Controller_Plugin_AccessControl
             return;
         }
 
-        if ($this->getAcl()->isAllowed($this->getRoleName(), $this->getResourceName(), $request->getActionName())) {
+        if ($this->getAcl()->isAllowed($this->getRoleId(), $this->getResourceName(), $request->getActionName())) {
             return;
         }
 
