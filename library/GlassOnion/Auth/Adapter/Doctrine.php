@@ -363,7 +363,7 @@ class GlassOnion_Auth_Adapter_Doctrine
             require_once 'Zend/Auth/Adapter/Exception.php';
             throw new Zend_Auth_Adapter_Exception('The supplied parameters to' 
                 . ' GlassOnion_Auth_Adapter_Doctrine failed to produce a valid sql statement,'
-                . ' please check table and column names for validity.', 0, $e);
+                . ' please check table and column names for validity.', 0, $ex);
         }
     }
     
