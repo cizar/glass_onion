@@ -69,7 +69,7 @@ class GlassOnion_View_Helper_FormDate extends Zend_View_Helper_FormElement
     public function formDate($name, $value = null, $params = null, $attribs = null)
     {
         $this->_info = array(
-            'formated' => $this->_getInfo('datepicker-' . $name, $value, $attribs),
+            'formated' => $this->_getInfo($name . '-datepicker', $value, $attribs),
             'normalized' => $this->_getInfo($name, $value, $attribs)
         );
     	if (!isset($params['dateFormat']) && Zend_Registry::isRegistered('Zend_Locale')) {
