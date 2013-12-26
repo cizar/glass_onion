@@ -41,7 +41,7 @@ require_once 'GlassOnion/View/Helper/Messages.php';
  * @package    GlassOnion_View
  * @subpackage Helper
  */
-class GlassOnion_View_Helper_FoundationMessages
+class GlassOnion_View_Helper_BootstrapMessages
     extends GlassOnion_View_Helper_Messages
 {
     /**
@@ -52,14 +52,14 @@ class GlassOnion_View_Helper_FoundationMessages
     /**
      * @const string
      */
-    const DEFAULT_TEMPLATE = '<div data-alert class="alert-box %s">%s<a href="#" class="close">&times;</a></div>';
+    const DEFAULT_TEMPLATE = '<div class="alert alert-dismissable alert-%s"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>%s</div>';
 
     /**
-     * Returns the Flash Messenger HTML for Foundation.
+     * Returns the Flash Messenger HTML for Bootstrap.
      *
      * @return string
      */
-    public function foundationMessages($status = null, $template = null)
+    public function bootstrapMessages($status = null, $template = null)
     {
         if (null == $status) {
             $status = self::DEFAULT_STATUS;

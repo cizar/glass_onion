@@ -37,6 +37,11 @@
 require_once 'Zend/View/Helper/Abstract.php';
 
 /**
+ * @see Zend_View_Helper_Abstract
+ */
+require_once 'Zend/Date.php';
+
+/**
  * @category   GlassOnion
  * @package    GlassOnion_View
  * @subpackage Helper
@@ -57,6 +62,11 @@ class GlassOnion_View_Helper_Date
     /**
      * @var string
      */
+    private $_format = null;
+
+    /**
+     * @var string
+     */
     private $_locale = null;
 
     /**
@@ -66,9 +76,10 @@ class GlassOnion_View_Helper_Date
      * @param string $locale
      * @return GlassOnion_View_Helper_Date Provides a fluent interface
      */
-    public function date($value, $locale = null)
+    public function date($value, $format = null, $locale = null)
     {
         $this->_value = $value;
+        $this->_format = $format;
         $this->_locale = $locale;
         return $this;
     }
@@ -104,6 +115,20 @@ class GlassOnion_View_Helper_Date
         $this->_value = $value;
         return $this;
     }
+
+    /**
+     * Returns the date format
+     *
+     * @return string
+     */
+    public function getFormat()
+    {
+        if (null == $this->_format) {
+            return Zend_Date::DATE_SHORT;
+        }
+        return $this->_format;
+    }
+
 
     /**
      * Returns the locale
@@ -150,7 +175,7 @@ class GlassOnion_View_Helper_Date
             try {
                 require_once 'Zend/Date.php';
                 $date = new Zend_Date($this->getValue(), Zend_Date::ISO_8601);
-                return $date->toString(Zend_Date::DATE_SHORT, null, $this->getLocale());                
+                return $date->toString($this->getFormat(), null, $this->getLocale());                
             }
             catch (Exception $ex) {
                 return $this->getValue();
