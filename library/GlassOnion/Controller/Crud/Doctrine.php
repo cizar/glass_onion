@@ -162,6 +162,7 @@ abstract class GlassOnion_Controller_Crud_Doctrine
             try {
                 $this->create($record);
                 $record->save();
+                $this->postCreate($record);
                 $this->_helper->flashMessenger->success($this->getCreateSuccessMessage($record));
                 $this->_helper->redirector();
             }
@@ -202,6 +203,7 @@ abstract class GlassOnion_Controller_Crud_Doctrine
             try {
                 $this->update($record);
                 $record->save();
+                $this->postUpdate($record);
                 $this->_helper->flashMessenger->success($this->getUpdateSuccessMessage($record));
                 $this->_helper->redirector();
             }
@@ -262,11 +264,27 @@ abstract class GlassOnion_Controller_Crud_Doctrine
     }
 
     /**
+     * Post Create
+     */
+    protected function postCreate(Doctrine_Record $record)
+    {
+        // Hook for the post create
+    }
+
+    /**
      * Update
      */
     protected function update(Doctrine_Record $record)
     {
         $record->fromArray($this->_getFilteredParam('record'));
+    }
+
+    /**
+     * Post Update
+     */
+    protected function postUpdate(Doctrine_Record $record)
+    {
+        // Hook for the post update
     }
 
     /**
