@@ -71,4 +71,45 @@ class GlassOnion_Doctrine
         }
         return $options;		
 	}
+
+    /**
+     * Find a record or create a new one if does not exists. Either case return the record.
+     *
+     * @param  string $tableName
+     * @param  string $fieldName
+     * @param  string $value
+     *   or
+     * @param  string $tableName
+     * @param  array $fieldValueHashArray
+     *
+     * @return Doctrine_Record
+     * @throws Zend_Controller_Action_Exception
+     */
+    public static function findOneOrCreate()
+    {
+        $args = func_get_args();
+        $tableName = array_shift($args);
+        if (is_array($args[0])) {
+            $criteria = array_shift($args);
+        } else {
+            foreach (array_chunk($args, 2) as $pair) {
+                list($key, $value) = $pair;
+                $criteria[$key] = $value;
+            }
+        }
+        $table = Doctrine_Core::getTable($tableName);
+        $query = $table->createQuery()->limit(1);
+        foreach ($criteria as $fieldName => $value) {
+            $query->andWhere($fieldName . ' = ?', $value);
+        }
+        $record = $query->fetchOne();
+        if (!$record) {
+            $record = $table->create();
+            foreach ($criteria as $fieldName => $value) {
+                $record->set($fieldName, $value);
+            }
+        }
+        return $record;
+    }
+
 }
