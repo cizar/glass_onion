@@ -160,13 +160,16 @@ abstract class GlassOnion_Controller_Crud_Doctrine
 
         if ($this->_request->isPost()) {
             try {
+                $this->getConnection()->beginTransaction();
                 $this->create($record);
                 $record->save();
                 $this->postCreate($record);
+                $this->getConnection()->commit();
                 $this->_helper->flashMessenger->success($this->getCreateSuccessMessage($record));
                 $this->_helper->redirector();
             }
             catch (Doctrine_Validator_Exception $ex) {
+                $this->getConnection()->rollback();
                 $this->_helper->flashMessenger->error($this->getCreateErrorMessage($ex));
                 $this->view->invalidRecords = $ex->getInvalidRecords();
             }
@@ -201,13 +204,16 @@ abstract class GlassOnion_Controller_Crud_Doctrine
 
         if ($this->_request->isPost()) {
             try {
+                $this->getConnection()->beginTransaction();
                 $this->update($record);
                 $record->save();
                 $this->postUpdate($record);
+                $this->getConnection()->commit();
                 $this->_helper->flashMessenger->success($this->getUpdateSuccessMessage($record));
                 $this->_helper->redirector();
             }
             catch (Doctrine_Validator_Exception $ex) {
+                $this->getConnection()->rollback();
                 $this->_helper->flashMessenger->error($this->getUpdateErrorMessage($ex));
                 $this->view->invalidRecords = $ex->getInvalidRecords();
             }
