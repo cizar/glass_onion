@@ -32,31 +32,23 @@
  */
 
 /**
- * @see Zend_View_Helper_Abstract
- */
-require_once 'Zend/View/Helper/Abstract.php';
-
-/**
- * @see GlassOnion_Date
- */
-require_once 'GlassOnion/Date.php';
-
-/**
  * @category   GlassOnion
- * @package    GlassOnion_View
- * @subpackage Helper
+ * @package    GlassOnion_Date
  */
-class GlassOnion_View_Helper_Age
-    extends Zend_View_Helper_Abstract
+class GlassOnion_Date
 {
     /**
      * Returns the number of years since a given date
      *
-     * @param string $date
-     * @return integer
+     * @return string
      */
-    public function age($date)
+    public static function age($date)
     {
-        return GlassOnion_Date::age($date);
+        $time = strtotime($date);
+        $age = date('Y') - date('Y', $time);
+        if (date('md') > date('md', $time)) {
+            $age--;
+        }
+        return $age;
     }
 }
