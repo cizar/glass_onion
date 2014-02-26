@@ -198,18 +198,18 @@ class GlassOnion_Fop_Command
     {
         $this->pdfFilename = $this->getTempFilename();
 
-        $cmd = sprintf('%s -xml "%s" -xsl "%s" -pdf "%s" 2>&1',
+        $command = sprintf('%s -xml "%s" -xsl "%s" -pdf "%s" 2>&1',
             $this->fop->getBin(),
             $this->getXmlFilename(),
             $this->getXslFilename(),
             $this->pdfFilename
         );
 
-        exec($cmd, $out, $ret);
+        exec($command, $output, $status);
 
-        if (0 != $ret) {
+        if (0 != $status) {
             require_once 'GlassOnion/Fop/Exception.php';
-            throw new GlassOnion_Fop_Exception('Unable to create PDF file');
+            throw new GlassOnion_Fop_Exception($this->getFirstExceptionMessage($output));
         }
 
         return $this;
@@ -268,5 +268,20 @@ class GlassOnion_Fop_Command
         $filename = tempnam('/tmp', $id);
         $this->temporaryFiles[] = $filename;
         return $filename;
+    }
+
+    /**
+     * getFirstExceptionMessage() - Looks for the first exception message of the fop command error response
+     *
+     * @return string
+     */    
+    private function getFirstExceptionMessage($fopOutput)
+    {
+        foreach ($fopOutput as $line) {
+            if (preg_match('/Exception: (.*)/', $line, $matches)) {
+                return $matches[1];
+            }
+        }
+        return "Unknown cause";
     }
 }
