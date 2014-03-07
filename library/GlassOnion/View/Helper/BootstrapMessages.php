@@ -32,9 +32,9 @@
  */
 
 /**
- * @see GlassOnion_View_Helper_Messages
+ * @see GlassOnion_View_Helper_FlashMessages
  */
-require_once 'GlassOnion/View/Helper/Messages.php';
+require_once 'GlassOnion/View/Helper/FlashMessages.php';
 
 /**
  * @category   GlassOnion
@@ -42,33 +42,43 @@ require_once 'GlassOnion/View/Helper/Messages.php';
  * @subpackage Helper
  */
 class GlassOnion_View_Helper_BootstrapMessages
-    extends GlassOnion_View_Helper_Messages
+    extends GlassOnion_View_Helper_FlashMessages
 {
     /**
-     * @const string
+     * @var array
      */
-    const DEFAULT_STATUS = 'info';
-
-    /**
-     * @const string
-     */
-    const DEFAULT_TEMPLATE = '<div class="alert alert-dismissable alert-%s"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>%s</div>';
+    private $statusClassMapping = array(
+        'success' => 'alert alert-dismissable alert-success',
+        'info'    => 'alert alert-dismissable alert-info',
+        'warning' => 'alert alert-dismissable alert-warning',
+        'error'   => 'alert alert-dismissable alert-danger'
+    );
 
     /**
      * Returns the Flash Messenger HTML for Bootstrap.
      *
      * @return string
      */
-    public function bootstrapMessages($status = null, $template = null)
+    public function bootstrapMessages()
     {
-        if (null == $status) {
-            $status = self::DEFAULT_STATUS;
-        }
+        return $this->flashMessages();
+    }
 
-        if (null == $template) {
-            $template = self::DEFAULT_TEMPLATE;
-        }
+    /**
+     * @overrides
+     * @return string
+     */
+    protected function getTemplate()
+    {
+        return '<div class="%s"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>%s</div>';
+    }
 
-        return $this->messages($status, $template);
+    /**
+     * @overrides
+     * @return string
+     */
+    protected function getClassForStatus($status)
+    {
+        return $this->statusClassMapping[$status];
     }
 }

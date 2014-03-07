@@ -32,9 +32,9 @@
  */
 
 /**
- * @see GlassOnion_View_Helper_Messages
+ * @see GlassOnion_View_Helper_FlashMessages
  */
-require_once 'GlassOnion/View/Helper/Messages.php';
+require_once 'GlassOnion/View/Helper/FlashMessages.php';
 
 /**
  * @category   GlassOnion
@@ -42,18 +42,8 @@ require_once 'GlassOnion/View/Helper/Messages.php';
  * @subpackage Helper
  */
 class GlassOnion_View_Helper_FoundationMessages
-    extends GlassOnion_View_Helper_Messages
+    extends GlassOnion_View_Helper_FlashMessages
 {
-    /**
-     * @const string
-     */
-    const DEFAULT_STATUS = 'info';
-
-    /**
-     * @const string
-     */
-    const DEFAULT_TEMPLATE = '<div data-alert class="alert-box %s">%s<a href="#" class="close">&times;</a></div>';
-
     /**
      * Returns the Flash Messenger HTML for Foundation.
      *
@@ -61,14 +51,15 @@ class GlassOnion_View_Helper_FoundationMessages
      */
     public function foundationMessages($status = null, $template = null)
     {
-        if (null == $status) {
-            $status = self::DEFAULT_STATUS;
-        }
+        return $this->flashMessages();
+    }
 
-        if (null == $template) {
-            $template = self::DEFAULT_TEMPLATE;
-        }
-
-        return $this->messages($status, $template);
+    /**
+     * @overrides
+     * @return string
+     */
+    protected function getTemplate()
+    {
+        return '<div data-alert class="alert-box %s">%s<a href="#" class="close">&times;</a></div>';
     }
 }

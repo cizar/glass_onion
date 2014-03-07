@@ -57,7 +57,7 @@ class GlassOnion_Controller_Action_Helper_FlashMessenger
             throw new Exception("Status '$method' is not allowed");
         }
         foreach ($args as $message) {
-            $this->addMessage(array('status' => $method, 'message' => $message));
+            $this->addMessage(array('status' => $method, 'text' => $message));
         }
     }
 }
