@@ -64,4 +64,3 @@ class GlassOnion_View_Helper_Coalesce
         return !is_null($value);
     }
 }
-

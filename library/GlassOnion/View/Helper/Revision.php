@@ -54,5 +54,3 @@ class GlassOnion_View_Helper_Revision
         return shell_exec('svnversion "' . $path . '"');
     }
 }
-
-

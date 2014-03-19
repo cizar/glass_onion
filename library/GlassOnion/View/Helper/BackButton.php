@@ -53,5 +53,3 @@ class GlassOnion_View_Helper_BackButton extends GlassOnion_View_Helper_Button
         return parent::button('javascript:history.back(1)', $label, $attribs);
     }
 }
-
-

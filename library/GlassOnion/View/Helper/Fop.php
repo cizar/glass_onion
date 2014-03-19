@@ -80,4 +80,3 @@ class GlassOnion_View_Helper_Fop extends Zend_View_Helper_Abstract
         return $pdf;
     }
 }
-

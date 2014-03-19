@@ -55,5 +55,3 @@ class GlassOnion_View_Helper_PrimaryButton extends GlassOnion_View_Helper_Button
         return parent::button($href, $label, $attribs);
     }
 }
-
-

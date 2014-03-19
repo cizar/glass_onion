@@ -55,5 +55,3 @@ class GlassOnion_View_Helper_Button extends GlassOnion_View_Helper_HtmlAnchor
         return $this->view->htmlAnchor($href, $label, $attribs);
     }
 }
-
-
