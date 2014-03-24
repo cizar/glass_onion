@@ -62,13 +62,9 @@ class GlassOnion_Application_Resource_Headtitle
 
         $options = $this->getOptions();
 
-        if (!isset($options['title'])) {
-            require_once 'Zend/Application/Resource/Exception.php';
-            throw new Zend_Application_Resource_Exception(
-                'The page title has not been defined');
+        if (isset($options['title'])) {
+            $headTitle->append($options['title']);
         }
-
-        $headTitle->append($options['title']);
 
         if (isset($options['separator'])) {
             $headTitle->setSeparator($options['separator']);
