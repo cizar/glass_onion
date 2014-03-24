@@ -282,6 +282,6 @@ class GlassOnion_Fop_Command
                 return $matches[1];
             }
         }
-        return "Unknown cause";
+        return 'Unknown cause';
     }
 }
