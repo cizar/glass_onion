@@ -142,6 +142,7 @@ class GlassOnion_Csv_Reader implements Iterator, Countable
         $this->_delimiter = $delimiter;
         $this->_enclosure = $enclosure;
         $this->_length = $length;
+        $this->_initHeader();
     }
 
     /**
@@ -273,14 +274,8 @@ class GlassOnion_Csv_Reader implements Iterator, Countable
     public function rewind()
     {
         rewind($this->_handler);
+        $this->_initHeader();
         $this->_position = 0;
-        if (self::WITH_HEADER == $this->_headerMode || self::IGNORE_HEADER == $this->_headerMode) {
-            $firstRow = $this->_read();
-            if (!$this->_columnNames && self::WITH_HEADER == $this->_headerMode) {
-                $this->_columnNames = $firstRow;
-            }
-            $this->_position = 1;
-        }
         $this->_current = $this->_read();
     }
 
@@ -319,5 +314,15 @@ class GlassOnion_Csv_Reader implements Iterator, Countable
     private function _read()
     {
         return fgetcsv($this->_handler, $this->_length, $this->_delimiter, $this->_enclosure);
+    }
+
+    private function _initHeader()
+    {
+        if (self::WITH_HEADER == $this->_headerMode || self::IGNORE_HEADER == $this->_headerMode) {
+            $header = $this->_read();
+            if (!$this->_columnNames && self::WITH_HEADER == $this->_headerMode) {
+                $this->_columnNames = $header;
+            }
+        }
     }
 }
