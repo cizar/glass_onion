@@ -191,6 +191,22 @@ class GlassOnion_Csv_Reader implements Iterator, Countable
         }
         return $this;
     }
+
+    /**
+     * Returns the names of the columns.
+     *
+     * @access public
+     * @return array
+     */
+    public function getColumnNames()
+    {
+        if (self::WITH_HEADER != $this->_headerMode) {
+            require_once 'GlassOnion/Csv/Exception.php';
+            throw new GlassOnion_Csv_Exception(
+                'The header is available only if the file is opened in WITH_HEADER mode.');
+        }
+        return $this->_columnNames;
+    }
     
     /**
      * Sets the names of the columns.
@@ -217,7 +233,8 @@ class GlassOnion_Csv_Reader implements Iterator, Countable
         if (isset($this->_columnNames)) {
             if (count($this->_columnNames) !== count($current)) {
                 require_once 'GlassOnion/Csv/Exception.php';
-                throw new GlassOnion_Csv_Exception('The amount of column names differs from the columns');
+                throw new GlassOnion_Csv_Exception(
+                    'The amount of column names differs from the actuals columns');
             }
             $current = array_combine($this->_columnNames, $current) + $current;
         }
