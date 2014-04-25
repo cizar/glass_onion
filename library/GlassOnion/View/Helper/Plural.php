@@ -45,14 +45,20 @@ class GlassOnion_View_Helper_Plural
     extends Zend_View_Helper_Abstract
 {
     /**
-     * Returns the number of years since a given date
+     * Returns the text for the plural
      *
-     * @param string $date
-     * @return integer
+     * @param number $value
+     * @param string $singular
+     * @param string $plural
+     * @param function $pluralRule
+     * @return string
      */
-    public function plural($value, $singular, $plural, $condition = null)
+    public function plural($value, $singular, $plural, $pluralRule = null)
     {
-        $template = ($value == 1) ? $singular : $plural;
+        if (null == $pluralRule) {
+            $pluralRule = function($value) { return $value != 1; };
+        }
+        $template = $pluralRule($value) ? $plural : $singular;
         return $this->view->translate($template, $value);
     }
 }
