@@ -54,11 +54,11 @@ class GlassOnion_Controller_Action_Helper_DoctrineFind
 		}
 		$id = $this->getRequest()->getParam($param);
         if ($id == null) {
-            throw new InvalidArgumentException('Not specified identifier');
+            throw new InvalidArgumentException('Identifier is undefined');
         }
 		$record = Doctrine_Core::getTable($table)->find($id);
         if ($record == null) {
-            throw new InvalidArgumentException('No record found');
+            throw new LogicException('Record not found');
         }
 		return $record;
 	}
