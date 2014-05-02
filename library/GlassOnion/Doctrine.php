@@ -38,16 +38,33 @@
 class GlassOnion_Doctrine
 {
     /**
+     * @var string
+     */
+    const DEFAULT_MULTI_OPTION_FORMAT = '%value$s';
+
+    /**
+     * @var string
+     */
+    const DEFAULT_MULTI_OPTION_KEY = 'id';
+
+    /**
      * TBD 
      *
      * @param Doctrine_Query|Doctrine_Collection|string $source
      * @param string $format
      * @param string $key
+     * @param string $firstOption
      * @return array
      * @throws InvalidArgumentException
      */
-	public static function getMultiOptions($source, $format = '%value$s', $key = 'id')
+	public static function getMultiOptions($source, $format = null, $key = null, $firstOption = null)
 	{
+        if (null == $format) {
+            $format = self::DEFAULT_MULTI_OPTION_FORMAT;
+        }
+        if (null == $key) {
+            $key = self::DEFAULT_MULTI_OPTION_KEY;
+        }
 		if ($source instanceof Doctrine_Collection) {
             $records = $source;
         } else if ($source instanceof Doctrine_Query) {
@@ -68,6 +85,9 @@ class GlassOnion_Doctrine
         $options = array();
         foreach ($records->toArray() as $record) {
             $options[$record[$key]] = GlassOnion_String::vnsprintf($format, $record);
+        }
+        if (null != $firstOption) {
+            $options = array($firstOption) + $options;
         }
         return $options;		
 	}
