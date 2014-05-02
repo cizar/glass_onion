@@ -57,7 +57,7 @@ class GlassOnion_Doctrine
      * @return array
      * @throws InvalidArgumentException
      */
-	public static function getMultiOptions($source, $format = null, $key = null, $firstOption = null)
+	public static function getMultiOptions($source, $format = null, $key = null)
 	{
         if (null == $format) {
             $format = self::DEFAULT_MULTI_OPTION_FORMAT;
@@ -85,9 +85,6 @@ class GlassOnion_Doctrine
         $options = array();
         foreach ($records->toArray() as $record) {
             $options[$record[$key]] = GlassOnion_String::vnsprintf($format, $record);
-        }
-        if (null != $firstOption) {
-            $options = array($firstOption) + $options;
         }
         return $options;		
 	}
