@@ -46,7 +46,7 @@ class GlassOnion_Date
     {
         $time = strtotime($date);
         $age = date('Y') - date('Y', $time);
-        if (date('md') > date('md', $time)) {
+        if (date('md') < date('md', $time)) {
             $age--;
         }
         return $age;
