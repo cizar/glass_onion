@@ -102,9 +102,9 @@ class GlassOnion_View_Helper_TimeAgo extends Zend_View_Helper_Abstract
             return $this->view->translate('%s months', round(floatval($distanceInMinutes) / 43200));
         }
         if ( $distanceInMinutes < 1051199 ) {
-            return $this->view->translate('about 1 year');
+            return $this->view->translate('1 year');
         }
 
-        return $this->view->translate('over %s years', array(round(floatval($distanceInMinutes) / 525600)));
+        return $this->view->translate('%s years', array(round(floatval($distanceInMinutes) / 525600)));
     }
 }
