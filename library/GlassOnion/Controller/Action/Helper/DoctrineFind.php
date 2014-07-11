@@ -47,7 +47,7 @@ class GlassOnion_Controller_Action_Helper_DoctrineFind
 	/**
 	 * @return void
 	 */
-	public function direct($table, $param = null)
+	public function direct($table, $param = null, $assignToView = true)
 	{
 		if ($param == null) {
 			$param = 'id';
@@ -56,9 +56,13 @@ class GlassOnion_Controller_Action_Helper_DoctrineFind
         if ($id == null) {
             throw new InvalidArgumentException('Identifier is undefined');
         }
-		$record = Doctrine_Core::getTable($table)->find($id);
+        $record = Doctrine_Core::getTable($table)->find($id);
         if ($record == null) {
             throw new LogicException('Record not found');
+        }
+        if ($assignToView) {
+            $viewRenderer = Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer');
+            $viewRenderer->view->assign(lcfirst($table), $record);            
         }
 		return $record;
 	}
