@@ -81,17 +81,17 @@ class GlassOnion_Application_Resource_Doctrine
         Doctrine_Core::loadModels($config['models_path']);
 
         if (array_key_exists('extensions', $config)) {
-            if (!array_key_exists('extension_path', $config)) {
+            if (!array_key_exists('extensions_path', $config)) {
                 require_once 'Zend/Application/Resource/Exception.php';
                 throw new Zend_Application_Resource_Exception(
-                    'The extension_path for Doctrine must be defined');
+                    'The extensions_path for Doctrine must be defined');
             }
-            if (!is_dir($config['extension_path'])) {
+            if (!is_dir($config['extensions_path'])) {
                 require_once 'Zend/Application/Resource/Exception.php';
                 throw new Zend_Application_Resource_Exception(
-                    'The extension_path for Doctrine is not a directory');
+                    'The extensions_path for Doctrine is not a directory');
             }
-            Doctrine_Core::setExtensionsPath($config['extension_path']);
+            Doctrine_Core::setExtensionsPath($config['extensions_path']);
             Zend_Loader_Autoloader::getInstance()
                 ->pushAutoloader(array('Doctrine_Core', 'extensionsAutoload'));
             foreach ($config['extensions'] as $extension) {
