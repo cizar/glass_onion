@@ -351,12 +351,9 @@ class GlassOnion_Auth_Adapter_Doctrine
      */
     private function _executeAuthenticationQuery()
     {
-        try
-        {
+        try {
             return $this->_getAuthenticationQuery()->fetchArray();
-        }
-        catch (Exception $ex)
-        {
+        } catch (Exception $ex) {
             /**
              * @see Zend_Auth_Adapter_Exception
              */
@@ -388,6 +385,6 @@ class GlassOnion_Auth_Adapter_Doctrine
         return Doctrine_Query::create($this->getConnection())
             ->from($this->_tableName)
             ->select($select)
-            ->addWhere($this->_identityColumnName .' = ?', $this->_identity);
+            ->where($this->_identityColumnName . ' = ?', $this->_identity);
     }
 }
