@@ -1,0 +1,16 @@
+{
+    "name": "cizar/glassonion",
+    "description": "A collection of ZF1 components and resources",
+    "type": "library",
+    "keywords": ["zend","zend framework"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "César Kästli",
+            "email": "cesarkastli@gmail.com"
+        }
+    ],
+    "include-path": [ "library/" ],
+    "minimum-stability": "dev",
+    "require": {}
+}
