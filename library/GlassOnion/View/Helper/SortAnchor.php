@@ -41,7 +41,7 @@ require_once 'GlassOnion/View/Helper/HtmlAnchor.php';
  * @package    GlassOnion_View
  * @subpackage Helper
  */
-class GlassOnion_View_Helper_HtmlSortAnchor
+class GlassOnion_View_Helper_SortAnchor
     extends Zend_View_Helper_Abstract
 {
     /**
@@ -50,7 +50,7 @@ class GlassOnion_View_Helper_HtmlSortAnchor
      * @param string $href
      * @return GlassOnion_View_Helper_HtmlAnchor
      */
-    public function htmlSortAnchor($label, $field, $order = null,
+    public function sortAnchor($label, $field, $order = null,
         $name = null, $reset = false, $encode = true)
     {
         return $this->view->htmlAnchor(
