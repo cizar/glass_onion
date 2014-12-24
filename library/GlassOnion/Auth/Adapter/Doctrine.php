@@ -378,7 +378,7 @@ class GlassOnion_Auth_Adapter_Doctrine
         }
 
         $select = sprintf('*, (%s = %s) AS zend_auth_credential_match',
-            $this->_credentialColumnName,
+            $this->getConnection()->quoteIdentifier($this->_credentialColumnName),
             str_replace('?', $this->getConnection()->quote($this->_credential), $this->_credentialTreatment)
         );
 
