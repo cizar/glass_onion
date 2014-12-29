@@ -56,8 +56,6 @@ class GlassOnion_Controller_Action_Helper_FlashMessenger
         if (!preg_match('/^(success|info|warning|error)$/', $method)) {
             throw new Exception("Status '$method' is not allowed");
         }
-        foreach ($args as $message) {
-            $this->addMessage(array('status' => $method, 'text' => $message));
-        }
+        $this->addMessage(array('status' => $method, 'text' => call_user_func_array('sprintf', $args)));
     }
 }
