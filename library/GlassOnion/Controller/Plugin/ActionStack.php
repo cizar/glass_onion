@@ -42,66 +42,65 @@ require_once 'Zend/Controller/Plugin/Abstract.php';
  * @subpackage Plugin
  */
 class GlassOnion_Controller_Plugin_ActionStack
-    extends Zend_Controller_Plugin_Abstract
+  extends Zend_Controller_Plugin_Abstract
 {
-    /**
-     * @var array
-     */
-    private $_requests = array();
+  /**
+   * @var array
+   */
+  private $_requests = array();
 
-    /**
-     * Appends an action to be pushed to the ActionStack
-     *
-     * @param string $action
-     * @param string $controller
-     * @param string $module
-     * @param array $params
-     * @return GlassOnion_Controller_Plugin_ActionStack Provides a fluent interface
-     */
-    public function pushToStack($action, $controller, $module = null, array $params = array())
-    {
-        $this->_requests[] = array($action, $controller, $module, $params);
-    }
+  /**
+   * Appends an action to be pushed to the ActionStack
+   *
+   * @param string $action
+   * @param string $controller
+   * @param string $module
+   * @param array $params
+   * @return GlassOnion_Controller_Plugin_ActionStack Provides a fluent interface
+   */
+  public function pushToStack($action, $controller, $module = null, array $params = array())
+  {
+    $this->_requests[] = array($action, $controller, $module, $params);
+  }
 
-    /**
-     * Before the dispatch loop, push some actions into the stack
-     *
-     * @param Zend_Controller_Request_Abstract $request
-     * @return void
-     */
-    public function dispatchLoopStartup(Zend_Controller_Request_Abstract $request)
-    {
-        if ($request->isXmlHttpRequest()) {
-            return;
-        }
-        $plugin = $this->getActionStackPlugin();
-        foreach ($this->_requests as $request) {
-            list($action, $controller, $module, $params) = $request;
-            $plugin->pushStack(new Zend_Controller_Request_Simple($action,
-                $controller, $module, $params));
-        }
+  /**
+   * Before the dispatch loop, push some actions into the stack
+   *
+   * @param Zend_Controller_Request_Abstract $request
+   * @return void
+   */
+  public function dispatchLoopStartup(Zend_Controller_Request_Abstract $request)
+  {
+    if ($request->isXmlHttpRequest()) {
+      return;
     }
+    $plugin = $this->getActionStackPlugin();
+    foreach ($this->_requests as $request) {
+      list($action, $controller, $module, $params) = $request;
+      $plugin->pushStack(new Zend_Controller_Request_Simple($action, $controller, $module, $params));
+    }
+  }
 
-    /**
-     * Returns an instance of the action stack plugin
-     *
-     * @return Zend_Controller_Plugin_ActionStack
-     */
-    public function getActionStackPlugin()
-    {
-        $front = Zend_Controller_Front::getInstance();
-        
-        if ($front->hasPlugin('Zend_Controller_Plugin_ActionStack')) {
-            $plugin = $front->getPlugin('Zend_Controller_Plugin_ActionStack');
-        } else {
-            /**
-             * @see Zend_Controller_Plugin_ActionStack
-             */
-            require_once 'Zend/Controller/Plugin/ActionStack.php';
-            $plugin = new Zend_Controller_Plugin_ActionStack();
-            $front->registerPlugin($plugin);
-        }
-        
-        return $plugin;
+  /**
+   * Returns an instance of the action stack plugin
+   *
+   * @return Zend_Controller_Plugin_ActionStack
+   */
+  public function getActionStackPlugin()
+  {
+    $front = Zend_Controller_Front::getInstance();
+      
+    if ($front->hasPlugin('Zend_Controller_Plugin_ActionStack')) {
+      $plugin = $front->getPlugin('Zend_Controller_Plugin_ActionStack');
+    } else {
+      /**
+       * @see Zend_Controller_Plugin_ActionStack
+       */
+      require_once 'Zend/Controller/Plugin/ActionStack.php';
+      $plugin = new Zend_Controller_Plugin_ActionStack();
+      $front->registerPlugin($plugin);
     }
+    
+    return $plugin;
+  }
 }

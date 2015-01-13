@@ -34,28 +34,23 @@
 /**
  * @see Zend_Controller_Action_Helper_Abstract
  */
-require_once 'Zend/Controller/Action/Helper/FlashMessenger.php';
+require_once 'Zend/Controller/Action/Helper/Abstract.php';
 
 /**
  * @category   GlassOnion
  * @package    GlassOnion_Controller
  * @subpackage Helper
  */
-class GlassOnion_Controller_Action_Helper_FlashMessenger
-  extends Zend_Controller_Action_Helper_FlashMessenger
+class GlassOnion_Controller_Action_Helper_RequestUri
+  extends Zend_Controller_Action_Helper_Abstract
 {
   /**
-   * Add a formated message to the flash messenger
+   * Returns the request URI
    *
-   * @param string $method
-   * @param array $args
-   * @return void
+   * @return string
    */
-  public function __call($method, $args)
+  public function direct()
   {
-    if (!preg_match('/^(success|info|warning|error)$/', $method)) {
-      throw new Exception("Status '$method' is not allowed");
-    }
-    $this->addMessage(array('status' => $method, 'text' => call_user_func_array('sprintf', $args)));
+    return Zend_Controller_Front::getInstance()->getRequest()->getRequestUri();
   }
 }

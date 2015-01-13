@@ -47,54 +47,54 @@ require_once 'PHPExcel/PHPExcel/IOFactory.php';
  * @subpackage Helper
  */
 class GlassOnion_Controller_Action_Helper_PhpExcel
-    extends Zend_Controller_Action_Helper_Abstract
+  extends Zend_Controller_Action_Helper_Abstract
 {
-    /**
-     * The default file name.
-     */
-    const WRITER_TYPE = 'Excel2007';
+  /**
+   * The default file name.
+   */
+  const WRITER_TYPE = 'Excel2007';
 
-    /**
-     * The default file name.
-     */
-    const EXTENSION = '.xlsx';
+  /**
+   * The default file name.
+   */
+  const EXTENSION = '.xlsx';
 
-    /**
-     * The default file name.
-     */
-    const DEFAULT_FILENAME = 'untitled';
+  /**
+   * The default file name.
+   */
+  const DEFAULT_FILENAME = 'untitled';
 
-    /**
-     * Returns the identity of the authenticated user
-     *
-     * @param string $field
-     * @return mixed
-     */
-    public function direct(PHPExcel $excel, $filename = null)
-    {
-        if (null == $filename) {
-            $filename = self::DEFAULT_FILENAME;
-        }
-
-        if (substr($filename, 0, strlen(self::EXTENSION)) != self::EXTENSION) {
-            $filename .= self::EXTENSION;
-        }
-
-        $writer = PHPExcel_IOFactory::createWriter($excel, self::WRITER_TYPE);
-
-        ob_start();
-        $writer->save('php://output');
-        $content = ob_get_clean();
-
-        $this->getResponse()
-             ->clearAllHeaders()
-             ->setHttpResponseCode(200)
-             ->setHeader('Content-Type', 'application/vnd.ms-excel')
-             ->setHeader('Content-Disposition', 'attachment; filename="' . $filename . '"')
-             ->setHeader('Content-Length', strlen($content))
-             ->setBody($content)
-             ->sendResponse();
-
-        exit;
+  /**
+   * Returns the identity of the authenticated user
+   *
+   * @param string $field
+   * @return mixed
+   */
+  public function direct(PHPExcel $excel, $filename = null)
+  {
+    if (null == $filename) {
+      $filename = self::DEFAULT_FILENAME;
     }
+
+    if (substr($filename, 0, strlen(self::EXTENSION)) != self::EXTENSION) {
+      $filename .= self::EXTENSION;
+    }
+
+    $writer = PHPExcel_IOFactory::createWriter($excel, self::WRITER_TYPE);
+
+    ob_start();
+    $writer->save('php://output');
+    $content = ob_get_clean();
+
+    $this->getResponse()
+      ->clearAllHeaders()
+      ->setHttpResponseCode(200)
+      ->setHeader('Content-Type', 'application/vnd.ms-excel')
+      ->setHeader('Content-Disposition', 'attachment; filename="' . $filename . '"')
+      ->setHeader('Content-Length', strlen($content))
+      ->setBody($content)
+      ->sendResponse();
+
+    exit;
+  }
 }
