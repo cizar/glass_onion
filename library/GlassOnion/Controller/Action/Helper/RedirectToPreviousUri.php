@@ -120,6 +120,17 @@ class GlassOnion_Controller_Action_Helper_RedirectToPreviousUri
   }
 
   /**
+   * @param string
+   * @return GlassOnion_Controller_Action_Helper_RedirectToPreviousUri
+   */
+  public function storeUri($uri)
+  {
+    $session = $this->getSession();
+    $session->previousUri = $uri;
+    return $this;
+  }
+
+  /**
    * @param Zend_Controller_Request_Abstract
    * @return GlassOnion_Controller_Action_Helper_RedirectToPreviousUri
    */
@@ -128,8 +139,7 @@ class GlassOnion_Controller_Action_Helper_RedirectToPreviousUri
     if (null == $request) {
       $request = Zend_Controller_Front::getInstance()->getRequest();
     }
-    $session = $this->getSession();
-    $session->previousUri = $request->getRequestUri();
+    $this->storeUri($request->getRequestUri());
     return $this;
   }
 
