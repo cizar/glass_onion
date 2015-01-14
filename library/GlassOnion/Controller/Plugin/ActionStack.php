@@ -47,20 +47,31 @@ class GlassOnion_Controller_Plugin_ActionStack
   /**
    * @var array
    */
-  private $_requests = array();
+  private $_options;
+  
+  /**
+   * Constructor
+   *
+   * @param array $options
+   * @return void
+   */
+  public function __construct($options = null)
+  {
+    if (null !== $options) {
+      $this->setOptions($options);
+    }
+  }
 
   /**
-   * Appends an action to be pushed to the ActionStack
+   * Sets the options
    *
-   * @param string $action
-   * @param string $controller
-   * @param string $module
-   * @param array $params
-   * @return GlassOnion_Controller_Plugin_ActionStack Provides a fluent interface
+   * @param array $options
+   * @return GlassOnion_Controller_Plugin_ActionStack Provides fluent interface
    */
-  public function pushToStack($action, $controller, $module = null, array $params = array())
+  public function setOptions($options)
   {
-    $this->_requests[] = array($action, $controller, $module, $params);
+    $this->_options = $options;
+    return $this;
   }
 
   /**
@@ -74,33 +85,38 @@ class GlassOnion_Controller_Plugin_ActionStack
     if ($request->isXmlHttpRequest()) {
       return;
     }
-    $plugin = $this->getActionStackPlugin();
-    foreach ($this->_requests as $request) {
-      list($action, $controller, $module, $params) = $request;
-      $plugin->pushStack(new Zend_Controller_Request_Simple($action, $controller, $module, $params));
+    $actionStack = Zend_Controller_Action_HelperBroker::getStaticHelper('actionStack');
+    foreach ($this->_options as $id => $config) {
+      $data = $this->_parseActionConfig($config);
+      $data['params']['_actionStackId'] = $id;
+      $actionStack->actionToStack($data['action'], $data['controller'], $data['module'], $data['params']);
     }
   }
 
   /**
-   * Returns an instance of the action stack plugin
+   * Parse the config
    *
-   * @return Zend_Controller_Plugin_ActionStack
+   * @param array $config
+   * @return array
    */
-  public function getActionStackPlugin()
+  private function _parseActionConfig($config)
   {
-    $front = Zend_Controller_Front::getInstance();
-      
-    if ($front->hasPlugin('Zend_Controller_Plugin_ActionStack')) {
-      $plugin = $front->getPlugin('Zend_Controller_Plugin_ActionStack');
-    } else {
-      /**
-       * @see Zend_Controller_Plugin_ActionStack
-       */
-      require_once 'Zend/Controller/Plugin/ActionStack.php';
-      $plugin = new Zend_Controller_Plugin_ActionStack();
-      $front->registerPlugin($plugin);
+    $data = array('action' => null, 'controller' => null, 'module' => null, 'params' => array());
+    if (isset($config['action'])) {
+      $data['action'] = $config['action'];
+      unset($config['action']);
     }
-    
-    return $plugin;
+    if (isset($config['controller'])) {
+      $data['controller'] = $config['controller'];
+      unset($config['controller']);
+    }
+    if (isset($config['module'])) {
+      $data['module'] = $config['module'];
+      unset($config['module']);
+    }
+    if (is_array($config)) {
+      $data['params'] = $config;
+    }
+    return $data;
   }
 }
