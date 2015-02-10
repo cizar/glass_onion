@@ -42,98 +42,98 @@ require_once 'Zend/Controller/Action/Helper/Abstract.php';
  * @subpackage Helper
  */
 class GlassOnion_Controller_Action_Helper_BaseUrl
-    extends Zend_Controller_Action_Helper_Abstract
+  extends Zend_Controller_Action_Helper_Abstract
 {
-    /**
-     * BaseUrl
-     *
-     * @var string
-     */
-    protected $_baseUrl;
+  /**
+   * BaseUrl
+   *
+   * @var string
+   */
+  protected $_baseUrl;
 
-    /**
-     * Returns site's base url, or file with base url prepended
-     *
-     * @param string|null $file
-     * @param boolean $full
-     * @return string
-     */
-    public function direct($file = null, $full = true)
-    {
-        return $this->baseUrl($file, $full);
+  /**
+   * Returns site's base url, or file with base url prepended
+   *
+   * @param string|null $file
+   * @param boolean $full
+   * @return string
+   */
+  public function direct($file = null, $full = true)
+  {
+    return $this->baseUrl($file, $full);
+  }
+
+
+  /**
+   * Returns site's base url, or file with base url prepended
+   *
+   * $file is appended to the base url for simplicity
+   *
+   * @param  string|null $file
+   * @return string
+   */
+  public function baseUrl($file = null)
+  {
+    // Get baseUrl
+    $baseUrl = $this->getBaseUrl();
+
+    // Remove trailing slashes
+    if (null !== $file) {
+      $file = '/' . ltrim($file, '/\\');
     }
 
+    return $baseUrl . $file;
+  }
 
-    /**
-     * Returns site's base url, or file with base url prepended
-     *
-     * $file is appended to the base url for simplicity
-     *
-     * @param  string|null $file
-     * @return string
-     */
-    public function baseUrl($file = null)
-    {
-        // Get baseUrl
-        $baseUrl = $this->getBaseUrl();
+  /**
+   * Set BaseUrl
+   *
+   * @param  string $base
+   * @return GlassOnion_Controller_Action_Helper_BaseUrl
+   */
+  public function setBaseUrl($base)
+  {
+    $this->_baseUrl = rtrim($base, '/\\');
+    return $this;
+  }
 
-        // Remove trailing slashes
-        if (null !== $file) {
-            $file = '/' . ltrim($file, '/\\');
-        }
+  /**
+   * Get BaseUrl
+   * @return string
+   */
+  public function getBaseUrl()
+  {
+    if ($this->_baseUrl === null) {
+      /** @see Zend_Controller_Front */
+      require_once 'Zend/Controller/Front.php';
+      $baseUrl = Zend_Controller_Front::getInstance()->getBaseUrl();
 
-        return $baseUrl . $file;
+      // Remove scriptname, eg. index.php from baseUrl
+      $baseUrl = $this->_removeScriptName($baseUrl);
+
+      $this->setBaseUrl($baseUrl);
     }
 
-    /**
-     * Set BaseUrl
-     *
-     * @param  string $base
-     * @return GlassOnion_Controller_Action_Helper_BaseUrl
-     */
-    public function setBaseUrl($base)
-    {
-        $this->_baseUrl = rtrim($base, '/\\');
-        return $this;
+    return $this->_baseUrl;
+  }
+
+  /**
+   * Remove Script filename from baseurl
+   *
+   * @param  string $url
+   * @return string
+   */
+  protected function _removeScriptName($url)
+  {
+    if (!isset($_SERVER['SCRIPT_NAME'])) {
+      // We can't do much now can we? (Well, we could parse out by ".")
+      return $url;
     }
 
-    /**
-     * Get BaseUrl
-     * @return string
-     */
-    public function getBaseUrl()
-    {
-        if ($this->_baseUrl === null) {
-            /** @see Zend_Controller_Front */
-            require_once 'Zend/Controller/Front.php';
-            $baseUrl = Zend_Controller_Front::getInstance()->getBaseUrl();
-
-            // Remove scriptname, eg. index.php from baseUrl
-            $baseUrl = $this->_removeScriptName($baseUrl);
-
-            $this->setBaseUrl($baseUrl);
-        }
-
-        return $this->_baseUrl;
+    if (($pos = strripos($url, basename($_SERVER['SCRIPT_NAME']))) !== false) {
+      $url = substr($url, 0, $pos);
     }
 
-    /**
-     * Remove Script filename from baseurl
-     *
-     * @param  string $url
-     * @return string
-     */
-    protected function _removeScriptName($url)
-    {
-        if (!isset($_SERVER['SCRIPT_NAME'])) {
-            // We can't do much now can we? (Well, we could parse out by ".")
-            return $url;
-        }
-
-        if (($pos = strripos($url, basename($_SERVER['SCRIPT_NAME']))) !== false) {
-            $url = substr($url, 0, $pos);
-        }
-
-        return $url;
-    }
+    return $url;
+  }
 }

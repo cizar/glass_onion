@@ -47,203 +47,203 @@ require_once 'Zend/Controller/Plugin/Abstract.php';
  * @subpackage Plugin
  */
 class GlassOnion_Controller_Plugin_AccessControl
-    extends Zend_Controller_Plugin_Abstract
+  extends Zend_Controller_Plugin_Abstract
 {
-    /**
-     * Default denied page
-     */
-    const DEFAULT_DENIED_PAGE_ACTION = 'login';
-    const DEFAULT_DENIED_PAGE_CONTROLLER = 'session';
-    const DEFAULT_DENIED_PAGE_MODULE = 'default';
+  /**
+   * Default denied page
+   */
+  const DEFAULT_DENIED_PAGE_ACTION = 'login';
+  const DEFAULT_DENIED_PAGE_CONTROLLER = 'session';
+  const DEFAULT_DENIED_PAGE_MODULE = 'default';
 
-    /**
-     * @var Zend_Acl
-     */
-    protected $_acl;
+  /**
+   * @var Zend_Acl
+   */
+  protected $_acl;
 
-    /**
-     * @var string
-     */
-    protected $_roleId;
+  /**
+   * @var string
+   */
+  protected $_roleId;
 
-    /**
-     * @var array
-     */
-    protected $_accessDeniedPage;
+  /**
+   * @var array
+   */
+  protected $_accessDeniedPage;
 
-    /**
-     * Sets the ACL object
-     *
-     * @param Zend_Acl $acl
-     * @return GlassOnion_Controller_Plugin_AccessControl Provides a fluent interface
-     */
-    public function setAcl(Zend_Acl $acl)
-    {
-        $this->_acl = $acl;
-        return $this;
+  /**
+   * Sets the ACL object
+   *
+   * @param Zend_Acl $acl
+   * @return GlassOnion_Controller_Plugin_AccessControl Provides a fluent interface
+   */
+  public function setAcl(Zend_Acl $acl)
+  {
+    $this->_acl = $acl;
+    return $this;
+  }
+
+  /**
+   * Returns the ACL object
+   *
+   * @return Zend_Acl
+   */
+  public function getAcl()
+  {
+    if (null == $this->_acl) {
+      $this->_acl = Zend_Registry::get('Zend_Acl');
     }
+    return $this->_acl;
+  }
 
-    /**
-     * Returns the ACL object
-     *
-     * @return Zend_Acl
-     */
-    public function getAcl()
-    {
-        if (null == $this->_acl) {
-            $this->_acl = Zend_Registry::get('Zend_Acl');
-        }
-        return $this->_acl;
+  /**
+   * Sets the current role ID
+   *
+   * @param string $roleId
+   * @return GlassOnion_Controller_Plugin_AccessControl Provides a fluent interface
+   */
+  public function setRoleId($roleId)
+  {
+    $this->_roleId = $roleId;
+    return $this;
+  }
+
+  /**
+   * Returns the current role ID
+   *
+   * @return string
+   */
+  public function getRoleId()
+  {
+    if (null == $this->_roleId) {
+      $auth = Zend_Auth::getInstance();
+      $this->_roleId = $auth->hasIdentity() ? $auth->getIdentity() : 'guest';
     }
+    return $this->_roleId;
+  }
 
-    /**
-     * Sets the current role ID
-     *
-     * @param string $roleId
-     * @return GlassOnion_Controller_Plugin_AccessControl Provides a fluent interface
-     */
-    public function setRoleId($roleId)
-    {
-        $this->_roleId = $roleId;
-        return $this;
+  /**
+   * Sets the current role ID by a given role
+   *
+   * @param Zend_Acl_Role_Interface $role
+   * @return GlassOnion_Controller_Plugin_AccessControl Provides a fluent interface
+   */
+  public function setRole(Zend_Acl_Role_Interface $role)
+  {
+    $this->setRoleId($role->getRoleId());
+    return $this;
+  }
+
+  /**
+   * Sets the access denied page
+   *
+   * @param string|array $action
+   * @param string $controller
+   * @param string $module
+   * @return GlassOnion_Controller_Plugin_AccessControl Provides a fluent interface
+   */
+  public function setAccessDeniedPage($action, $controller = null, $module = null)
+  {
+    if (is_array($action) and count($action) == 3) {
+      list($action, $controller, $module) = $action;
     }
+    $page = new stdClass();
+    $page->actionName = is_null($action) ? self::DEFAULT_DENIED_PAGE_ACTION : $action;
+    $page->controllerName = is_null($controller) ? self::DEFAULT_DENIED_PAGE_CONTROLLER : $controller;
+    $page->moduleName = is_null($module) ? self::DEFAULT_DENIED_PAGE_MODULE : $module;
+    $this->_accessDeniedPage = $page;
+    return $this;
+  }
 
-    /**
-     * Returns the current role ID
-     *
-     * @return string
-     */
-    public function getRoleId()
-    {
-        if (null == $this->_roleId) {
-            $auth = Zend_Auth::getInstance();
-            $this->_roleId = $auth->hasIdentity() ? $auth->getIdentity() : 'guest';
-        }
-        return $this->_roleId;
+  /**
+   * Returns the access denied page
+   *
+   * @return array
+   */
+  public function getAccessDeniedPage()
+  {
+    if (null == $this->_accessDeniedPage) {
+      $page = new stdClass();
+      $page->actionName = self::DEFAULT_DENIED_PAGE_ACTION;
+      $page->controllerName = self::DEFAULT_DENIED_PAGE_CONTROLLER;
+      $page->moduleName = self::DEFAULT_DENIED_PAGE_MODULE;
+      $this->_accessDeniedPage = $page;
     }
+    return $this->_accessDeniedPage;
+  }
 
-    /**
-     * Sets the current role ID by a given role
-     *
-     * @param Zend_Acl_Role_Interface $role
-     * @return GlassOnion_Controller_Plugin_AccessControl Provides a fluent interface
-     */
-    public function setRole(Zend_Acl_Role_Interface $role)
-    {
-        $this->setRoleId($role->getRoleId());
-        return $this;
+  /**
+   * Returns true if the current page is the access denied page
+   *
+   * @return boolean
+   */
+  public function isAccessDeniedPage()
+  {
+    $request = $this->getRequest();
+    $accessDeniedPage = $this->getAccessDeniedPage();
+    if ($accessDeniedPage->actionName == $request->getActionName()
+      && $accessDeniedPage->controllerName == $request->getControllerName()
+      && $accessDeniedPage->moduleName == $request->getModuleName()) {
+      return true;
     }
+    return false;
+  }
 
-    /**
-     * Sets the access denied page
-     *
-     * @param string|array $action
-     * @param string $controller
-     * @param string $module
-     * @return GlassOnion_Controller_Plugin_AccessControl Provides a fluent interface
-     */
-    public function setAccessDeniedPage($action, $controller = null, $module = null)
-    {
-        if (is_array($action) and count($action) == 3) {
-            list($action, $controller, $module) = $action;
-        }
-        $page = new stdClass();
-        $page->actionName = is_null($action) ? self::DEFAULT_DENIED_PAGE_ACTION : $action;
-        $page->controllerName = is_null($controller) ? self::DEFAULT_DENIED_PAGE_CONTROLLER : $controller;
-        $page->moduleName = is_null($module) ? self::DEFAULT_DENIED_PAGE_MODULE : $module;
-        $this->_accessDeniedPage = $page;
-        return $this;
+  /**
+   * Returns the resource action
+   *
+   * @return array
+   */
+  public function getResourceName()
+  {
+    $request = $this->getRequest();
+    $moduleName = $request->getModuleName();
+    $controllerName = $request->getControllerName();
+    if (!empty($moduleName) && Zend_Controller_Front::getInstance()->getDefaultModule() != $moduleName) {
+      return $moduleName . '::' . $controllerName;
     }
+    return $controllerName;
+  }
 
-    /**
-     * Returns the access denied page
-     *
-     * @return array
-     */
-    public function getAccessDeniedPage()
-    {
-        if (null == $this->_accessDeniedPage) {
-            $page = new stdClass();
-            $page->actionName = self::DEFAULT_DENIED_PAGE_ACTION;
-            $page->controllerName = self::DEFAULT_DENIED_PAGE_CONTROLLER;
-            $page->moduleName = self::DEFAULT_DENIED_PAGE_MODULE;
-            $this->_accessDeniedPage = $page;
-        }
-        return $this->_accessDeniedPage;
+  /**
+   * Predispatch
+   * Checks if the current user identified by roleId has rights to the requested url (module/controller/action)
+   * If not, it will call denyAccess to be redirected to deniedAction
+   *
+   * @param Zend_Controller_Request_Abstract $request
+   * @return void
+   */
+  public function preDispatch(Zend_Controller_Request_Abstract $request)
+  {
+    if ($this->isAccessDeniedPage()) {
+      return;
     }
-
-    /**
-     * Returns true if the current page is the access denied page
-     *
-     * @return boolean
-     */
-    public function isAccessDeniedPage()
-    {
-        $request = $this->getRequest();
-        $accessDeniedPage = $this->getAccessDeniedPage();
-        if ($accessDeniedPage->actionName == $request->getActionName()
-            && $accessDeniedPage->controllerName == $request->getControllerName()
-            && $accessDeniedPage->moduleName == $request->getModuleName()) {
-            return true;
-        }
-        return false;
+    $rtpu = Zend_Controller_Action_HelperBroker::getStaticHelper('RedirectToPreviousUri');
+    if ($this->getAcl()->isAllowed($this->getRoleId(), $this->getResourceName(), $request->getActionName())) {
+      $uri = $rtpu->popPreviousUri();
+      if ($uri) {
+        Zend_Controller_Action_HelperBroker::getStaticHelper('Redirector')->gotoUrl($uri);
+      }
+      return;
     }
+    $rtpu->storeRequestUri();
+    $this->denyAccess();
+  }
 
-    /**
-     * Returns the resource action
-     *
-     * @return array
-     */
-    public function getResourceName()
-    {
-        $request = $this->getRequest();
-        $moduleName = $request->getModuleName();
-        $controllerName = $request->getControllerName();
+  /**
+   * Deny Access Function
+   * Redirects to the access denied page
+   *
+   * @return void
+   */
+  public function denyAccess()
+  {
+    $deniedPage = $this->getAccessDeniedPage();
 
-        if (!empty($moduleName) && Zend_Controller_Front::getInstance()->getDefaultModule() != $moduleName) {
-            return $moduleName . '::' . $controllerName;
-        }
-
-        return $controllerName;
-    }
-
-    /**
-     * Predispatch
-     * Checks if the current user identified by roleId has rights to the requested url (module/controller/action)
-     * If not, it will call denyAccess to be redirected to deniedAction
-     *
-     * @param Zend_Controller_Request_Abstract $request
-     * @return void
-     */
-    public function preDispatch(Zend_Controller_Request_Abstract $request)
-    {
-        if ($this->isAccessDeniedPage()) {
-            return;
-        }
-
-        if ($this->getAcl()->isAllowed($this->getRoleId(), $this->getResourceName(), $request->getActionName())) {
-            return;
-        }
-
-        Zend_Controller_Action_HelperBroker::getStaticHelper('RedirectToPreviousUri')->storeRequestUri();
-
-        $this->denyAccess();
-    }
-
-    /**
-     * Deny Access Function
-     * Redirects to the access denied page
-     *
-     * @return void
-     */
-    public function denyAccess()
-    {
-        $deniedPage = $this->getAccessDeniedPage();
-
-        $this->_request
-            ->setDispatched(false)
-            ->setModuleName($deniedPage->moduleName)
-            ->setControllerName($deniedPage->controllerName)
-            ->setActionName($deniedPage->actionName);
-    }
+    $this->_request
+      ->setDispatched(false)
+      ->setModuleName($deniedPage->moduleName)
+      ->setControllerName($deniedPage->controllerName)
+      ->setActionName($deniedPage->actionName);
+  }
 }

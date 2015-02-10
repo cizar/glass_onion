@@ -42,66 +42,81 @@ require_once 'Zend/Controller/Plugin/Abstract.php';
  * @subpackage Plugin
  */
 class GlassOnion_Controller_Plugin_ActionStack
-    extends Zend_Controller_Plugin_Abstract
+  extends Zend_Controller_Plugin_Abstract
 {
-    /**
-     * @var array
-     */
-    private $_requests = array();
-
-    /**
-     * Appends an action to be pushed to the ActionStack
-     *
-     * @param string $action
-     * @param string $controller
-     * @param string $module
-     * @param array $params
-     * @return GlassOnion_Controller_Plugin_ActionStack Provides a fluent interface
-     */
-    public function pushToStack($action, $controller, $module = null, array $params = array())
-    {
-        $this->_requests[] = array($action, $controller, $module, $params);
+  /**
+   * @var array
+   */
+  private $_options;
+  
+  /**
+   * Constructor
+   *
+   * @param array $options
+   * @return void
+   */
+  public function __construct($options = null)
+  {
+    if (null !== $options) {
+      $this->setOptions($options);
     }
+  }
 
-    /**
-     * Before the dispatch loop, push some actions into the stack
-     *
-     * @param Zend_Controller_Request_Abstract $request
-     * @return void
-     */
-    public function dispatchLoopStartup(Zend_Controller_Request_Abstract $request)
-    {
-        if ($request->isXmlHttpRequest()) {
-            return;
-        }
-        $plugin = $this->getActionStackPlugin();
-        foreach ($this->_requests as $request) {
-            list($action, $controller, $module, $params) = $request;
-            $plugin->pushStack(new Zend_Controller_Request_Simple($action,
-                $controller, $module, $params));
-        }
-    }
+  /**
+   * Sets the options
+   *
+   * @param array $options
+   * @return GlassOnion_Controller_Plugin_ActionStack Provides fluent interface
+   */
+  public function setOptions($options)
+  {
+    $this->_options = $options;
+    return $this;
+  }
 
-    /**
-     * Returns an instance of the action stack plugin
-     *
-     * @return Zend_Controller_Plugin_ActionStack
-     */
-    public function getActionStackPlugin()
-    {
-        $front = Zend_Controller_Front::getInstance();
-        
-        if ($front->hasPlugin('Zend_Controller_Plugin_ActionStack')) {
-            $plugin = $front->getPlugin('Zend_Controller_Plugin_ActionStack');
-        } else {
-            /**
-             * @see Zend_Controller_Plugin_ActionStack
-             */
-            require_once 'Zend/Controller/Plugin/ActionStack.php';
-            $plugin = new Zend_Controller_Plugin_ActionStack();
-            $front->registerPlugin($plugin);
-        }
-        
-        return $plugin;
+  /**
+   * Before the dispatch loop, push some actions into the stack
+   *
+   * @param Zend_Controller_Request_Abstract $request
+   * @return void
+   */
+  public function dispatchLoopStartup(Zend_Controller_Request_Abstract $request)
+  {
+    if ($request->isXmlHttpRequest()) {
+      return;
     }
+    $actionStack = Zend_Controller_Action_HelperBroker::getStaticHelper('actionStack');
+    foreach ($this->_options as $id => $config) {
+      $data = $this->_parseActionConfig($config);
+      $data['params']['_actionStackId'] = $id;
+      $actionStack->actionToStack($data['action'], $data['controller'], $data['module'], $data['params']);
+    }
+  }
+
+  /**
+   * Parse the config
+   *
+   * @param array $config
+   * @return array
+   */
+  private function _parseActionConfig($config)
+  {
+    $data = array('action' => null, 'controller' => null, 'module' => null, 'params' => array());
+    if (isset($config['action'])) {
+      $data['action'] = $config['action'];
+      unset($config['action']);
+    }
+    if (isset($config['controller'])) {
+      $data['controller'] = $config['controller'];
+      unset($config['controller']);
+    }
+    if (isset($config['module'])) {
+      $data['module'] = $config['module'];
+      unset($config['module']);
+    }
+    if (is_array($config)) {
+      $data['params'] = $config;
+    }
+    return $data;
+  }
 }

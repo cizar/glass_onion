@@ -73,8 +73,8 @@ class GlassOnion_View_Helper_Price extends Zend_View_Helper_Abstract
         if (null == $currency) {
             $currency = $this->_currency;
         }
-        
-        return $currency . $this->view->number($value, 2);
+
+        return str_replace(' ', '&nbsp;', $currency . $this->view->number($value, 2));
     }
     
     /**

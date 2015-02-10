@@ -42,65 +42,64 @@ require_once 'Zend/Controller/Plugin/Abstract.php';
  * @subpackage Plugin
  */
 class GlassOnion_Controller_Plugin_Segments
-    extends Zend_Controller_Plugin_Abstract
+  extends Zend_Controller_Plugin_Abstract
 {
-    /**
-     * @var array
-     */
-    private $_segments = array();
+  /**
+   * @var array
+   */
+  private $_segments = array();
 
-    /**
-     * Appends an action to be rendered as a block into a segment
-     *
-     * @param string $segment
-     * @param string $action
-     * @param string $controller
-     * @param string $module
-     * @param array $params
-     * @param string $id
-     * @return GlassOnion_Controller_Plugin_Segments Provides a fluent interface
-     */
-    public function appendToSegment($segment, $action, $controller,
-        $module = null, array $params = array(), $id = null)
-    {
-        if (!isset($this->_segments[$segment])) {
-            $this->_segments[$segment] = array();
-        }
-        $this->_segments[$segment][] = array('id' => $id,
-            'action' => array($action, $controller, $module, $params));
+  /**
+   * Appends an action to be rendered as a block into a segment
+   *
+   * @param string $segment
+   * @param string $action
+   * @param string $controller
+   * @param string $module
+   * @param array $params
+   * @param string $id
+   * @return GlassOnion_Controller_Plugin_Segments Provides a fluent interface
+   */
+  public function appendToSegment($segment, $action, $controller, $module = null, array $params = array(), $id = null)
+  {
+    if (!isset($this->_segments[$segment])) {
+      $this->_segments[$segment] = array();
     }
+    $this->_segments[$segment][] = array('id' => $id,
+      'action' => array($action, $controller, $module, $params));
+  }
 
-    /**
-     * Before the dispatch loop, add call some actions
-     *
-     * @param Zend_Controller_Request_Abstract $request
-     * @return void
-     */
-    public function dispatchLoopStartup(Zend_Controller_Request_Abstract $request)
-    {
-        if ($request->isXmlHttpRequest()) {
-            return;
-        }
-        foreach ($this->_segments as $segmentName => $blocks) {
-            foreach ($blocks as $block) {
-                $content = $this->_render($block['action']);
-                if ($block['id']) {
-                    $content = "<div id=\"{$block['id']}\">{$content}</div>";
-                }
-                $this->getResponse()->appendBody($content, $segmentName);
-            }
-        }
+  /**
+   * Before the dispatch loop, add call some actions
+   *
+   * @param Zend_Controller_Request_Abstract $request
+   * @return void
+   */
+  public function dispatchLoopStartup(Zend_Controller_Request_Abstract $request)
+  {
+    if ($request->isXmlHttpRequest()) {
+      return;
     }
+    foreach ($this->_segments as $segmentName => $blocks) {
+      foreach ($blocks as $block) {
+        $content = $this->_render($block['action']);
+        if ($block['id']) {
+          $content = "<div id=\"{$block['id']}\">{$content}</div>";
+        }
+        $this->getResponse()->appendBody($content, $segmentName);
+      }
+    }
+  }
 
-    /**
-     * Retrieve rendered contents of a controller action
-     *
-     * @param array $action
-     * @return string
-     */
-    private function _render($action)
-    {
-        $view = Zend_Layout::getMvcInstance()->getView();
-        return call_user_func_array(array($view, 'action'), $action);
-    }
+  /**
+   * Retrieve rendered contents of a controller action
+   *
+   * @param array $action
+   * @return string
+   */
+  private function _render($action)
+  {
+    $view = Zend_Layout::getMvcInstance()->getView();
+    return call_user_func_array(array($view, 'action'), $action);
+  }
 }

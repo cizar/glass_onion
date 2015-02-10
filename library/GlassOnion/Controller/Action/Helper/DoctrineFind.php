@@ -42,28 +42,28 @@ require_once 'Zend/Controller/Action/Helper/Abstract.php';
  * @subpackage Helper
  */
 class GlassOnion_Controller_Action_Helper_DoctrineFind
-    extends Zend_Controller_Action_Helper_Abstract
+  extends Zend_Controller_Action_Helper_Abstract
 {
-	/**
-	 * @return void
-	 */
-	public function direct($table, $param = null, $assignToView = true)
-	{
-		if ($param == null) {
-			$param = 'id';
-		}
-		$id = $this->getRequest()->getParam($param);
-        if ($id == null) {
-            throw new InvalidArgumentException('Identifier is undefined');
-        }
-        $record = Doctrine_Core::getTable($table)->find($id);
-        if ($record == null) {
-            throw new LogicException('Record not found');
-        }
-        if ($assignToView) {
-            $viewRenderer = Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer');
-            $viewRenderer->view->assign(lcfirst($table), $record);            
-        }
-		return $record;
-	}
+  /**
+   * @return void
+   */
+  public function direct($table, $param = null, $assignToView = true)
+  {
+    if ($param == null) {
+      $param = 'id';
+    }
+    $id = $this->getRequest()->getParam($param);
+    if ($id == null) {
+      throw new InvalidArgumentException('Identifier is undefined');
+    }
+    $record = Doctrine_Core::getTable($table)->find($id);
+    if ($record == null) {
+      throw new LogicException('Record not found');
+    }
+    if ($assignToView) {
+      $viewRenderer = Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer');
+      $viewRenderer->view->assign(lcfirst($table), $record);            
+    }
+    return $record;
+  }
 }

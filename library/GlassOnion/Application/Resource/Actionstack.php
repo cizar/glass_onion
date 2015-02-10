@@ -41,54 +41,19 @@ require_once 'Zend/Application/Resource/ResourceAbstract.php';
  * @package    GlassOnion_Application
  */
 class GlassOnion_Application_Resource_Actionstack
-    extends Zend_Application_Resource_ResourceAbstract
+  extends Zend_Application_Resource_ResourceAbstract
 {
-    /**
-     * Defined by Zend_Application_Resource_Resource
-     *
-     * @return GlassOnion_Controller_Plugin_Segments
-     */
-    public function init()
-    {
-        $plugin = $this->_getPlugin();
-        Zend_Controller_Front::getInstance()->registerPlugin($plugin);
-        return $plugin;
-    }
-
-    /**
-     * Returns the pre-configured ActionStack controller plugin
-     *
-     * @return GlassOnion_Controller_Plugin_ActionStack
-     */
-    private function _getPlugin()
-    {
-        $plugin = new GlassOnion_Controller_Plugin_ActionStack();
-        foreach ($this->getOptions() as $id => $config) {
-            if (!isset($config['action']) && !isset($config['controller'])) {
-                require_once 'Zend/Application/Resource/Exception.php';
-                throw new Zend_Application_Resource_Exception(
-                    'An action or a controller must be defined');
-            }
-            list($action, $controller, $module, $params) = $this->_parseActionConfig($config);
-            $params['_actionStackId'] = $id;
-            $plugin->pushToStack($action, $controller, $module, $params);
-        }
-        return $plugin;
-    }
-
-    /**
-     * Parse the controller action from a hash array
-     *
-     * @param array
-     * @return array
-     */
-    private function _parseActionConfig(array $config)
-    {
-        return array(
-            isset($config['action']) ? $config['action'] : null,
-            isset($config['controller']) ? $config['controller'] : null,
-            isset($config['module']) ? $config['module'] : null,
-            isset($config['params']) ? $config['params'] : array()
-        );
-    }
+  /**
+   * Defined by Zend_Application_Resource_Resource
+   *
+   * @return GlassOnion_Application_Resource_Actionstack
+   */
+  public function init()
+  {
+    $front = Zend_Controller_Front::getInstance();
+    $options = $this->getOptions();
+    $plugin = new GlassOnion_Controller_Plugin_ActionStack($options);
+    $front->registerPlugin($plugin);
+    return $plugin;
+  }
 }
