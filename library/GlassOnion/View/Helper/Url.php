@@ -57,7 +57,7 @@ class GlassOnion_View_Helper_Url
     $reset = false, $encode = true, $includeQueryString = false)
   {
     $url = parent::url($urlOptions, $name, $reset, $encode);
-    if ($includeQueryString && isset($_SERVER['QUERY_STRING'])) {
+    if ($includeQueryString && isset($_SERVER['QUERY_STRING']) && !empty($_SERVER['QUERY_STRING'])) {
       $url .= '?' . $_SERVER['QUERY_STRING'];
     }
     return $url;
