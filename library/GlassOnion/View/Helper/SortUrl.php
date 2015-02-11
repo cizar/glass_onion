@@ -67,7 +67,7 @@ class GlassOnion_View_Helper_SortUrl
           
       case 'array':
         if ($field === $data['field']) {
-          $order = $this->_reverse($data['order']);
+          $order = ('asc' === $data['order']) ? 'desc' : 'asc';
           break;
         }
         // NO break.. go to default
@@ -78,17 +78,6 @@ class GlassOnion_View_Helper_SortUrl
       
     $options = array('sort' => $order . 'ending-by-' . $field);
 
-    return $this->view->url($options, $name, $reset, $encode);
-  }
-  
-  /**
-   * Returns the reverse order of a given order
-   *
-   * @param string $order [asc|desc]
-   * @return string
-   */
-  private function _reverse($order)
-  {
-    return ('asc' === $order) ? 'desc' : 'asc';
+    return $this->view->url($options, $name, $reset, $encode, true);
   }
 }
