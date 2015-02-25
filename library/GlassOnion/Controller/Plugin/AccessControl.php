@@ -213,7 +213,7 @@ class GlassOnion_Controller_Plugin_AccessControl
    * @param Zend_Controller_Request_Abstract $request
    * @return void
    */
-  public function preDispatch(Zend_Controller_Request_Abstract $request)
+  public function dispatchLoopStartup(Zend_Controller_Request_Abstract $request)
   {
     if ($this->isAccessDeniedPage()) {
       return;
