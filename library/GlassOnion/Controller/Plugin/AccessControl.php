@@ -221,7 +221,7 @@ class GlassOnion_Controller_Plugin_AccessControl
     $rtpu = Zend_Controller_Action_HelperBroker::getStaticHelper('RedirectToPreviousUri');
     if ($this->getAcl()->isAllowed($this->getRoleId(), $this->getResourceName(), $request->getActionName())) {
       $uri = $rtpu->popPreviousUri();
-      if ($uri) {
+      if ($uri && $uri !== $request->getRequestUri()) {
         Zend_Controller_Action_HelperBroker::getStaticHelper('Redirector')->gotoUrl($uri);
       }
       return;
