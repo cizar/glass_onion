@@ -43,39 +43,63 @@ require_once 'Zend/Application/Resource/ResourceAbstract.php';
 class GlassOnion_Application_Resource_Logo
     extends Zend_Application_Resource_ResourceAbstract
 {
-    /**
-     * Defined by Zend_Application_Resource_Resource
-     *
-     * @return Zend_View_Helper_HeadMeta
-     */
-    public function init()
-    {
-        $bootstrap = $this->getBootstrap();
+  /**
+   * Defined by Zend_Application_Resource_Resource
+   *
+   * @return Zend_View_Helper_HeadMeta
+   */
+  public function init()
+  {
+    $bootstrap = $this->getBootstrap();
 
-        if (!$bootstrap->hasResource('view')) {
-            require_once 'Zend/Application/Resource/Exception.php';
-            throw new Zend_Application_Resource_Exception('No view defined');
-        }
-        
-        $headStyle = $bootstrap->bootstrap('view')
-            ->getResource('view')->headStyle();
-
-        $options = $this->getOptions();
-
-        $required = array('url', 'width', 'height', 'selector');
-
-        if (0 != count(array_diff($required, array_keys($options)))) {
-            require_once 'Zend/Application/Resource/Exception.php';
-            throw new Zend_Application_Resource_Exception(
-                'Invalid arguments');
-        }
-
-        $template = "%s { display: inline-block; background-image: url(%s); background-position: center center; background-repeat: no-repeat; width: %dpx !important; height: %dpx !important; text-indent: -9999px; overflow: hidden; }";
-
-        $style = sprintf($template, $options['selector'], $options['url'], $options['width'], $options['height']);
-
-        $headStyle->appendStyle($style);
-        
-        return $headStyle;
+    if (!$bootstrap->hasResource('view')) {
+      require_once 'Zend/Application/Resource/Exception.php';
+      throw new Zend_Application_Resource_Exception('No view defined');
     }
+    
+    $headStyle = $bootstrap->bootstrap('view')
+      ->getResource('view')->headStyle();
+
+    $options = $this->getOptions();
+
+    if (isset($options['url'])) {
+      $options = array($options);
+    }
+
+    $style = '';
+
+    foreach ($options as $logo) {
+      if (!isset($logo['selector']) || !isset($logo['url'])) {
+        require_once 'Zend/Application/Resource/Exception.php';
+        throw new Zend_Application_Resource_Exception('Invalid arguments');
+      }
+
+      $props = array(
+        'display' => 'inline-block',
+        'overflow' => 'hidden',
+        'text-indent' => '-9999px',
+        'background-position' => 'center center',
+        'background-size' => '100% auto',
+        'background-image' => 'url(' . $logo['url'] . ')'
+      );
+      
+      if (isset($logo['width'])) {
+        $props['width'] = $logo['width'] . 'px';
+      }
+
+      if (isset($logo['height'])) {
+        $props['height'] = $logo['height'] . 'px';
+      }
+
+      $style .= $logo['selector'] . '{';
+      foreach ($props as $key => $value) {
+        $style .= $key . ':' . $value . ';';
+      }
+      $style .= '}';
+    }
+
+    $headStyle->appendStyle($style);
+    
+    return $headStyle;
+  }
 }
