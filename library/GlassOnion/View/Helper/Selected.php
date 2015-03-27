@@ -41,17 +41,17 @@ require_once 'Zend/View/Helper/Abstract.php';
  * @package    GlassOnion_View
  * @subpackage Helper
  */
-class GlassOnion_View_Helper_Checked
+class GlassOnion_View_Helper_Selected
   extends Zend_View_Helper_Abstract
 {
   /**
-   * Returns the string 'checked' if the condition given is a truth value
+   * Returns the string 'selected' if the condition given is a truth value
    *
    * @param string $condition
    * @return string
    */
-  public function checked($condition)
+  public function selected($condition)
   {
-    return $condition ? 'checked' : '';
+    return $condition ? 'selected' : '';
   }
 }
