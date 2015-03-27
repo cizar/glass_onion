@@ -70,7 +70,7 @@ class GlassOnion_Application_Resource_Logo
                 'Invalid arguments');
         }
 
-        $template = "%s { display: inline-block; background-image: url(%s); background-repeat: no-repeat; width: %dpx; height: %dpx !important; text-indent: -9999px; overflow: hidden; }";
+        $template = "%s { display: inline-block; background-image: url(%s); background-position: center center; background-repeat: no-repeat; width: %dpx !important; height: %dpx !important; text-indent: -9999px; overflow: hidden; }";
 
         $style = sprintf($template, $options['selector'], $options['url'], $options['width'], $options['height']);
 
