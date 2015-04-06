@@ -42,19 +42,19 @@ require_once 'Zend/View/Helper/Abstract.php';
  * @subpackage Helper
  */
 class GlassOnion_View_Helper_Markdown
-    extends Zend_View_Helper_Abstract
+  extends Zend_View_Helper_Abstract
 {
-    /**
-     * Renders a text usign Zend_Markup
-     *
-     * @return GlassOnion_View_Helper_Markup Provides a fluent interface
-     */
-    public function markdown($value)
-    {
-        if (empty($value)) {
-            return '';
-        }
-        require_once 'markdown.php';
-        return Markdown($value);
+  /**
+   * Renders a text usign Zend_Markup
+   *
+   * @return GlassOnion_View_Helper_Markup Provides a fluent interface
+   */
+  public function markdown($markdown)
+  {
+    if (empty($markdown)) {
+      return '';
     }
+    $parser = new \cebe\markdown\Markdown();
+    return $parser->parse($markdown);
+  }
 }
