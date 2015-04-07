@@ -54,7 +54,6 @@ class GlassOnion_View_Helper_Markdown
     if (empty($markdown)) {
       return '';
     }
-    $parser = new \cebe\markdown\Markdown();
-    return $parser->parse($markdown);
+    return  \Michelf\Markdown::defaultTransform($markdown);
   }
 }
