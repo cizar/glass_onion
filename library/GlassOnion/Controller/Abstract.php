@@ -51,7 +51,7 @@ abstract class GlassOnion_Controller_Abstract
   private function _is()
   {
     $args = func_get_args();
-    return in_array($this->_request->getActionName(), $args)
+    return in_array($this->_request->getActionName(), $args);
   }
 
   /**
@@ -62,6 +62,6 @@ abstract class GlassOnion_Controller_Abstract
   private function _isnt()
   {
     $args = func_get_args();
-    return !in_array($this->_request->getActionName(), $args)
+    return !in_array($this->_request->getActionName(), $args);
   }
 }
