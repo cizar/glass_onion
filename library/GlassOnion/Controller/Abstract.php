@@ -48,7 +48,7 @@ abstract class GlassOnion_Controller_Abstract
    *
    * @return boolean
    */
-  private function _is()
+  protected function _is()
   {
     $args = func_get_args();
     return in_array($this->_request->getActionName(), $args);
@@ -59,7 +59,7 @@ abstract class GlassOnion_Controller_Abstract
    *
    * @return boolean
    */
-  private function _isnt()
+  protected function _isnt()
   {
     $args = func_get_args();
     return !in_array($this->_request->getActionName(), $args);
