@@ -40,12 +40,28 @@ require_once 'Zend/Controller/Action.php';
  * @category   GlassOnion
  * @package    GlassOnion_Controller
  */
-abstract class GlassOnion_Controller_Crud_Abstract
-    extends GlassOnion_Controller_Abstract
+abstract class GlassOnion_Controller_Abstract
+    extends Zend_Controller_Action
 {
-  abstract public function indexAction();
-  abstract public function showAction();
-  abstract public function newAction();
-  abstract public function editAction();
-  abstract public function deleteAction();
+  /**
+   * Returns true if the action is one of the given
+   *
+   * @return boolean
+   */
+  private function _is()
+  {
+    $args = func_get_args();
+    return in_array($this->_request->getActionName(), $args)
+  }
+
+  /**
+   * Returns true if the action is no one of those given
+   *
+   * @return boolean
+   */
+  private function _isnt()
+  {
+    $args = func_get_args();
+    return !in_array($this->_request->getActionName(), $args)
+  }
 }
