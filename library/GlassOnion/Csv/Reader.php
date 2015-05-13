@@ -186,16 +186,16 @@ class GlassOnion_Csv_Reader implements Iterator, Countable
    */
   public function current()
   {
-    $current = $this->_current;
     if (isset($this->_columnNames)) {
-      foreach ($this->_columnNames as $i => $name) {
+      $columnNames = array_slice($this->_columnNames, 0, count($this->_current));
+      foreach ($columnNames as $i => $name) {
         if (empty($name)) {
           continue;
         }
-        $current[$name] = $current[$i];
+        $this->_current[$name] = $this->_current[$i];
       }
     }
-    return $current;
+    return $this->_current;
   }
 
   /**
