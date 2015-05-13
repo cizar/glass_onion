@@ -136,7 +136,7 @@ class GlassOnion_Csv_Reader implements Iterator, Countable
    */
   public function __construct($filename, $mode = null, $delimiter = null, $enclosure = null, $length = null)
   {
-    $this->_mode = $mode ?: self::NO_HEADER;
+    $this->_mode = $mode ?: self::MODE_NO_HEADER;
     $this->_delimiter = $delimiter ?: self::DEFAULT_DELIMITER;
     $this->_enclosure = $enclosure ?: self::DEFAULT_ENCLOSURE;
     $this->_length = $length ?: self::DEFAULT_LENGTH;
