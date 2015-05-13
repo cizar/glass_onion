@@ -117,7 +117,7 @@ abstract class GlassOnion_Controller_Crud_Doctrine
   protected function sortIndexQuery(Doctrine_Query $query)
   {
     $pattern = '/(asc|desc)ending-by-([a-z_]+)/';
-    if (preg_match($pattern, $this->_getParam('sort', $this->_sortDefault), $matches)) {
+    if (preg_match($pattern, $this->_getParam('sort', $this->getSortDefault()), $matches)) {
       list($field, $order) = array($matches[2], $matches[1]);
       $query->orderBy("$field $order");
       $this->view->sortData = array('field' => $field, 'order' => $order);
@@ -351,15 +351,30 @@ abstract class GlassOnion_Controller_Crud_Doctrine
     $this->_oneMatchRedirect = false;
     return $this;
   }
+
+  /**
+   * Returns the default sorting value
+   *
+   * @return string
+   */
+  protected function getSortDefault()
+  {
+    if (null == $this->_sortDefault) {
+      $table = $this->getTable();
+      // TODO: parse orderBy like "fieldName ASC|DESC"
+      $this->_sortDefault = 'ascending-by-' . $table->orderBy;
+    }
+    return $this->_sortDefault;
+  }
   
   /**
    * Sets the sorting defaults
    *
    * @return GlassOnion_Controller_Crud_Doctrine Provides a fluent interface
    */
-  public function sortDefaults($field, $order = 'asc')
+  public function sortDefaults($fieldName, $order = 'asc')
   {
-    $this->_sortDefault = $order . 'ending-by-' . $field;
+    $this->_sortDefault = $order . 'ending-by-' . $fieldName;
     return $this;
   }
   
