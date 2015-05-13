@@ -62,7 +62,7 @@ abstract class GlassOnion_Controller_Crud_Doctrine
    *
    * @var boolean
    */
-  private $_oneMatchRedirect = true;
+  private $_oneMatchRedirect = false;
   
   /**
    * The default sorting data
@@ -305,7 +305,7 @@ abstract class GlassOnion_Controller_Crud_Doctrine
        */
       require_once 'GlassOnion/Controller/Crud/Exception.php';
       throw new GlassOnion_Controller_Crud_Exception(
-        'The class ' . $tableName . ' does not exists');
+        "The class {$tableName} does not exists");
     }
     $this->_tableName = $tableName;
     return $this;
@@ -528,6 +528,26 @@ abstract class GlassOnion_Controller_Crud_Doctrine
       $tableName = $this->_tableName;
     }
     return Doctrine_Core::getTable($tableName);   
+  }
+
+  /**
+   * Returns a paginator from a given query
+   *
+   * @return Zend_Paginator
+   */
+  protected function getPaginator(Doctrine_Query $query, $page = null)
+  {
+    require_once 'GlassOnion/Paginator/Adapter/DoctrineQuery.php';
+    $adapter = new GlassOnion_Paginator_Adapter_DoctrineQuery($query);
+
+    require_once 'Zend/Paginator.php';
+    $paginator = new Zend_Paginator($adapter);
+
+    if (null != $page) {
+      $paginator->setCurrentPageNumber($page);
+    }
+    
+    return $paginator;        
   }
 
   /**
