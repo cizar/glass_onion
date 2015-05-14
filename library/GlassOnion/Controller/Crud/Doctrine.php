@@ -82,14 +82,9 @@ abstract class GlassOnion_Controller_Crud_Doctrine
 
     $this->sortIndexQuery($query);
 
-    /**
-     * @see GlassOnion_Paginator_Adapter_DoctrineQuery
-     */
-    require_once 'GlassOnion/Paginator/Adapter/DoctrineQuery.php';
-    $paginator = new Zend_Paginator(new GlassOnion_Paginator_Adapter_DoctrineQuery($query));
+    $page = $this->_getParam('page', 1);
 
-    $paginator->setItemCountPerPage($this->_itemCountPerPage)
-              ->setCurrentPageNumber($this->_getParam('page', 1));
+    $paginator = $this->getPaginator($query, $page, $this->_itemCountPerPage);
 
     if (
       $this->_oneMatchRedirect
@@ -550,19 +545,17 @@ abstract class GlassOnion_Controller_Crud_Doctrine
    *
    * @return Zend_Paginator
    */
-  protected function getPaginator(Doctrine_Query $query, $page = null)
+  protected function getPaginator(Doctrine_Query $query, $pageNumber = null, $itemCountPerPage = null)
   {
-    require_once 'GlassOnion/Paginator/Adapter/DoctrineQuery.php';
-    $adapter = new GlassOnion_Paginator_Adapter_DoctrineQuery($query);
-
-    require_once 'Zend/Paginator.php';
-    $paginator = new Zend_Paginator($adapter);
-
-    if (null != $page) {
-      $paginator->setCurrentPageNumber($page);
+    require_once 'GlassOnion/Paginator.php';
+    $paginator = GlassOnion_Paginator::factory($query);
+    if (null != $pageNumber) {
+      $paginator->setCurrentPageNumber($pageNumber);
     }
-    
-    return $paginator;        
+    if (null != $itemCountPerPage) {
+      $paginator->setItemCountPerPage($itemCountPerPage);
+    }
+    return $paginator;
   }
 
   /**
