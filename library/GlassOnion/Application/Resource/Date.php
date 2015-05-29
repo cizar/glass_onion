@@ -32,41 +32,27 @@
  */
 
 /**
- * @category   GlassOnion
- * @package    GlassOnion_Date
+ * @see Zend_Application_Resource_ResourceAbstract
  */
-class GlassOnion_Date
+require_once 'Zend/Application/Resource/ResourceAbstract.php';
+
+/**
+ * @category   GlassOnion
+ * @package    GlassOnion_Application
+ */
+class GlassOnion_Application_Resource_Date
+    extends Zend_Application_Resource_ResourceAbstract
 {
   /**
-   * @var string
-   */
-  private static $now = 'now';
-
-  /**
-   * Sets the current unix timestamp if it is defined and then returns the current unix timestap
+   * Defined by Zend_Application_Resource_Resource
    *
-   * @return int
+   * @return void
    */
-  public static function now($now = null)
+  public function init()
   {
-    if (null != $now) {
-      self::$now = $now;
+    $options = $this->getOptions();
+    if (isset($options['now'])) {
+      GlassOnion_Date::now($options['now']);
     }
-    return strtotime(self::$now);
-  }
-
-  /**
-   * Returns the number of years since a given date
-   *
-   * @return string
-   */
-  public static function age($date)
-  {
-    $time = strtotime($date);
-    $age = date('Y') - date('Y', $time);
-    if (date('md') < date('md', $time)) {
-      $age--;
-    }
-    return $age;
   }
 }
