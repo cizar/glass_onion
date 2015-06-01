@@ -40,7 +40,7 @@ class GlassOnion_Csv_Reader implements Iterator, Countable
   /**
    * The file heading mode
    */
-  const MODE_NO_HEADER = 0;
+  const MODE_WITHOUT_HEADER = 0;
   const MODE_WITH_HEADER = 1;
   const MODE_IGNORE_HEADER = 2;
 
@@ -136,7 +136,7 @@ class GlassOnion_Csv_Reader implements Iterator, Countable
    */
   public function __construct($filename, $mode = null, $delimiter = null, $enclosure = null, $length = null)
   {
-    $this->_mode = $mode ?: self::MODE_NO_HEADER;
+    $this->_mode = $mode ?: self::MODE_WITHOUT_HEADER;
     $this->_delimiter = $delimiter ?: self::DEFAULT_DELIMITER;
     $this->_enclosure = $enclosure ?: self::DEFAULT_ENCLOSURE;
     $this->_length = $length ?: self::DEFAULT_LENGTH;
@@ -216,7 +216,6 @@ class GlassOnion_Csv_Reader implements Iterator, Countable
    */
   public function next()
   {
-    $this->_key++;
     $this->_current = $this->_read();
   }
 
@@ -302,6 +301,7 @@ class GlassOnion_Csv_Reader implements Iterator, Countable
    */
   private function _read()
   {
+    $this->_key++;
     return fgetcsv($this->_handler, $this->_length, $this->_delimiter, $this->_enclosure);
   }
 }
