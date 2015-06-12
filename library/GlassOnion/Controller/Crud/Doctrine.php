@@ -13,11 +13,11 @@
  * distribute, sublicense, and/or sell copies of the
  * Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice
  * shall be included in all copies or substantial portions of
  * the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY
  * KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
  * WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
@@ -56,14 +56,14 @@ abstract class GlassOnion_Controller_Crud_Doctrine
    * @var integer
    */
   private $_itemCountPerPage = 30;
-  
+
   /**
    * Auto-Redirect when listing only returns one match
    *
    * @var boolean
    */
   private $_oneMatchRedirect = false;
-  
+
   /**
    * The default sorting data
    *
@@ -86,13 +86,8 @@ abstract class GlassOnion_Controller_Crud_Doctrine
 
     $paginator = $this->getPaginator($query, $page, $this->_itemCountPerPage);
 
-    if (
-      $this->_oneMatchRedirect
-      && $this->_queryHasFiltersApplied($query)
-      && 1 == $paginator->getTotalItemCount()
-    ) {
-      $this->_helper->redirector('show', null, null,
-        array('id' => $id = $paginator->getItem(1)->id));
+    if ($this->_oneMatchRedirect && $query->contains('WHERE') && 1 == $paginator->getTotalItemCount()) {
+      $this->_helper->redirector('show', null, null, array('id' => $id = $paginator->getItem(1)->id));
     }
 
     $this->view->records = $paginator;
@@ -118,14 +113,14 @@ abstract class GlassOnion_Controller_Crud_Doctrine
       $this->view->sortData = array('field' => $field, 'order' => $order);
     }
   }
-  
+
   /**
    * @return Doctrine_Query
    */
   protected function getIndexQuery()
   {
     return $this->getTable()->createQuery();
-  } 
+  }
 
   /**
    * @return void
@@ -142,27 +137,26 @@ abstract class GlassOnion_Controller_Crud_Doctrine
    */
   public function newAction()
   {
-    $record = $this->getNewRecord();
+    $record = $this->createRecord();
+    $this->record = $record;
+    $this->view->record = $record;
 
     if ($this->_request->isPost()) {
       try {
-        $this->getConnection()->beginTransaction();
+        $this->beginTransaction();
         $this->create($record);
         $record->save();
         $this->postCreate($record);
-        $this->getConnection()->commit();
+        $this->commit();
         $this->_helper->flashMessenger->success($this->getCreateSuccessMessage($record));
         $this->_helper->redirector();
       }
       catch (Doctrine_Validator_Exception $ex) {
-        $this->getConnection()->rollback();
+        $this->rollback();
         $this->_helper->flashMessenger->error($this->getCreateErrorMessage($ex));
         $this->view->invalidRecords = $ex->getInvalidRecords();
       }
     }
-
-    $this->record = $record;
-    $this->view->record = $record;
   }
 
   /**
@@ -187,26 +181,25 @@ abstract class GlassOnion_Controller_Crud_Doctrine
   public function editAction()
   {
     $record = $this->getRecord($this->_getParam('id'));
+    $this->record = $record;
+    $this->view->record = $record;
 
     if ($this->_request->isPost()) {
       try {
-        $this->getConnection()->beginTransaction();
+        $this->beginTransaction();
         $this->update($record);
         $record->save();
         $this->postUpdate($record);
-        $this->getConnection()->commit();
+        $this->commit();
         $this->_helper->flashMessenger->success($this->getUpdateSuccessMessage($record));
         $this->_helper->redirector();
       }
       catch (Doctrine_Validator_Exception $ex) {
-        $this->getConnection()->rollback();
+        $this->rollback();
         $this->_helper->flashMessenger->error($this->getUpdateErrorMessage($ex));
         $this->view->invalidRecords = $ex->getInvalidRecords();
       }
     }
-
-    $this->record = $record;
-    $this->view->record = $record;
   }
 
   /**
@@ -216,7 +209,7 @@ abstract class GlassOnion_Controller_Crud_Doctrine
   {
     return 'Se ha actualizado el registro';
   }
-  
+
   /**
    * @retrurn string
    */
@@ -239,7 +232,6 @@ abstract class GlassOnion_Controller_Crud_Doctrine
         case 23000:
           $this->_helper->flashMessenger->error($ex->getMessage());
           break;
-        
         default:
           throw $ex;
       }
@@ -252,7 +244,7 @@ abstract class GlassOnion_Controller_Crud_Doctrine
    */
   protected function create(Doctrine_Record $record)
   {
-    $record->fromArray($this->_getFilteredParam('record'));
+    $record->fromArray($this->getParam('record'));
   }
 
   /**
@@ -268,7 +260,7 @@ abstract class GlassOnion_Controller_Crud_Doctrine
    */
   protected function update(Doctrine_Record $record)
   {
-    $record->fromArray($this->_getFilteredParam('record'));
+    $record->fromArray($this->getParam('record'));
   }
 
   /**
@@ -305,7 +297,7 @@ abstract class GlassOnion_Controller_Crud_Doctrine
     $this->_tableName = $tableName;
     return $this;
   }
-  
+
   /**
    * Sets the item count per pate
    *
@@ -324,7 +316,7 @@ abstract class GlassOnion_Controller_Crud_Doctrine
     $this->_itemCountPerPage = $count;
     return $this;
   }
-  
+
   /**
    * Enables the one match redirect
    *
@@ -361,7 +353,7 @@ abstract class GlassOnion_Controller_Crud_Doctrine
     }
     return $this->_sortDefault;
   }
-  
+
   /**
    * Sets the sorting defaults
    *
@@ -372,9 +364,9 @@ abstract class GlassOnion_Controller_Crud_Doctrine
     $this->_sortDefault = $order . 'ending-by-' . $fieldName;
     return $this;
   }
-  
+
   /**
-   * Proxy for undefined methods.  
+   * Proxy for undefined methods.
    *
    * @param  string $methodName
    * @param  array $args
@@ -412,7 +404,7 @@ abstract class GlassOnion_Controller_Crud_Doctrine
   }
 
   /**
-   * TBD 
+   * TBD
    *
    * @param Doctrine_Query|Doctrine_Collection|string $source
    * @param string $format
@@ -446,7 +438,7 @@ abstract class GlassOnion_Controller_Crud_Doctrine
       ->fetchOne()
       ->get($fieldName);
   }
-      
+
   /**
    * Find a record or create a new one if not exists. Either case return the record.
    *
@@ -468,12 +460,9 @@ abstract class GlassOnion_Controller_Crud_Doctrine
     if (0 == count($args) || 1 == count($args) && !is_array($args[0]) || 4 < count($args)) {
       throw new InvalidArgumentException();
     }
-    $criteria = is_array($args[0])
-      ? array_shift($args) : array(array_shift($args) => array_shift($args));
-    $tableName = empty($args)
-      ? null : array_shift($args);
-    $createIfNotExists = empty($args)
-      ? false : array_shift($args);
+    $criteria = is_array($args[0]) ? array_shift($args) : array(array_shift($args) => array_shift($args));
+    $tableName = empty($args) ? null : array_shift($args);
+    $createIfNotExists = empty($args) ? false : array_shift($args);
     $table = $this->getTable($tableName);
     $query = $table->createQuery()->limit(1);
     foreach ($criteria as $fieldName => $value) {
@@ -522,7 +511,7 @@ abstract class GlassOnion_Controller_Crud_Doctrine
    *
    * @return Doctrine_Record
    */
-  protected function getNewRecord($tableName = null)
+  protected function createRecord($tableName = null)
   {
     return $this->getTable($tableName)->create();
   }
@@ -537,7 +526,7 @@ abstract class GlassOnion_Controller_Crud_Doctrine
     if (null === $tableName) {
       $tableName = $this->_tableName;
     }
-    return Doctrine_Core::getTable($tableName);   
+    return Doctrine_Core::getTable($tableName);
   }
 
   /**
@@ -577,7 +566,7 @@ abstract class GlassOnion_Controller_Crud_Doctrine
   {
     return $this->getConnection()->commit();
   }
-  
+
   /**
    * Cancel any database changes done during a transaction
    *
@@ -587,7 +576,7 @@ abstract class GlassOnion_Controller_Crud_Doctrine
   {
     return $this->getConnection()->rollback();
   }
-  
+
   /**
    * Returns the current Doctrine connection
    *
@@ -596,45 +585,5 @@ abstract class GlassOnion_Controller_Crud_Doctrine
   protected function getConnection()
   {
     return Doctrine_Manager::connection();
-  }
-
-  /**
-   * Check if the query has filter
-   *
-   * @return boolean
-   */
-  private function _queryHasFiltersApplied(Doctrine_Query $query)
-  {
-    $params = $query->getParams();
-    return isset($params['where']) && count($params['where']) > 0;
-  }
-
-  /**
-   * TBD
-   *
-   * @return mixed
-   */
-  protected function _getFilteredParam($paramName, $default = null)
-  {
-    $param = $this->_getParam($paramName, $default);
-    if (is_array($param)) {
-      return array_filter($param, function($var){
-        return $var !== '';
-      });
-    }
-    return $param;
-  }
-
-  /**
-   * TBD
-   *
-   * @return array
-   */
-  protected function _getFilteredParams()
-  {
-    $params = $this->_getAllParams();
-    return array_filter($params, function($var){
-      return $var !== '';
-    });
   }
 }
