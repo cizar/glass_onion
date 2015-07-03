@@ -246,7 +246,7 @@ class GlassOnion_Csv_Reader implements Iterator, Countable
    */
   public function valid()
   {
-    return !feof($this->_handler);
+    return null !== $this->_current;
   }
 
   /**
@@ -301,6 +301,9 @@ class GlassOnion_Csv_Reader implements Iterator, Countable
    */
   private function _read()
   {
+    if (feof($this->_handler)) {
+      return null;
+    }
     $this->_key++;
     return fgetcsv($this->_handler, $this->_length, $this->_delimiter, $this->_enclosure);
   }
