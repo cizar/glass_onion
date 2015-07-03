@@ -54,6 +54,11 @@ class GlassOnion_View_Helper_Number extends Zend_View_Helper_Abstract
     const DEFAULT_LOCALE = 'en_US';
 
     /**
+     * @const string
+     */
+    const DEFAULT_FORMAT = '#,##0.#';
+
+    /**
      * @var numeric
      */
     private $_value;
@@ -69,15 +74,21 @@ class GlassOnion_View_Helper_Number extends Zend_View_Helper_Abstract
     private $_locale;
 
     /**
+     * @var string
+     */
+    private $_format;
+
+    /**
      * Helper entry point
      *
      * @return GlassOnion_View_Helper_Number Provides a fluent interface
      */
-    public function number($value, $precision = null, $locale = null)
+    public function number($value, $precision = null, $locale = null, $format = null)
     {
         $this->_value = $value;
         $this->_precision = $precision;
         $this->_locale = $locale;
+        $this->_format = $format;
         return $this;
     }
 
@@ -166,6 +177,30 @@ class GlassOnion_View_Helper_Number extends Zend_View_Helper_Abstract
     }
 
     /**
+     * Sets the number format
+     *
+     * @return GlassOnion_View_Helper_Number Provides a fluent interface
+     */
+    public function setNumberFormat($format)
+    {
+        $this->_format = $format;
+        return $this;
+    }
+
+    /**
+     * Returns the number format
+     *
+     * @return string
+     */
+    public function getNumberFormat()
+    {
+        if (null === $this->_format) {
+            return self::DEFAULT_FORMAT;
+        }
+        return $this->_format;
+    }
+
+    /**
      * Cast to string
      *
      * @return string
@@ -174,6 +209,6 @@ class GlassOnion_View_Helper_Number extends Zend_View_Helper_Abstract
     {
         require_once 'Zend/Locale/Format.php';
         return Zend_Locale_Format::toNumber($this->getValue(),
-            array('precision' => $this->getPrecision(), 'locale' => $this->getLocale()));
+            array('precision' => $this->getPrecision(), 'number_format' => $this->getNumberFormat(), 'locale' => $this->getLocale()));
     }
 }
