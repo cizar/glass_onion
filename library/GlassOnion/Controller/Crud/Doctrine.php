@@ -138,8 +138,7 @@ abstract class GlassOnion_Controller_Crud_Doctrine
   public function newAction()
   {
     $record = $this->createRecord();
-    $this->record = $record;
-    $this->view->record = $record;
+    $this->view->record = $this->record = $record;
 
     if ($this->_request->isPost()) {
       try {
@@ -149,7 +148,7 @@ abstract class GlassOnion_Controller_Crud_Doctrine
         $this->postCreate($record);
         $this->commit();
         $this->_helper->flashMessenger->success($this->getCreateSuccessMessage($record));
-        $this->_helper->redirector();
+        $this->_helper->redirect('index');
       }
       catch (Doctrine_Validator_Exception $ex) {
         $this->rollback();
@@ -181,8 +180,7 @@ abstract class GlassOnion_Controller_Crud_Doctrine
   public function editAction()
   {
     $record = $this->getRecord($this->_getParam('id'));
-    $this->record = $record;
-    $this->view->record = $record;
+    $this->view->record = $this->record = $record;
 
     if ($this->_request->isPost()) {
       try {
@@ -192,7 +190,7 @@ abstract class GlassOnion_Controller_Crud_Doctrine
         $this->postUpdate($record);
         $this->commit();
         $this->_helper->flashMessenger->success($this->getUpdateSuccessMessage($record));
-        $this->_helper->redirector();
+        $this->_helper->redirect('index');
       }
       catch (Doctrine_Validator_Exception $ex) {
         $this->rollback();
@@ -224,19 +222,39 @@ abstract class GlassOnion_Controller_Crud_Doctrine
   public function deleteAction()
   {
     $record = $this->getRecord($this->_getParam('id'));
-    try {
-      $this->destroy($record);
-    }
-    catch (Doctrine_Connection_Mysql_Exception $ex) {
-      switch ($ex->getCode()) {
-        case 23000:
-          $this->_helper->flashMessenger->error($ex->getMessage());
-          break;
-        default:
-          throw $ex;
+    $this->view->record = $this->record = $record;
+
+    if ($this->_request->isPost()) {
+      try {
+        $this->delete($record);
+        $this->_helper->flashMessenger->success($this->getDeleteSuccessMessage($record));
+        $this->_helper->redirect('index');
+      } catch (Doctrine_Connection_Mysql_Exception $ex) {
+        switch ($ex->getCode()) {
+          case 23000:
+            $this->_helper->flashMessenger->error($ex->getMessage());
+            break;
+          default:
+            $this->_helper->flashMessenger->error($this->getDeleteErrorMessage($ex));
+        }
       }
     }
-    $this->_helper->redirector('index');
+  }
+
+  /**
+   * @retrurn string
+   */
+  public function getDeleteSuccessMessage(Doctrine_Record $record)
+  {
+    return 'Se ha eliminado el registro';
+  }
+
+  /**
+   * @retrurn string
+   */
+  public function getDeleteErrorMessage(Doctrine_Validator_Exception $ex)
+  {
+    return 'Se han encontrado errores, verifique los datos ingresados y vuelva a intentar';
   }
 
   /**
@@ -272,9 +290,9 @@ abstract class GlassOnion_Controller_Crud_Doctrine
   }
 
   /**
-   * Destroy
+   * Delete
    */
-  protected function destroy(Doctrine_Record $record)
+  protected function delete(Doctrine_Record $record)
   {
     $record->delete();
   }
