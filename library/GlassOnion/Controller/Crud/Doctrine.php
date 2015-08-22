@@ -127,7 +127,16 @@ abstract class GlassOnion_Controller_Crud_Doctrine
    */
   public function showAction()
   {
-    $record = $this->getRecord($this->_getParam('id'));
+    $query = $this->getIndexQuery();
+    $record = $query->andWhere('id = ?', $this->_getParam('id'))->fetchOne();
+    if (!$record) {
+      /**
+       * @see GlassOnion_Controller_Crud_Exception
+       */
+      require_once 'GlassOnion/Controller/Crud/Exception.php';
+      throw new GlassOnion_Controller_Crud_Exception(
+        'The record does not exists');
+    }
     $this->record = $record;
     $this->view->record = $record;
   }
