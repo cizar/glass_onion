@@ -57,7 +57,7 @@ class GlassOnion_View_Helper_Stylesheet
         $conditionalStylesheet = null, $extras = null)
     {
         $url = preg_match('/^(ht|f)tp(s)*:\/\/|^\//', $href)
-            ? $href : $this->view->themeBaseUrl($href);
+            ? $href : (string) $this->view->themeBaseUrl($href);
         $this->view->headLink()->appendStylesheet($url,
             $media, $conditionalStylesheet, $extras);
         return $this->view;
