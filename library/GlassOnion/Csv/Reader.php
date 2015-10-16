@@ -13,11 +13,11 @@
 * distribute, sublicense, and/or sell copies of the
 * Software, and to permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
-* 
+*
 * The above copyright notice and this permission notice
 * shall be included in all copies or substantial portions of
 * the Software.
-* 
+*
 * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY
 * KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
 * WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
@@ -48,7 +48,7 @@ class GlassOnion_Csv_Reader implements Iterator, Countable
    * The default field delimiter character.
    */
   const DEFAULT_DELIMITER = ';';
-  
+
   /**
    * The default field delimiter character.
    */
@@ -115,7 +115,7 @@ class GlassOnion_Csv_Reader implements Iterator, Countable
    * @access private
    */
   private $_length = null;
- 
+
   /**
    * The names of the columns.
    *
@@ -164,7 +164,7 @@ class GlassOnion_Csv_Reader implements Iterator, Countable
   {
     return $this->_columnNames;
   }
-  
+
   /**
    * Sets the names of the columns.
    *
@@ -207,7 +207,7 @@ class GlassOnion_Csv_Reader implements Iterator, Countable
   {
     return $this->_key;
   }
-  
+
   /**
    * Move the file pointer to the next row.
    *
@@ -216,6 +216,7 @@ class GlassOnion_Csv_Reader implements Iterator, Countable
    */
   public function next()
   {
+    $this->_key++;
     $this->_current = $this->_read();
   }
 
@@ -229,11 +230,8 @@ class GlassOnion_Csv_Reader implements Iterator, Countable
   {
     $this->_key = 0;
     rewind($this->_handler);
-    if (in_array($this->_mode, array(self::MODE_WITH_HEADER, self::MODE_IGNORE_HEADER))) {
-      $firstRow = $this->_read();
-      if (self::MODE_WITH_HEADER == $this->_mode && !$this->_columnNames) {
-        $this->_columnNames = $firstRow;
-      }
+    if (self::MODE_WITHOUT_HEADER !== $this->_mode) {
+      $this->_read();
     }
     $this->_current = $this->_read();
   }
@@ -276,9 +274,15 @@ class GlassOnion_Csv_Reader implements Iterator, Countable
       throw new GlassOnion_Csv_Exception("The file '$filename' could not be opened");
     }
     $this->_handler = $fileHandler;
+    if (self::MODE_WITHOUT_HEADER !== $this->_mode) {
+      $firstRow = $this->_read();
+      if (self::MODE_WITH_HEADER == $this->_mode) {
+        $this->_columnNames = $firstRow;
+      }
+    }
     return $this;
   }
-  
+
   /**
    * Close the CSV file.
    *
@@ -292,7 +296,7 @@ class GlassOnion_Csv_Reader implements Iterator, Countable
     }
     return $this;
   }
- 
+
   /**
    * Read the next row of the CSV file.
    *
@@ -304,7 +308,6 @@ class GlassOnion_Csv_Reader implements Iterator, Countable
     if (feof($this->_handler)) {
       return null;
     }
-    $this->_key++;
     return fgetcsv($this->_handler, $this->_length, $this->_delimiter, $this->_enclosure);
   }
 }
