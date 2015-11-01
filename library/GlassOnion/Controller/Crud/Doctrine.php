@@ -439,13 +439,13 @@ abstract class GlassOnion_Controller_Crud_Doctrine
    * @return array
    * @throws InvalidArgumentException
    */
-  public function getMultiOptions($source, $format = '%value$s', $key = 'id')
+  public function getMultiOptions($source, $format = '%value$s', $key = null, $blankOption = null)
   {
     /**
      * @see GlassOnion_Doctrine
      */
     require_once 'GlassOnion/Doctrine.php';
-    return GlassOnion_Doctrine::getMultiOptions($source, $format, $key);
+    return GlassOnion_Doctrine::getMultiOptions($source, $format, $key, $blankOption);
   }
 
   /**
