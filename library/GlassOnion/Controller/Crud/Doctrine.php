@@ -272,7 +272,7 @@ abstract class GlassOnion_Controller_Crud_Doctrine
   protected function create(Doctrine_Record $record)
   {
     $data = $this->_getParam('record');
-    $data = array_map(function($value) { return ($value === '') ? NULL : $value }, $data);
+    $data = array_map(function($value) { return ($value === '') ? NULL : $value; }, $data);
     $record->synchronizeWithArray($data);
   }
 
@@ -290,7 +290,7 @@ abstract class GlassOnion_Controller_Crud_Doctrine
   protected function update(Doctrine_Record $record)
   {
     $data = $this->_getParam('record');
-    $data = array_map(function($value) { return ($value === '') ? NULL : $value }, $data);
+    $data = array_map(function($value) { return ($value === '') ? NULL : $value; }, $data);
     $record->synchronizeWithArray($data);
   }
 
