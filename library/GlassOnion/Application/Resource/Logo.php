@@ -79,6 +79,7 @@ class GlassOnion_Application_Resource_Logo
         'overflow' => 'hidden',
         'text-indent' => '-9999px',
         'background-position' => 'center center',
+        'background-repeat' => 'no-repeat',
         'background-size' => '100% auto',
         'background-image' => 'url(' . $logo['url'] . ')'
       );
