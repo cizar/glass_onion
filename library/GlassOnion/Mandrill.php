@@ -48,6 +48,6 @@ class GlassOnion_Mandrill extends Mandrill
   public function sendTemplate($template_name, $template_content, $message, $async=false, $ip_pool=null, $send_at=null)
   {
     $message = array_merge_recursive($this->defaults, $message);
-    return $mandrill->messages->sendTemplate($template_name, $template_content, $message, $async, $ip_pool, $send_at);
+    return $this->messages->sendTemplate($template_name, $template_content, $message, $async, $ip_pool, $send_at);
   }
 }
