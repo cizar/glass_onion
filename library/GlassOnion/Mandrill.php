@@ -31,35 +31,23 @@
  * @license    MIT
  */
 
-/**
- * @see Zend_Application_Resource_ResourceAbstract
- */
-require_once 'Zend/Application/Resource/ResourceAbstract.php';
+ /**
+  * @category   GlassOnion
+  * @package    GlassOnion_Application
+  */
 
-/**
- * @category   GlassOnion
- * @package    GlassOnion_Application
- */
-class GlassOnion_Application_Resource_Mandrill
-    extends Zend_Application_Resource_ResourceAbstract
+class GlassOnion_Mandrill extends Mandrill
 {
-  /**
-   * Defined by Zend_Application_Resource_Resource
-   *
-   * @return Zend_View_Helper_HeadMeta
-   */
-  public function init()
+  private $defaults = array();
+
+  public function set($key, $value)
   {
-    $options = $this->getOptions();
-    $api_key = null;
-    if (isset($options['api_key'])) {
-      $api_key = $options['api_key'];
-      unset($options['api_key']);
-    }
-    $mandrill = new GlassOnion_Mandrill($api_key);
-    foreach ($options as $key => $option) {
-      $mandrill->set($key, $option);
-    }
-    return $mandrill;
+    $this->defaults[$key] = $value;
+  }
+
+  public function sendTemplate($template_name, $template_content, $message, $async=false, $ip_pool=null, $send_at=null)
+  {
+    $message = array_merge_recursive($this->defaults, $message);
+    return $mandrill->messages->sendTemplate($template_name, $template_content, $message, $async, $ip_pool, $send_at);
   }
 }
